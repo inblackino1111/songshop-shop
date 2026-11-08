@@ -1,0 +1,244 @@
+/* ==========================================================================
+   TOP MODERN NAVBAR (css/navbar-top.css)
+   ปรับให้เหมือนรูปที่ส่งมาเป๊ะๆ (Pixel Perfect):
+   - ซ้าย: โลโก้แคปซูลชมพู ⚡ สองนึ่ง
+   - กลาง: เมนู หน้าหลัก | สินค้า | 🎁 แลกของรางวัล | ประวัติสั่งซื้อ
+   - ขวา:
+     - 🛒 ตะกร้า 0 (ปุ่มดำขอบชมพูบางๆ พร้อมวงกลมสีชมพูแดงเลข 0)
+     - เมื่อล็อกอิน: ⭐ @username • 0 แต้ม (ปุ่มดำขอบหรู) + ปุ่มไอคอนออกจากระบบ [->
+     - เมื่อยังไม่ล็อกอิน: เข้าสู่ระบบ + ปุ่มชมพู สมัครสมาชิก
+   ========================================================================== */
+
+.top-header {
+  position: sticky;
+  top: 14px;
+  z-index: 1000;
+  margin-bottom: 24px;
+}
+
+.top-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* โลโก้แบรนด์แคปซูลสีชมพูสดใส ⚡ สองนึ่ง */
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff2e93 0%, #f43f7a 100%);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 20px rgba(255, 46, 147, 0.55);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.brand-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(255, 46, 147, 0.75);
+}
+
+.brand-pill-icon {
+  font-size: 1rem;
+}
+
+/* แถบเมนูกลาง (หน้าหลัก | สินค้า | 🎁 แลกของรางวัล | ประวัติสั่งซื้อ) */
+.navbar {
+  position: relative;
+  padding: 6px 10px;
+  background: rgba(18, 18, 25, 0.92);
+  border-radius: 60px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.navbar::-webkit-scrollbar { display: none; }
+
+.navbar ul {
+  position: relative;
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 4px;
+}
+
+.navbar ul li {
+  position: relative;
+  z-index: 2;
+}
+
+.navbar ul li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 40px;
+  white-space: nowrap;
+  transition: color 0.25s ease, font-weight 0.25s ease;
+}
+
+.navbar ul li a.active,
+.navbar ul li a:hover {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* แถบไฟเรืองแสงชมพูเลื่อนตามเมนู (.indicator) */
+.navbar .indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 90px;
+  background: linear-gradient(135deg, #ff2e93 0%, #f43f7a 100%);
+  border-radius: 50px;
+  box-shadow:
+    0 0 18px rgba(255, 46, 147, 0.8),
+    0 0 32px rgba(244, 63, 122, 0.45);
+  z-index: 1;
+  transition:
+    transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1),
+    width 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
+  pointer-events: none;
+}
+
+/* ด้านขวาของ Header (ตามรูปเป๊ะๆ) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 🛒 ตะกร้า 0 ตามรูป */
+.btn-header-cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #141219;
+  border: 1px solid rgba(255, 46, 147, 0.35);
+  color: #f1f5f9;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.btn-header-cart:hover {
+  border-color: #ff2e93;
+  background: rgba(255, 46, 147, 0.15);
+}
+
+.cart-count-badge {
+  background: #e11d48;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 19px;
+  height: 19px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* ป้ายแสดงชื่อผู้ใช้ ⭐ @inblackino123 • 0 แต้ม ตามรูปเป๊ะๆ */
+.user-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #13131b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color var(--transition);
+}
+.user-badge-pill:hover {
+  border-color: rgba(255, 46, 147, 0.45);
+}
+.user-badge-star {
+  color: #eab308;
+  font-size: 0.95rem;
+}
+
+/* ปุ่มไอคอนออกจากระบบ [-> ตามรูปเป๊ะๆ */
+.btn-header-logout {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #15151f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-header-logout:hover {
+  color: #fb7185;
+  border-color: rgba(251, 113, 133, 0.4);
+  background: rgba(251, 113, 133, 0.1);
+  transform: scale(1.05);
+}
+
+.btn-header-login {
+  color: #cbd5e1;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 7px 12px;
+  border-radius: 8px;
+  transition: color var(--transition);
+}
+.btn-header-login:hover {
+  color: #ff2e93;
+}
+
+.btn-header-register {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff2e93 0%, #f43f7a 100%);
+  color: #ffffff;
+  border: none;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 46, 147, 0.45);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.btn-header-register:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 46, 147, 0.65);
+}
+
+@media (max-width: 890px) {
+  .top-header-inner { justify-content: center; }
+  .navbar ul li a { padding: 7px 12px; font-size: 0.82rem; }
+}

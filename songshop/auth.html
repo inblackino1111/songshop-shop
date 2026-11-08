@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เข้าสู่ระบบ / สมัครสมาชิก</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/core.css?v=7" />
+  <link rel="stylesheet" href="/css/pages.css?v=7" />
+</head>
+<body>
+  <div class="app-shell">
+    <header id="app-header"></header>
+
+    <main class="page-body">
+      <div class="auth-container">
+        <!-- ฟอร์มเข้าสู่ระบบ / สมัครสมาชิก -->
+        <div id="auth-box" class="card" style="padding:28px 24px;border-color:var(--border-pink);">
+          
+          <div style="text-align:center;margin-bottom:20px;">
+            <div class="brand-badge" style="width:48px;height:48px;margin:0 auto 12px;border-radius:14px;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
+            <h2 id="auth-title" style="font-size:1.4rem;font-weight:800;margin-bottom:4px;">เข้าสู่ระบบ</h2>
+            <p id="auth-sub" style="font-size:0.8rem;color:var(--text-dim);">กรอกยูสเซอร์เนมและรหัสผ่านเพื่อเข้าใช้งาน</p>
+          </div>
+
+          <!-- แถบสลับ เข้าสู่ระบบ / สมัครสมาชิก -->
+          <div class="seg-tabs" style="margin-bottom:20px;">
+            <button type="button" class="seg-btn active" id="tab-login">เข้าสู่ระบบ</button>
+            <button type="button" class="seg-btn" id="tab-register">สมัครสมาชิก</button>
+          </div>
+
+          <form id="auth-form" autocomplete="on">
+            <div class="form-group" style="margin-bottom:14px;">
+              <label class="form-label" for="auth-username">👤 ยูสเซอร์ (Username)</label>
+              <input type="text" id="auth-username" class="input" placeholder="กรอกยูสเซอร์เนมของคุณ" required autocomplete="username" />
+            </div>
+
+            <div class="form-group" style="margin-bottom:14px;">
+              <label class="form-label" for="auth-password">🔒 รหัสผ่าน (Password)</label>
+              <input type="password" id="auth-password" class="input" placeholder="กรอกรหัสผ่านของคุณ" required autocomplete="current-password" />
+            </div>
+
+            <div class="form-group hidden" id="group-confirm" style="margin-bottom:18px;">
+              <label class="form-label" for="auth-confirm">🔒 ยืนยันรหัสผ่าน (Confirm Password)</label>
+              <input type="password" id="auth-confirm" class="input" placeholder="กรอกรหัสผ่านอีกครั้ง" autocomplete="new-password" />
+            </div>
+
+            <button type="submit" id="btn-auth-submit" class="btn btn-primary btn-full" style="padding:12px;font-size:0.95rem;">
+              ✨ เข้าสู่ระบบทันที
+            </button>
+          </form>
+        </div>
+
+        <!-- กล่องโปรไฟล์เมื่อเข้าสู่ระบบแล้ว -->
+        <div id="user-profile-box" class="card hidden" style="padding:28px 24px;border-color:var(--border-pink);text-align:center;">
+          <div class="brand-badge" style="width:54px;height:54px;margin:0 auto 12px;border-radius:16px;font-size:1.5rem;font-weight:800;">
+            <span id="prof-avatar-letter">A</span>
+          </div>
+          <div class="badge badge-pink" style="margin-bottom:8px;">เข้าสู่ระบบเรียบร้อยแล้ว</div>
+          <h2 id="prof-username" style="font-size:1.4rem;font-weight:800;margin-bottom:4px;">@Username</h2>
+          <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:20px;">บัญชีสมาชิกของคุณพร้อมใช้งาน</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+            <div class="card" style="padding:12px;background:var(--bg-elevated);">
+              <div style="font-size:0.75rem;color:var(--text-dim);">แต้มสะสม</div>
+              <div style="font-size:1.2rem;font-weight:800;color:var(--pink);" id="prof-points">0 แต้ม</div>
+            </div>
+            <div class="card" style="padding:12px;background:var(--bg-elevated);">
+              <div style="font-size:0.75rem;color:var(--text-dim);">ออเดอร์ของฉัน</div>
+              <div style="font-size:1.2rem;font-weight:800;" id="prof-orders">0 รายการ</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="/index.html" class="btn btn-primary btn-full">🛍️ ไปเลือกซื้อสินค้า</a>
+            <a href="/orders.html" class="btn btn-outline btn-full">📦 ดูประวัติสั่งซื้อและรหัสแอพ</a>
+            <button type="button" id="btn-prof-logout" class="btn btn-ghost-sm btn-full" style="color:var(--danger);padding:10px;">
+              🚪 ออกจากระบบ (Logout)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer id="app-footer"></footer>
+  </div>
+
+  <script type="module">
+    import { State, saveAuthData, toast } from './js/core.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // โหลด Header & Footer
+      try {
+        const [hRes, fRes] = await Promise.all([fetch('/header.html'), fetch('/footer.html')]);
+        if (hRes.ok) document.getElementById('app-header').innerHTML = await hRes.text();
+        if (fRes.ok) document.getElementById('app-footer').innerHTML = await fRes.text();
+      } catch (e) {}
+
+      updateAuthUI();
+      setupAuthHandlers();
+    });
+
+    let currentMode = 'login';
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'register') {
+      currentMode = 'register';
+    }
+
+    function setupAuthHandlers() {
+      const tabLogin = document.getElementById('tab-login');
+      const tabReg = document.getElementById('tab-register');
+      const groupConfirm = document.getElementById('group-confirm');
+      const authTitle = document.getElementById('auth-title');
+      const authSub = document.getElementById('auth-sub');
+      const btnSubmit = document.getElementById('btn-auth-submit');
+      const form = document.getElementById('auth-form');
+
+      function switchMode(mode) {
+        currentMode = mode;
+        if (mode === 'login') {
+          tabLogin.classList.add('active');
+          tabReg.classList.remove('active');
+          groupConfirm.classList.add('hidden');
+          document.getElementById('auth-confirm').removeAttribute('required');
+          authTitle.textContent = 'เข้าสู่ระบบ';
+          authSub.textContent = 'กรอกยูสเซอร์เนมและรหัสผ่านเพื่อเข้าใช้งาน';
+          btnSubmit.textContent = '✨ เข้าสู่ระบบทันที';
+        } else {
+          tabReg.classList.add('active');
+          tabLogin.classList.remove('active');
+          groupConfirm.classList.remove('hidden');
+          document.getElementById('auth-confirm').setAttribute('required', 'true');
+          authTitle.textContent = 'สมัครสมาชิก';
+          authSub.textContent = 'สร้างบัญชีผู้ใช้ใหม่ด้วยยูสเซอร์และรหัสผ่าน';
+          btnSubmit.textContent = '✨ สมัครสมาชิกทันที';
+        }
+      }
+
+      if (currentMode === 'register') switchMode('register');
+
+      tabLogin.addEventListener('click', () => switchMode('login'));
+      tabReg.addEventListener('click', () => switchMode('register'));
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('auth-username').value.trim();
+        const password = document.getElementById('auth-password').value;
+        const confirm = document.getElementById('auth-confirm').value;
+
+        if (!username || !password) {
+          toast('กรุณากรอกข้อมูลให้ครบถ้วน', 'warn');
+          return;
+        }
+
+        if (currentMode === 'register') {
+          if (password !== confirm) {
+            toast('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน', 'warn');
+            return;
+          }
+          // สมัครสมาชิกใหม่
+          State.user = {
+            username: username,
+            points: 0,
+            registeredAt: new Date().toISOString()
+          };
+          saveAuthData();
+          toast(`🎉 ยินดีต้อนรับคุณ ${username}! สมัครสมาชิกสำเร็จ`, 'ok');
+          // ตามคำขอของผู้ใช้: สมัครหรือเข้าสู่ระบบเสร็จให้เด้งเข้าหน้าแรกเลย
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 600);
+        } else {
+          // เข้าสู่ระบบ
+          State.user = {
+            username: username,
+            points: State.user && State.user.username === username ? State.user.points : 0
+          };
+          saveAuthData();
+          toast(`👋 ยินดีต้อนรับกลับคุณ ${username}!`, 'ok');
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 600);
+        }
+      });
+
+      document.getElementById('btn-prof-logout')?.addEventListener('click', () => {
+        State.user = null;
+        saveAuthData();
+        toast('🚪 ออกจากระบบเรียบร้อยแล้ว', 'info');
+        updateAuthUI();
+      });
+    }
+
+    function updateAuthUI() {
+      const authBox = document.getElementById('auth-box');
+      const profBox = document.getElementById('user-profile-box');
+
+      if (State.user) {
+        authBox.classList.add('hidden');
+        profBox.classList.remove('hidden');
+
+        document.getElementById('prof-avatar-letter').textContent = State.user.username.charAt(0).toUpperCase();
+        document.getElementById('prof-username').textContent = `@${State.user.username}`;
+        document.getElementById('prof-points').textContent = `${State.user.points || 0} แต้ม`;
+        const myOrders = State.orders.filter(o => o.owner === State.user.username);
+        document.getElementById('prof-orders').textContent = `${myOrders.length} รายการ`;
+      } else {
+        authBox.classList.remove('hidden');
+        profBox.classList.add('hidden');
+      }
+
+      // อัปเดตเมนูบาร์ด้านบน
+      setTimeout(() => {
+        const guestBox = document.getElementById('nav-guest');
+        const userBox = document.getElementById('nav-user');
+        const navUser = document.getElementById('nav-username');
+        const navPoints = document.getElementById('nav-points-balance');
+
+        if (State.user) {
+          guestBox?.classList.add('hidden');
+          userBox?.classList.remove('hidden');
+          if (navUser) navUser.textContent = `@${State.user.username}`;
+          if (navPoints) navPoints.textContent = `${State.user.points || 0} แต้ม`;
+        } else {
+          userBox?.classList.add('hidden');
+          guestBox?.classList.remove('hidden');
+        }
+      }, 100);
+    }
+  </script>
+</body>
+</html>

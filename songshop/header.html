@@ -1,0 +1,48 @@
+<div class="topbar">
+  <a href="/index.html" class="brand" aria-label="หน้าหลักร้านค้า">
+    <span class="brand-badge">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+        <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/>
+      </svg>
+    </span>
+    <span class="brand-text" id="header-store-name">FRIENDBOOSTER</span>
+  </a>
+
+  <nav class="desktop-topnav" aria-label="เมนูเว็บไซต์">
+    <a href="/index.html" class="dnav-link" data-dnav="home">หน้าหลัก</a>
+    <a href="/shop.html" class="dnav-link" data-dnav="shop">สินค้า</a>
+    <a href="/rewards.html" class="dnav-link" data-dnav="rewards">🎁 แลกของรางวัล</a>
+    <a href="/orders.html" class="dnav-link" data-dnav="orders">ประวัติสั่งซื้อ</a>
+  </nav>
+
+  <div class="topbar-actions">
+    <!-- ปุ่มตะกร้าสินค้า (เลือกหลายชิ้นแล้วสแกนจ่ายทีเดียวได้) -->
+    <button type="button" id="btn-header-cart" class="wallet-pill" title="ตะกร้าสินค้าของคุณ" style="cursor:pointer;">
+      <span>🛒</span>
+      <span class="cart-txt-hide">ตะกร้า</span>
+      <span class="wallet-plus" id="nav-cart-count">0</span>
+    </button>
+
+    <!-- สถานะยังไม่ล็อกอิน -->
+    <div id="nav-guest" class="topbar-actions">
+      <a href="/auth.html" class="btn-ghost-sm">เข้าสู่ระบบ</a>
+      <a href="/auth.html?mode=register" class="btn-pink-sm">สมัครสมาชิก</a>
+    </div>
+
+    <!-- สถานะล็อกอินแล้ว (แสดงแต้มสะสมแทนการบังคับเติมเงินเข้ากระเป๋า) -->
+    <div id="nav-user" class="topbar-actions hidden">
+      <a href="/rewards.html" class="wallet-pill" title="แต้มสะสมสำหรับแลกของรางวัล">
+        <span>⭐</span>
+        <span id="nav-username" style="color:var(--text-dim);font-weight:500;"></span>
+        <span id="nav-points-balance">0 แต้ม</span>
+      </a>
+      <button type="button" id="btn-logout" class="icon-btn" title="ออกจากระบบ" aria-label="ออกจากระบบ">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

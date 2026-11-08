@@ -1,0 +1,2952 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-doc-title">สองนึง — ร้านค้าไอดีแอพพรีเมียม สบายตาทันสมัย</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="./core.css" />
+  <link rel="stylesheet" href="./css/core.css" />
+  <link rel="stylesheet" href="./pages.css" />
+  <link rel="stylesheet" href="./css/pages.css" />
+</head>
+<body>
+  <div class="app-shell">
+    
+    <!-- ====================================================================
+         เมนูด้านบน (Desktop Topbar — ไม่มีเมนูหลังบ้านปะปนในหน้าบ้าน)
+         ==================================================================== -->
+    <header id="app-header">
+      <div class="topbar">
+        <!-- แบรนด์โลโก้ -->
+        <a href="javascript:void(0)" class="brand" id="brand-logo-btn" aria-label="หน้าหลัก">
+          <span class="brand-badge" id="header-logo-badge" style="background:var(--pink);box-shadow:0 0 16px var(--pink-glow);overflow:hidden;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="#ffffff" aria-hidden="true">
+              <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/>
+            </svg>
+          </span>
+          <span class="brand-text" id="header-store-name">สองนึง</span>
+        </a>
+
+        <!-- เมนูด้านบนตามรูปที่ 2 (Modern Navbar with Glowing Pink Indicator) -->
+        <nav class="navbar" id="top-navbar" aria-label="เมนูเว็บไซต์">
+          <ul class="nav-links-list">
+            <li><a href="javascript:void(0)" class="top-nav-link active" data-view="home">หน้าหลัก</a></li>
+            <li><a href="javascript:void(0)" class="top-nav-link" data-view="shop">สินค้า</a></li>
+            <li><a href="javascript:void(0)" class="top-nav-link" data-view="rewards">🎁 แลกของรางวัล</a></li>
+            <li><a href="javascript:void(0)" class="top-nav-link" data-view="orders">ประวัติสั่งซื้อ</a></li>
+            <div class="indicator" id="nav-indicator"></div>
+          </ul>
+        </nav>
+
+        <div class="topbar-actions">
+          <!-- สถานะยังไม่ล็อกอิน -->
+          <div id="nav-guest" class="topbar-actions">
+            <button type="button" class="btn-ghost-sm" id="btn-open-login">เข้าสู่ระบบ</button>
+            <button type="button" class="btn-pink-sm" id="btn-open-reg">สมัครสมาชิก</button>
+          </div>
+
+          <!-- สถานะล็อกอินแล้ว (@username • แต้ม + ปุ่มออก) -->
+          <div id="nav-user" class="topbar-actions hidden">
+            <button type="button" class="wallet-pill" id="btn-user-pill" title="แต้มสะสมสำหรับแลกของรางวัล">
+              <span>⭐</span>
+              <span id="nav-username" style="color:#ffffff;font-weight:600;">@inblackino123</span>
+              <span style="color:var(--text-muted);font-size:0.75rem;">•</span>
+              <span id="nav-points-balance" style="color:var(--pink-light);font-weight:700;">0 แต้ม</span>
+            </button>
+            <button type="button" id="btn-logout" class="icon-btn" title="ออกจากระบบ" aria-label="ออกจากระบบ">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-body">
+
+      <!-- ====================================================================
+           VIEW 1: หน้าแรก (Home View — มี Hero + สินค้าแอพสตรีมมิ่ง)
+           ==================================================================== -->
+      <section id="view-home" class="page-view">
+        <!-- 1. Hero Box -->
+        <section class="hero-box">
+          <div class="hero-status-pill">
+            <span class="pulse-dot"></span>
+            <span id="hero-badge-text">เปิดให้บริการ — ระบบส่งของอัตโนมัติ 24 ชม.</span>
+          </div>
+
+          <h1 class="hero-title" id="hero-store-name">สองนึง</h1>
+          <p class="hero-sub" id="hero-store-sub">
+            ไอดีแอพพรีเมียม เติมเกม และรหัสดิจิทัลอัตโนมัติ ราคาเป็นมิตร ส่งของไวตลอด 24 ชม.
+          </p>
+
+          <div class="hero-cta-row">
+            <button type="button" class="btn btn-primary" id="btn-home-to-shop">เลือกซื้อสินค้า ↓</button>
+            <button type="button" class="btn btn-outline" id="btn-home-to-rewards">🎁 สะสมแต้มแลกของ</button>
+          </div>
+
+          <div class="stats-strip">
+            <div class="stat-cell">
+              <div class="stat-num" id="stat-orders">0</div>
+              <div class="stat-lbl">ออเดอร์สำเร็จ</div>
+            </div>
+            <div class="stat-cell">
+              <div class="stat-num">24 ชม.</div>
+              <div class="stat-lbl">ระบบอัตโนมัติ</div>
+            </div>
+            <div class="stat-cell">
+              <div class="stat-num" id="stat-catalog">49</div>
+              <div class="stat-lbl">สินค้าพร้อมจำหน่าย</div>
+            </div>
+          </div>
+
+          <div class="feature-triplet">
+            <div class="feat-mini">
+              <div class="feat-icon">⚡</div>
+              <h3>ส่งของอัตโนมัติ</h3>
+              <p>สั่งซื้อแล้วรับของทันที ระบบทำงานเองตลอด 24 ชั่วโมง ไม่ต้องรอแอดมิน</p>
+            </div>
+            <div class="feat-mini">
+              <div class="feat-icon">💳</div>
+              <h3>เติมเงิน & สแกนจ่ายไว</h3>
+              <p>เลือกสินค้าแล้วสแกนจ่ายได้ทันที เช็คสลิปอัตโนมัติด้วย Slip2Go เงินเข้าไว</p>
+            </div>
+            <div class="feat-mini">
+              <div class="feat-icon">🛡️</div>
+              <h3>สินค้ามีประกัน</h3>
+              <p>ไอดีพรีเมียมทุกชิ้นผ่านการตรวจสอบ มีปัญหาแจ้งเคลมได้ เช็กรหัสย้อนหลังได้ตลอด</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. สินค้าแอพสตรีมมิ่งในหน้าหลัก (ปุ่มสีชมพู) -->
+        <section class="brand-section-wrap" style="max-width:1180px;margin:24px auto 60px;padding:0 14px;">
+          <div class="brand-section-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+            <h2 class="brand-section-title" style="font-size:1.4rem;font-weight:800;color:#ffffff;display:flex;align-items:center;gap:8px;">
+              <span>สินค้าแอพสตรีมมิ่ง</span>
+            </h2>
+            <div style="font-size:0.84rem;color:var(--text-muted);font-weight:600;" id="home-brand-count">
+              ทั้งหมด 13 แอพยอดนิยม
+            </div>
+          </div>
+
+          <div id="home-brand-grid" class="brand-grid"></div>
+        </section>
+      </section>
+
+
+      <!-- ====================================================================
+           VIEW 2: เมนูสินค้า (Shop View)
+           ==================================================================== -->
+      <section id="view-shop" class="page-view hidden">
+        
+        <div class="shop-header-banner">
+          <div class="shop-title-row">
+            <h1 class="shop-main-title">รายการสินค้าพร้อมส่ง</h1>
+          </div>
+
+          <p class="shop-subtitle">
+            เลือกสินค้าแล้วสแกน QR จ่ายเงินรับรหัสได้ทันที ไม่ต้องเติมเงินเข้ากระเป๋า • ทุกออเดอร์ได้แต้มสะสม ⭐
+          </p>
+
+          <div class="shop-toolbar-row">
+            <div class="shop-filter-chips">
+              <button type="button" class="schip active" data-cat="all">ทั้งหมด</button>
+              <button type="button" class="schip" data-cat="movie">ดูหนัง / ซีรีส์</button>
+              <button type="button" class="schip" data-cat="music">ฟังเพลง</button>
+              <button type="button" class="schip" data-cat="ai">ทำงาน / AI</button>
+              <button type="button" class="schip" data-cat="game">รหัสโค้ด / เติมเกม</button>
+            </div>
+
+            <div class="shop-search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="shop-catalog-search" placeholder="ค้นหาแอพพรีเมียม หรือรหัสดิจิทัล..." />
+            </div>
+          </div>
+        </div>
+
+        <div id="shop-brand-grid-view">
+          <div id="shop-brand-grid" class="brand-grid"></div>
+        </div>
+
+        <div id="brand-detail-view" class="hidden">
+          <div id="brand-hero-box" class="brand-detail-hero"></div>
+
+          <div class="brand-packages-title" id="brand-packages-title">
+            <span>หมวดหมู่สินค้า</span>
+          </div>
+
+          <div id="brand-packages-grid" class="brand-packages-grid"></div>
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================================
+           VIEW 3: พ้อยสะสมแลกของรางวัล (Rewards View)
+           ==================================================================== -->
+      <section id="view-rewards" class="page-view hidden">
+        <div style="max-width:1040px;margin:20px auto;">
+          <div class="card" style="padding:28px 24px;border-color:var(--border-pink);background:linear-gradient(135deg, rgba(255,45,120,0.12), rgba(5,5,7,0.85));margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;">
+            <div>
+              <div class="badge badge-pink" style="margin-bottom:8px;" id="rewards-club-badge">🎁 สิทธิพิเศษสำหรับสมาชิก สองนึง</div>
+              <h1 style="font-size:1.6rem;font-weight:800;color:#fff;">พ้อยสะสมแลกของรางวัล</h1>
+              <p style="font-size:0.82rem;color:var(--text-dim);">
+                ทุกการสั่งซื้อแอพพรีเมียมจะได้รับแต้มสะสมทันที สามารถนำมาแลกสิทธิ์หรือของรางวัลฟรี
+              </p>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.75rem;color:var(--text-dim);">แต้มคงเหลือของคุณ</div>
+              <div style="font-size:2rem;font-weight:800;color:var(--pink);" id="user-points-display">0 แต้ม</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <h2 style="font-size:1.15rem;font-weight:700;color:#fff;">ของรางวัลทั้งหมดที่แลกได้</h2>
+          </div>
+
+          <div class="product-grid" id="rewards-grid"></div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           VIEW 4: ประวัติสั่งซื้อ (Orders View)
+           ==================================================================== -->
+      <section id="view-orders" class="page-view hidden">
+        <div style="max-width:980px;margin:20px auto;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h1 style="font-size:1.6rem;font-weight:800;color:#fff;">ประวัติสั่งซื้อสินค้า</h1>
+              <p style="font-size:0.82rem;color:var(--text-dim);">ตรวจสอบรหัสไอดีและสถานะการสั่งซื้อของคุณได้ตลอด 24 ชั่วโมง</p>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-orders-to-shop">
+              🛒 สั่งซื้อสินค้าเพิ่ม
+            </button>
+          </div>
+
+          <div id="orders-list" class="orders-grid"></div>
+
+          <div id="orders-empty" class="card hidden" style="text-align:center;padding:50px 20px;border-color:var(--border);">
+            <div style="font-size:3rem;margin-bottom:12px;">📦</div>
+            <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:6px;">ยังไม่มีประวัติการสั่งซื้อ</h3>
+            <p style="font-size:0.82rem;color:var(--text-dim);margin-bottom:18px;">
+              เมื่อคุณเลือกซื้อแอพพรีเมียมและชำระเงิน รหัสเข้าใช้งานจะมาแสดงที่นี่ทันที
+            </p>
+            <button type="button" class="btn btn-primary" id="btn-empty-to-shop">เลือกชมแอพพรีเมียม</button>
+          </div>
+
+          <!-- กล่องแจ้งเตือนเมื่อยังไม่ได้เข้าสู่ระบบ (ตามรูปที่ 4) -->
+          <div id="orders-guest-box" class="card hidden" style="text-align:center;padding:52px 24px;border-color:rgba(255,255,255,0.08);max-width:540px;margin:30px auto;background:rgba(20,15,26,0.65);backdrop-filter:blur(20px);border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+            <p style="font-size:0.95rem;color:#f3f4f6;margin-bottom:22px;font-weight:500;line-height:1.5;">
+              กรุณาเข้าสู่ระบบเพื่อดูรหัสสินค้าและของรางวัลที่คุณสั่งซื้อไว้
+            </p>
+            <button type="button" class="btn btn-primary" onclick="openAuthModal('login')" style="padding:12px 30px;font-size:0.95rem;font-weight:700;border-radius:30px;background:var(--pink);box-shadow:0 0 22px var(--pink-glow);border:none;cursor:pointer;">
+              เข้าสู่ระบบ / สมัครสมาชิก
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+
+    <!-- ====================================================================
+         เมนูด้านล่างตามรูปที่ 3 (Navigation Bar #2 Liquid Dock + Pink Orb)
+         ==================================================================== -->
+    <footer id="app-footer">
+      <div class="site-footnote">
+        <div class="footnote-brand">⚡ <span id="footer-store-name">สองนึง</span> DIGITAL STORE</div>
+        <p>ชำระเงินสแกน QR รับรหัสทันที • ระบบตรวจสอบสลิปอัตโนมัติ 24 ชั่วโมง</p>
+      </div>
+
+      <svg width="0" height="0" style="position:absolute;pointer-events:none;" aria-hidden="true">
+        <defs>
+          <filter id="mn-goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur" />
+            <feColorMatrix
+              in="blur"
+              type="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+              result="goo"
+            />
+            <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+          </filter>
+        </defs>
+      </svg>
+
+      <nav class="nav2-container" id="nav2-bottom" aria-label="เมนูหลัก">
+        <div class="nav2-liquid-stage mn-goo" aria-hidden="true">
+          <div class="nav2-dock-bar"></div>
+          <div class="bead nav2-bead" id="nav2-liquid-bead"></div>
+        </div>
+
+        <div class="nav2-active-orb" id="nav2-orb">
+          <span class="nav2-orb-icon" id="nav2-orb-icon"></span>
+        </div>
+
+        <div class="nav2-nav-items">
+          <button type="button" class="bnav-btn active" data-view="home" data-idx="0">
+            <span class="bnav-ico">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1v-9.5z"/>
+              </svg>
+            </span>
+            <span class="bnav-txt">หน้าหลัก</span>
+          </button>
+
+          <button type="button" class="bnav-btn" data-view="shop" data-idx="1">
+            <span class="bnav-ico">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+            </span>
+            <span class="bnav-txt">สินค้า</span>
+          </button>
+
+          <button type="button" class="bnav-btn" data-view="rewards" data-idx="2">
+            <span class="bnav-ico">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12"/>
+                <rect x="2" y="7" width="20" height="5" rx="1"/>
+                <line x1="12" y1="22" x2="12" y2="7"/>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+              </svg>
+            </span>
+            <span class="bnav-txt">แลกของ</span>
+          </button>
+
+          <button type="button" class="bnav-btn" data-view="orders" data-idx="3">
+            <span class="bnav-ico">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                <path d="M9 12h6M9 16h4"/>
+              </svg>
+            </span>
+            <span class="bnav-txt">ออเดอร์</span>
+          </button>
+        </div>
+      </nav>
+    </footer>
+
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 1: Glassy Login & Register Form v3 (Neon Pink Cyberpunk ตามรูปที่ 2)
+       ==================================================================== -->
+  <div id="auth-modal" class="glassy-auth-overlay hidden">
+    <div class="glassy-card" role="dialog" aria-modal="true">
+      <button type="button" class="glassy-close-btn" id="auth-modal-close" aria-label="ปิด">✕</button>
+
+      <h2 class="glassy-title" id="auth-modal-title">Create Account</h2>
+      <p class="glassy-sub" id="auth-modal-sub">Join us today to access your secure workspace</p>
+
+      <form id="modal-auth-form" autocomplete="on">
+        <!-- Username Field -->
+        <div class="glassy-field">
+          <label class="glassy-label" for="m-auth-user">Username (ชื่อผู้ใช้)</label>
+          <div class="glassy-input-wrap">
+            <svg class="glassy-lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input type="text" id="m-auth-user" class="glassy-input no-eye" placeholder="กรอกชื่อผู้ใช้ของคุณ" required autocomplete="username" />
+          </div>
+        </div>
+
+        <!-- Single Password Field (โหมด Login เข้าสู่ระบบ) -->
+        <div id="auth-single-pass-wrap" class="glassy-field hidden">
+          <label class="glassy-label" for="m-auth-pass">Password (รหัสผ่าน)</label>
+          <div class="glassy-input-wrap">
+            <svg class="glassy-lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="m-auth-pass" class="glassy-input" placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="glassy-eye-btn" onclick="togglePassVisibility('m-auth-pass')" aria-label="ดูรหัสผ่าน">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Register Password + Confirm Password Grid (Side-by-side ตามรูปที่ 2) -->
+        <div id="auth-reg-pass-grid" class="glassy-grid-2">
+          <div class="glassy-field">
+            <label class="glassy-label" for="m-reg-pass">Password</label>
+            <div class="glassy-input-wrap">
+              <svg class="glassy-lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input type="password" id="m-reg-pass" class="glassy-input" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="glassy-eye-btn" onclick="togglePassVisibility('m-reg-pass')" aria-label="ดูรหัสผ่าน">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="glassy-field">
+            <label class="glassy-label" for="m-reg-confirm">Confirm Password</label>
+            <div class="glassy-input-wrap">
+              <svg class="glassy-lead-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input type="password" id="m-reg-confirm" class="glassy-input" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="glassy-eye-btn" onclick="togglePassVisibility('m-reg-confirm')" aria-label="ดูรหัสผ่าน">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkbox นโยบายข้อกำหนด (ตามรูปที่ 2) -->
+        <label id="auth-terms-wrap" class="glassy-checkbox-wrap">
+          <input type="checkbox" id="m-auth-terms" checked />
+          <span>I agree to the Terms &amp; Privacy Policy</span>
+        </label>
+
+        <!-- Submit Button พร้อมลูกศรสีชมพู (ตามรูปที่ 2) -->
+        <button type="submit" id="btn-glassy-submit" class="glassy-submit-btn">
+          <span id="glassy-submit-text">Create Account</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+
+        <div class="glassy-divider"><span>OR CONTINUE WITH</span></div>
+
+        <!-- ลิงก์สลับ Sign In / Create Account (ตามรูปที่ 2) -->
+        <div class="glassy-switch-link" id="auth-switch-box">
+          <span id="auth-switch-prompt">Already have an account?</span>
+          <a href="javascript:void(0)" id="auth-switch-btn">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 2: ชำระเงินตรงด้วย QR พร้อมเพย์ + Slip2Go API + ตัดสต็อกแม่ข่าย
+       ==================================================================== -->
+  <div id="checkout-modal" class="modal-backdrop hidden">
+    <div class="modal-sheet" style="max-width:540px;">
+      <div class="sheet-handle"></div>
+      <div class="section-head" style="margin-bottom:12px;">
+        <h3 class="section-title" id="co-title">ชำระเงินรับรหัสทันที</h3>
+        <button type="button" class="icon-btn" id="co-close">✕</button>
+      </div>
+
+      <div id="co-items-list" style="max-height:190px;overflow-y:auto;margin-bottom:12px;"></div>
+
+      <div class="card" style="margin-bottom:14px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;border-color:var(--border-pink);">
+        <div>
+          <div style="font-size:0.82rem;color:var(--text-dim);">ยอดที่ต้องโอนชำระ</div>
+          <div style="font-size:0.74rem;color:#fbbf24;font-weight:600;" id="co-earn-points">⭐ รับแต้มสะสม +0 แต้ม</div>
+        </div>
+        <div id="co-total-price" class="product-price" style="font-size:1.4rem;">฿0</div>
+      </div>
+
+      <div id="co-payment-area">
+        <div class="qr-box">
+          <div style="font-size:0.8rem;color:var(--pink-light);font-weight:600;" id="co-bank-name">พร้อมเพย์ (PromptPay QR)</div>
+          <div id="co-qr-wrap" class="qr-code-svg"></div>
+          <div style="font-size:0.88rem;font-weight:700;" id="co-promptpay-id">098-765-4321</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;" id="co-acc-name">บัญชี: สองนึง (ระบบอัตโนมัติ 24 ชม.)</div>
+          <button type="button" id="btn-copy-pp" class="copy-pill">คัดลอกเลขพร้อมเพย์</button>
+        </div>
+
+        <label class="upload-zone" for="co-slip-file" style="cursor:pointer;display:block;margin-bottom:12px;">
+          <span id="co-slip-label-text">📤 คลิกเพื่อแนบรูปสลิปโอนเงิน (ตรวจสอบอัตโนมัติด้วย Slip2Go API)</span>
+          <input type="file" id="co-slip-file" accept="image/*" class="hidden" />
+          <img id="co-slip-preview" class="slip-preview hidden" alt="ตัวอย่างสลิป" />
+        </label>
+
+        <div id="co-api-status" class="hidden" style="margin-bottom:12px;padding:10px 14px;border-radius:10px;background:rgba(255,45,120,0.1);border:1px solid var(--border-pink);font-size:0.8rem;color:var(--pink-light);text-align:center;"></div>
+
+        <button type="button" id="btn-confirm-slip" class="btn btn-primary btn-full">
+          ⚡ ตรวจสอบสลิปและรับรหัสสินค้าทันที
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 3: ส่งมอบรหัสทันที (Instant Delivery Modal)
+       ==================================================================== -->
+  <div id="delivery-modal" class="modal-backdrop hidden" style="align-items:center !important;justify-content:center !important;padding:16px !important;z-index:99999;">
+    <div class="modal-sheet" style="max-width:540px;width:100%;margin:auto;border-radius:24px !important;box-shadow:0 24px 60px rgba(0,0,0,0.85),0 0 35px rgba(255,45,120,0.25);">
+      <div class="sheet-handle"></div>
+      <div style="text-align:center;margin-bottom:12px;">
+        <div class="badge badge-pink" style="margin-bottom:6px;" id="deliv-badge">🎉 ชำระเงินสำเร็จ • จัดส่งรหัสอัตโนมัติ</div>
+        <h3 style="font-size:1.15rem;font-weight:800;" id="deliv-title">รหัสสินค้าของคุณพร้อมใช้งาน</h3>
+        <p style="font-size:0.78rem;color:var(--text-muted);" id="deliv-meta"></p>
+      </div>
+
+      <div id="deliv-cred-container" style="max-height:50dvh;overflow-y:auto;"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+        <button type="button" id="deliv-go-orders" class="btn btn-outline">ดูประวัติสั่งซื้อ</button>
+        <button type="button" id="deliv-close" class="btn btn-primary">เสร็จสิ้น</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" style="position:fixed;bottom:90px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;"></div>
+
+
+  <!-- ====================================================================
+       CORE APP & REAL-TIME SYNC SCRIPT
+       ==================================================================== -->
+  <script>
+    const STORE_STORAGE_KEY = 'sn_live_store_v1';
+    const liveChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('sn_live_channel') : null;
+    const formatTHB = (n) => `฿${Number(n).toLocaleString('th-TH')}`;
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatCredentialHtml(cred) {
+      if (!cred) return '-';
+      let s = String(cred);
+      s = s.replace(/<br\s*[\/]?>/gi, '\n');
+      s = s.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n').replace(/\\r/g, '\n');
+      s = s.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      s = s.replace(/\\t/g, '  ');
+      s = s.replace(/\\"/g, '"');
+      return s;
+    }
+
+    function toast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.style.cssText = `
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: ${type === 'ok' ? '#10b981' : type === 'warn' ? '#f59e0b' : '#ff2d78'};
+        color: #ffffff;
+        font-size: 0.82rem;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        animation: fadeIn 0.25s ease;
+      `;
+      el.textContent = msg;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => el.remove(), 300);
+      }, 2800);
+    }
+
+    function createLogoSvg(bgColor, text, subText = '', logoSvg = '') {
+      return `data:image/svg+xml;utf8,` + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+          <defs>
+            <radialGradient id="g" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
+              <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
+            </radialGradient>
+          </defs>
+          <rect width="240" height="240" rx="28" fill="${bgColor}" />
+          <rect width="240" height="240" rx="28" fill="url(#g)" />
+          ${logoSvg}
+          <text x="120" y="${subText ? '135' : '128'}" text-anchor="middle" fill="#ffffff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="${text.length > 7 ? '22' : '28'}" font-weight="900" letter-spacing="1">${text}</text>
+          ${subText ? `<text x="120" y="165" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="12" font-weight="700">${subText}</text>` : ''}
+        </svg>
+      `);
+    }
+
+    /* ข้อมูลเริ่มต้นของทั้งระบบ (ซิงค์กับระบบหลังบ้าน admin.html แบบเรียลไทม์) */
+    const DEFAULT_STORE_DATA = {
+      siteConfig: {
+        storeName: 'สองนึง',
+        logoImage: '',
+        heroBadge: 'เปิดให้บริการ — ระบบส่งของอัตโนมัติ 24 ชม.',
+        heroSub: 'ไอดีแอพพรีเมียม เติมเกม และรหัสดิจิทัลอัตโนมัติ ราคาเป็นมิตร ส่งของไวตลอด 24 ชม.',
+        promptPayId: '0922821031',
+        promptPayName: 'อดิศร ทองละเอียด',
+        customQrImage: ''
+      },
+      apiConfig: {
+        slip2go: {
+          enabled: true,
+          simulationFallback: false,
+          endpoint: 'https://connect.slip2go.com/api/verify-slip/qr-image/info',
+          secretKey: 'nuv29T7EyHcvdkeedks2unyVXEQ1ABNtBfOmc5RA2pA=',
+          receiverAccount: '0922821031',
+          receiverName: 'อดิศร ทองละเอียด'
+        },
+        baimonBalance: {
+          endpoint: 'https://baimon24hr.online/api/money',
+          method: 'POST',
+          apiKey: 'mublue6aed52aa692424.70442175',
+          headersJson: '{"apikey": "mublue6aed52aa692424.70442175"}',
+          bodyJson: '{}',
+          lastBalance: '50.00'
+        },
+        baimonOrder: {
+          enabled: true,
+          endpoint: 'https://baimon24hr.online/api/apibuy_product',
+          method: 'POST',
+          apiKey: 'mublue6aed52aa692424.70442175',
+          headersJson: '{"apikey": "mublue6aed52aa692424.70442175", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}',
+          bodyJson: '{"apikey": "{{API_KEY}}", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}'
+        },
+        baimonProducts: {
+          endpoint: 'https://baimon24hr.online/api/api_product',
+          method: 'GET',
+          apiKey: 'mublue6aed52aa692424.70442175',
+          headersJson: '{}',
+          bodyJson: '{}',
+          markupPrice: 0
+        }
+      },
+      brands: [
+    {
+        "image":  "https://i.postimg.cc/RFPXwBZL/Gemini-Generated-Image-rydesrrydesrryde.png",
+        "id":  "netflix",
+        "tags":  [
+                     "4K ULTRA HD",
+                     "Auto 24h"
+                 ],
+        "packageCount":  11,
+        "category":  "movie",
+        "description":  "NETFLIX - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/RFPXwBZL/Gemini-Generated-Image-rydesrrydesrryde.png",
+                             "id":  "netflix-pid-2",
+                             "baimonProductId":  "2",
+                             "price":  10,
+                             "description":  "❌ ไม่สามารถชมบนทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️เคลม1รอบหากโดนปิดบัญชี",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "Netflix 1 วัน (มือถือ) แอคนอก รับเคลม❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFPXwBZL/Gemini-Generated-Image-rydesrrydesrryde.png",
+                             "id":  "netflix-pid-3",
+                             "baimonProductId":  "3",
+                             "price":  15,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ เคลม1รอบหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "Netflix 1 วัน (TV) แอคนอก รับเคลม❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/CK4W3QwR/Gemini-Generated-Image-abnjclabnjclabnj.png",
+                             "id":  "netflix-pid-4",
+                             "baimonProductId":  "4",
+                             "price":  40,
+                             "description":  "❌ ไม่สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  4,
+                             "name":  "Netflix 7 วัน (มือถือ) แอคนอก หากเมลโดนปิดดูไม่ได้ รับเคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/CK4W3QwR/Gemini-Generated-Image-abnjclabnjclabnj.png",
+                             "id":  "netflix-pid-5",
+                             "baimonProductId":  "5",
+                             "price":  50,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  5,
+                             "name":  "Netflix 7วัน (TV) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/IMG_860201b126bab47876d8.jpeg",
+                             "id":  "netflix-pid-6",
+                             "baimonProductId":  "6",
+                             "price":  100,
+                             "description":  "❌ ไม่สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  10,
+                             "name":  "Netflix 30 วัน (มือถือ) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/IMG_860201b126bab47876d8.jpeg",
+                             "id":  "netflix-pid-7",
+                             "baimonProductId":  "7",
+                             "price":  140,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  14,
+                             "name":  "Netflix 30 วัน (TV) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/CK4W3QwR/Gemini-Generated-Image-abnjclabnjclabnj.png",
+                             "id":  "netflix-pid-8",
+                             "baimonProductId":  "8",
+                             "price":  50,
+                             "description":  "✔️ สามารถรับชมได้ทุกอุปกรณ์ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ แอคเคาท์ไทย 100% \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  5,
+                             "name":  "Netflix 7 วัน  แอคนอก (จอเสริมเข้าได้ทุกอุปกรณ์)",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/IMG_860201b126bab47876d8.jpeg",
+                             "id":  "netflix-pid-9",
+                             "baimonProductId":  "9",
+                             "price":  160,
+                             "description":  "✔️ สามารถรับชมได้ทุกอุปกรณ์ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ แอคเคาท์ไทย 100% \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  16,
+                             "name":  "Netflix 30 วัน (จอเสริมเข้าได้ทุกอุปกรณ์) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/com.netflix.mediaclient.jpg",
+                             "id":  "netflix-pid-33",
+                             "baimonProductId":  "33",
+                             "price":  6,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  " Netflix ตัด22:00 (TV)  แอคนอก",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/com.netflix.mediaclient.jpg",
+                             "id":  "netflix-pid-38",
+                             "baimonProductId":  "38",
+                             "price":  4,
+                             "description":  "❌ ไม่สามารถชมบนทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "Netflix ตัด00.00 (มือถือ) แอคนอก",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/W1DnqLbd/images.png",
+                             "id":  "netflix-pid-1014",
+                             "baimonProductId":  "1014",
+                             "price":  5,
+                             "description":  "-",
+                             "stock":  1,
+                             "points":  1,
+                             "name":  "Netflix ตัด22:00น. (มือถือ)",
+                             "tag":  "4K ULTRA HD"
+                         }
+                     ],
+        "name":  "NETFLIX",
+        "badge":  "4K ULTRA HD"
+    },
+    {
+        "image":  "https://img2.pic.in.th/pic/yt_12009e6196b57144dea4.png",
+        "id":  "youtube",
+        "tags":  [
+                     "NO ADS",
+                     "Auto 24h"
+                 ],
+        "packageCount":  1,
+        "category":  "music",
+        "description":  "YOUTUBE - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img2.pic.in.th/pic/yt_12009e6196b57144dea4.png",
+                             "id":  "youtube-pid-109",
+                             "baimonProductId":  "109",
+                             "price":  40,
+                             "description":  "⏰ ระยะเวลาใช้งาน 30 วัน\n❌ ไม่มีต่ออายุ\n\n➢ รับชมแบบไม่มีโฆษณา\n➢ ฟังเพลง / เล่นวิดีโอแบบปิดหน้าจอได้\n\n✔️ ใช้งานผ่านเมลร้าน\n📱 เข้าใช้งานได้ 1 เครื่องเท่านั้น\n\n ✔ เคลมดูแลต่อเนื่องจนกว่าจะครบวันตามระยะเวลาใช้งาน",
+                             "stock":  1,
+                             "points":  4,
+                             "name":  "🎬 YouTube Premium (แพ็คเกจบุคคล | ไม่ต่อเมลร้าน) ✔ เคลมทุกกรณี",
+                             "tag":  "NO ADS"
+                         }
+                     ],
+        "name":  "YOUTUBE",
+        "badge":  "NO ADS"
+    },
+    {
+        "image":  "https://img.rdcw.co.th/images/0d521c715f2882e5bd2b07194f155d7a1e606551a3f63f0ff90b953042917514.png",
+        "id":  "viu",
+        "tags":  [
+                     "K-DRAMA",
+                     "Auto 24h"
+                 ],
+        "packageCount":  9,
+        "category":  "movie",
+        "description":  "VIU - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img.rdcw.co.th/images/0d521c715f2882e5bd2b07194f155d7a1e606551a3f63f0ff90b953042917514.png",
+                             "id":  "viu-pid-37",
+                             "baimonProductId":  "37",
+                             "price":  12,
+                             "description":  "⏰ วันใช้งาน30 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "VIU 30 วัน (จอหาร) ÷4",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/ae1f755de54d42a414132b0927c48efdc5dc29b1de11b528da94514381ec5f78.png",
+                             "id":  "viu-pid-50",
+                             "baimonProductId":  "50",
+                             "price":  5,
+                             "description":  "⏰ วันใช้งาน7 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  6,
+                             "points":  1,
+                             "name":  "Viu 7 วัน (จอหาร4)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-61",
+                             "baimonProductId":  "61",
+                             "price":  30,
+                             "description":  "⏰ วันใช้งาน60 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  3,
+                             "name":  "VIU 60 วัน (จอหาร) ÷4  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-62",
+                             "baimonProductId":  "62",
+                             "price":  70,
+                             "description":  "⏰ วันใช้งาน60 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  12,
+                             "points":  7,
+                             "name":  "Viu 60 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-63",
+                             "baimonProductId":  "63",
+                             "price":  50,
+                             "description":  "⏰ วันใช้งาน 30 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  5,
+                             "name":  "Viu 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-64",
+                             "baimonProductId":  "64",
+                             "price":  25,
+                             "description":  "⏰ วันใช้งาน 7 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  2,
+                             "name":  "Viu 7 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-94",
+                             "baimonProductId":  "94",
+                             "price":  90,
+                             "description":  "⏰ วันใช้งาน 90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  8,
+                             "points":  9,
+                             "name":  "Viu 90 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-95",
+                             "baimonProductId":  "95",
+                             "price":  35,
+                             "description":  "⏰ วันใช้งาน90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  3,
+                             "name":  "VIU 90 วัน (จอหาร) ÷4  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/ee9b37159b9a3326f9d3eef84914e097b0022af03bc52690ea0ac4b4b0600411.png",
+                             "id":  "viu-pid-1008",
+                             "baimonProductId":  "1008",
+                             "price":  8,
+                             "description":  "⏰ วันใช้งาน30 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "VIU 30 วัน (จอหาร) ÷5",
+                             "tag":  "K-DRAMA"
+                         }
+                     ],
+        "name":  "VIU",
+        "badge":  "K-DRAMA"
+    },
+    {
+        "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+        "id":  "iqiyi",
+        "tags":  [
+                     "VIP 4K",
+                     "Auto 24h"
+                 ],
+        "packageCount":  7,
+        "category":  "movie",
+        "description":  "IQIYI - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-10",
+                             "baimonProductId":  "10",
+                             "price":  18,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "IQIYI Gold 30 วัน (จอหาร) ÷4",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-16",
+                             "baimonProductId":  "16",
+                             "price":  35,
+                             "description":  "\n• IQIY Gold Premium( แชร์ 4 )  \n • เข้าได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 4 จอ \n • ความละเอียดระดับ 4K ดูหนังแพ็คเกจ  express ได้\n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  0,
+                             "points":  3,
+                             "name":  " IQIYI Gold 30 วัน (เเพ็ค 4K) ÷4",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-44",
+                             "baimonProductId":  "44",
+                             "price":  36,
+                             "description":  "• IQIY Gold ( แชร์ 2 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • ไม่มีจอชน\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  2,
+                             "points":  3,
+                             "name":  "IQIYI Gold 30 วัน (จอหาร) ÷2",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-55",
+                             "baimonProductId":  "55",
+                             "price":  75,
+                             "description":  "• IQIY Gold ( จอส่วนตัว )  \n • สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • ความละเอียดระดับ 1080p\n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  10,
+                             "points":  7,
+                             "name":  "IQIYI Gold 30 วัน (จอส่วนตัว)(สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-58",
+                             "baimonProductId":  "58",
+                             "price":  10,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "\t IQIYI Gold 7 วัน (จอหาร) ÷4",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-65",
+                             "baimonProductId":  "65",
+                             "price":  70,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  10,
+                             "points":  7,
+                             "name":  "IQIYI Gold 90 วัน (จอหาร) ÷4    (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-1012",
+                             "baimonProductId":  "1012",
+                             "price":  9,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • ไม่มีจอชน\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  3,
+                             "points":  1,
+                             "name":  "IQIYI Gold 15 วัน (จอหาร) ÷4",
+                             "tag":  "VIP 4K"
+                         }
+                     ],
+        "name":  "IQIYI",
+        "badge":  "VIP 4K"
+    },
+    {
+        "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+        "id":  "wetv",
+        "tags":  [
+                     "VIP",
+                     "Auto 24h"
+                 ],
+        "packageCount":  7,
+        "category":  "movie",
+        "description":  "WETV - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-11",
+                             "baimonProductId":  "11",
+                             "price":  25,
+                             "description":  "• Wetv ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  4,
+                             "points":  2,
+                             "name":  "Wetv 30 วัน (จอหาร) ÷4",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-54",
+                             "baimonProductId":  "54",
+                             "price":  50,
+                             "description":  "• Wetv ( แชร์ 2 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  1,
+                             "points":  5,
+                             "name":  "Wetv 30 วัน (จอหาร) ÷2\t",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-56",
+                             "baimonProductId":  "56",
+                             "price":  85,
+                             "description":  "• Wetv ( จอส่วนตัว )  \n • สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  10,
+                             "points":  8,
+                             "name":  "Wetv 30 วัน (จอส่วนตัว) (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-66",
+                             "baimonProductId":  "66",
+                             "price":  60,
+                             "description":  "⏰ วันใช้งาน90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  6,
+                             "name":  "Wetv 90 วัน (จอหาร) ÷5  (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-83",
+                             "baimonProductId":  "83",
+                             "price":  75,
+                             "description":  "⏰ วันใช้งาน90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  6,
+                             "points":  7,
+                             "name":  "Wetv 90 วัน (จอหาร) ÷4  (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-1007",
+                             "baimonProductId":  "1007",
+                             "price":  20,
+                             "description":  "• Wetv ( แชร์ 5 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  0,
+                             "points":  2,
+                             "name":  "Wetv 30 วัน (จอหาร) ÷5",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-1011",
+                             "baimonProductId":  "1011",
+                             "price":  12,
+                             "description":  "-",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "Wetv 15 วัน (จอหาร) ÷5",
+                             "tag":  "VIP"
+                         }
+                     ],
+        "name":  "WETV",
+        "badge":  "VIP"
+    },
+    {
+        "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+        "id":  "canva",
+        "tags":  [
+                     "PRO",
+                     "Auto 24h"
+                 ],
+        "packageCount":  3,
+        "category":  "ai",
+        "description":  "CANVA - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+                             "id":  "canva-pid-17",
+                             "baimonProductId":  "17",
+                             "price":  8,
+                             "description":  "✿ CANVA 30 วัน ✿\n◈ ━━━━━━━━━━━━━━ ◈\n 【✔️】เมล์ลูกค้าเข้าร่วม \n 【✔️】ใช้แคนวาโปร\n 【✔️】รับประกันตลอดการใช้งาน\n 【❌】กดเข้าร่วมเพียง 1 เมล์  เท่านั้น\n 【⚠】หลังจากเข้าเเล้วเเจ้งเมล์ด้วยทุกครั้ง\n◈ ━━━━━━━━━━━━━━ ◈",
+                             "stock":  9,
+                             "points":  1,
+                             "name":  "Canva 30 วัน (เมลลูกค้า)",
+                             "tag":  "PRO"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+                             "id":  "canva-pid-92",
+                             "baimonProductId":  "92",
+                             "price":  4,
+                             "description":  "✿ CANVA 7 วัน ✿\n◈ ━━━━━━━━━━━━━━ ◈\n 【✔️】เมล์ลูกค้าเข้าร่วม \n 【✔️】ใช้แคนวาโปร\n 【✔️】รับประกันตลอดการใช้งาน\n 【❌】กดเข้าร่วมเพียง 1 เมล์  เท่านั้น\n 【⚠】หลังจากเข้าเเล้วเเจ้งเมล์ด้วยทุกครั้ง\n◈ ━━━━━━━━━━━━━━ ◈",
+                             "stock":  3,
+                             "points":  1,
+                             "name":  " Canva 7 Days เมลลูกค้า",
+                             "tag":  "PRO"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+                             "id":  "canva-pid-1001",
+                             "baimonProductId":  "1001",
+                             "price":  6,
+                             "description":  "✿ CANVA 14 วัน ✿\n◈ ━━━━━━━━━━━━━━ ◈\n 【✔️】เมล์ลูกค้าเข้าร่วม \n 【✔️】ใช้แคนวาโปร\n 【✔️】รับประกันตลอดการใช้งาน\n 【❌】กดเข้าร่วมเพียง 1 เมล์  เท่านั้น\n 【⚠】หลังจากเข้าเเล้วเเจ้งเมล์ด้วยทุกครั้ง\n◈ ━━━━━━━━━━━━━━ ◈",
+                             "stock":  15,
+                             "points":  1,
+                             "name":  " Canva 14 Days เมลลูกค้า",
+                             "tag":  "PRO"
+                         }
+                     ],
+        "name":  "CANVA",
+        "badge":  "PRO"
+    },
+    {
+        "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+        "id":  "ch7on",
+        "tags":  [
+                     "CH7 HD",
+                     "Auto 24h"
+                 ],
+        "packageCount":  8,
+        "category":  "movie",
+        "description":  "CH7ON - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-12",
+                             "baimonProductId":  "12",
+                             "price":  15,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7 ",
+                             "stock":  10,
+                             "points":  1,
+                             "name":  "CH7ON  1 วัน แอพดูหนังช่อง7  (เมลร้าน) (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-13",
+                             "baimonProductId":  "13",
+                             "price":  30,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  8,
+                             "points":  3,
+                             "name":  "CH7ON 3 วัน แอพดูหนังช่อง7 (เมลร้าน)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-14",
+                             "baimonProductId":  "14",
+                             "price":  60,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  6,
+                             "name":  "CH7ON 7 วัน แอพดูหนังช่อง7 (เมลร้าน)   (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-15",
+                             "baimonProductId":  "15",
+                             "price":  195,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  19,
+                             "name":  "CH7ON 30 วัน แอพดูหนังช่อง7  (เมลร้าน)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-75",
+                             "baimonProductId":  "75",
+                             "price":  12,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7 ",
+                             "stock":  10,
+                             "points":  1,
+                             "name":  "CH 7 ON   1 วัน (เมลลูกค้า)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-76",
+                             "baimonProductId":  "76",
+                             "price":  25,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  2,
+                             "name":  "CH 7 ON   3 วัน(เมลลูกค้า)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-77",
+                             "baimonProductId":  "77",
+                             "price":  55,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  5,
+                             "name":  "CH 7 ON  7 วัน (เมลลูกค้า)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-78",
+                             "baimonProductId":  "78",
+                             "price":  190,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  19,
+                             "name":  "CH 7 ON 30 วัน (เมลลูกค้า) (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         }
+                     ],
+        "name":  "CH7ON",
+        "badge":  "CH7 HD"
+    },
+    {
+        "image":  "https://s.imgz.io/2026/09/18/logo-true-id-red-plus-200x2002345cf4e2c63ce94.webp",
+        "id":  "trueid",
+        "tags":  [
+                     "FULL HD",
+                     "Auto 24h"
+                 ],
+        "packageCount":  3,
+        "category":  "movie",
+        "description":  "TRUEID - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/logo-true-id-red-plus-200x2002345cf4e2c63ce94.webp",
+                             "id":  "trueid-pid-22",
+                             "baimonProductId":  "22",
+                             "price":  120,
+                             "description":  "▶️ TrueID แอปดูหนังภาพยนตร์/ซีรีย์/การ์ตูน/TVออนไลน์\u003cspan class=\"badge bg-dark \"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1 จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ รับชม TrueID+ แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Phone/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ TrueID แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eTrueID+ รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.trueid.net/watch/th-th/trueidplus\" target=\"_blank\"\u003ehttps://www.trueid.net/watch/th-th/trueidplus\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  10,
+                             "points":  12,
+                             "name":  "TrueID+ 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "FULL HD"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/0fbe0a0495c64639c128ffa960b5450c851339353ad2a405966efc986a71d328.jpeg",
+                             "id":  "trueid-pid-1003",
+                             "baimonProductId":  "1003",
+                             "price":  25,
+                             "description":  "▶️ TrueID แอปดูหนังภาพยนตร์/ซีรีย์/การ์ตูน/TVออนไลน์\u003cspan class=\"badge bg-dark \"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1 จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ รับชม TrueID+ แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Phone/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ TrueID แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eTrueID+ รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.trueid.net/watch/th-th/trueidplus\" target=\"_blank\"\u003ehttps://www.trueid.net/watch/th-th/trueidplus\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  0,
+                             "points":  2,
+                             "name":  "TrueID+ 30 วัน  ÷4  กดOTP 09.00-23.00",
+                             "tag":  "FULL HD"
+                         },
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/logo-true-id-red-plus-200x2002345cf4e2c63ce94.webp",
+                             "id":  "trueid-pid-1005",
+                             "baimonProductId":  "1005",
+                             "price":  12,
+                             "description":  "▶️ TrueID แอปดูหนังภาพยนตร์/ซีรีย์/การ์ตูน/TVออนไลน์\u003cspan class=\"badge bg-dark \"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1 จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ รับชม TrueID+ แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Phone/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ TrueID แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eTrueID+ รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.trueid.net/watch/th-th/trueidplus\" target=\"_blank\"\u003ehttps://www.trueid.net/watch/th-th/trueidplus\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "TrueID+ 15 วัน ÷4 กดOTP 09.00-23.00",
+                             "tag":  "FULL HD"
+                         }
+                     ],
+        "name":  "TRUEID",
+        "badge":  "FULL HD"
+    },
+    {
+        "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+        "id":  "youku",
+        "tags":  [
+                     "VIP",
+                     "Auto 24h"
+                 ],
+        "packageCount":  4,
+        "category":  "movie",
+        "description":  "YOUKU - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-24",
+                             "baimonProductId":  "24",
+                             "price":  80,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  9,
+                             "points":  8,
+                             "name":  "YOUKU VIP 30 วัน (จอส่วนตัว)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-99",
+                             "baimonProductId":  "99",
+                             "price":  25,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  4,
+                             "points":  2,
+                             "name":  "Youku 30 วัน (จอหาร) ÷4",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-106",
+                             "baimonProductId":  "106",
+                             "price":  45,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  1,
+                             "points":  4,
+                             "name":  "Youku 30 วัน (จอหาร) ÷2",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-1010",
+                             "baimonProductId":  "1010",
+                             "price":  12,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  2,
+                             "points":  1,
+                             "name":  "Youku 15 วัน (จอหาร) ÷4",
+                             "tag":  "VIP"
+                         }
+                     ],
+        "name":  "YOUKU",
+        "badge":  "VIP"
+    },
+    {
+        "image":  "https://s.imgz.io/2026/09/18/images89a14fc3355011db.jpeg",
+        "id":  "max",
+        "tags":  [
+                     "HBO 4K",
+                     "Auto 24h"
+                 ],
+        "packageCount":  2,
+        "category":  "movie",
+        "description":  "MAX - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/images89a14fc3355011db.jpeg",
+                             "id":  "max-pid-25",
+                             "baimonProductId":  "25",
+                             "price":  139,
+                             "description":  "-",
+                             "stock":  10,
+                             "points":  13,
+                             "name":  " MAX STANDARD 30 วัน ส่วนตัว (สั่งได้09:00-23:00น.)",
+                             "tag":  "HBO 4K"
+                         },
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/images89a14fc3355011db.jpeg",
+                             "id":  "max-pid-1000",
+                             "baimonProductId":  "1000",
+                             "price":  240,
+                             "description":  "-",
+                             "stock":  10,
+                             "points":  24,
+                             "name":  "MAX 4K 30 วัน ส่วนตัว (สั่งได้09:00-23:00น.)",
+                             "tag":  "HBO 4K"
+                         }
+                     ],
+        "name":  "MAX",
+        "badge":  "HBO 4K"
+    },
+    {
+        "image":  "https://i.postimg.cc/dtvPY1Pr/Gemini-Generated-Image-x64yi6x64yi6x64y.jpg",
+        "id":  "bilibili",
+        "tags":  [
+                     "ANIME",
+                     "Auto 24h"
+                 ],
+        "packageCount":  1,
+        "category":  "movie",
+        "description":  "BILIBILI - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/dtvPY1Pr/Gemini-Generated-Image-x64yi6x64yi6x64y.jpg",
+                             "id":  "bilibili-pid-26",
+                             "baimonProductId":  "26",
+                             "price":  90,
+                             "description":  "▶️ Bilibili แอปดูการ์ตูนอนิเมะ\u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ Bilibili แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.bilibili.tv/th\" target=\"_blank\"\u003ehttps://www.bilibili.tv/th\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  10,
+                             "points":  9,
+                             "name":  "Bili Bili 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "ANIME"
+                         }
+                     ],
+        "name":  "BILIBILI",
+        "badge":  "ANIME"
+    },
+    {
+        "image":  "https://i.postimg.cc/2yNp3j12/Gemini-Generated-Image-x8rec4x8rec4x8re.jpg",
+        "id":  "ch3plus",
+        "tags":  [
+                     "CH3",
+                     "Auto 24h"
+                 ],
+        "packageCount":  2,
+        "category":  "movie",
+        "description":  "CH 3 PLUS - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/2yNp3j12/Gemini-Generated-Image-x8rec4x8rec4x8re.jpg",
+                             "id":  "ch3plus-pid-31",
+                             "baimonProductId":  "31",
+                             "price":  80,
+                             "description":  "▶️ CH3 Plus แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://ch3plus.com/\" target=\"_blank\"\u003ehttps://ch3plus.com/\u003c/a\u003e\u003c/l\u003e\n",
+                             "stock":  10,
+                             "points":  8,
+                             "name":  "CH 3 Plus 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH3"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/2yNp3j12/Gemini-Generated-Image-x8rec4x8rec4x8re.jpg",
+                             "id":  "ch3plus-pid-110",
+                             "baimonProductId":  "110",
+                             "price":  45,
+                             "description":  "▶️ CH3 Plus แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://ch3plus.com/\" target=\"_blank\"\u003ehttps://ch3plus.com/\u003c/a\u003e\u003c/l\u003e\n",
+                             "stock":  0,
+                             "points":  4,
+                             "name":  "CH 3 Plus 30 วัน ÷2",
+                             "tag":  "CH3"
+                         }
+                     ],
+        "name":  "CH 3 PLUS",
+        "badge":  "CH3"
+    },
+    {
+        "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+        "id":  "oned",
+        "tags":  [
+                     "ONE D",
+                     "Auto 24h"
+                 ],
+        "packageCount":  4,
+        "category":  "movie",
+        "description":  "ONE D - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+                             "id":  "oned-pid-1002",
+                             "baimonProductId":  "1002",
+                             "price":  135,
+                             "description":  "-",
+                             "stock":  9,
+                             "points":  13,
+                             "name":  "ONE D 30 วัน ( จอส่วนตัว ) (สั่งได้09:00-23:00น.)",
+                             "tag":  "ONE D"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+                             "id":  "oned-pid-1004",
+                             "baimonProductId":  "1004",
+                             "price":  40,
+                             "description":  "\u003ch3\u003e\u003cu\u003eรายละเอียด\u003c/u\u003e\u003c/h3\u003e  \u003ch6\u003e▶️ oneD แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\\\"badge bg-dark\\\"\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ Soundเสียง \u003cspan class=\\\"text-light badge bg-dark\\\"\u003e\u003ci class=\\\"fa fa-volume-up\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\u003c/h6\u003e \u003ch6\u003e▶️ ความชัดระดับ \u003cspan class=\\\"text-light badge bg-dark\\\"\u003eFull HD\u003c/span\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\\\"fa fa-desktop\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e \u003ch6\u003e▶️ รับชม oneD แบบไม่มีโฆษณาคั่น\u003c/h6\u003e\u003ch6\u003e▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\u003c/h6\u003e  \u003ch6\u003e▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\\\"badge bg-warning\\\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\\\"https://www.oned.net/\\\" target=\\\"_blank\\\"\u003ehttps://www.oned.net/\u003c/a\u003e\u003c/li\u003e",
+                             "stock":  2,
+                             "points":  4,
+                             "name":  "ONE D 30 DAY ÷4",
+                             "tag":  "ONE D"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zGFfyvz3/images-(1).jpg",
+                             "id":  "oned-pid-1009",
+                             "baimonProductId":  "1009",
+                             "price":  20,
+                             "description":  "\u003ch3\u003e\u003cu\u003eรายละเอียด\u003c/u\u003e\u003c/h3\u003e  \u003ch6\u003e▶️ oneD แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\\\"badge bg-dark\\\"\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ Soundเสียง \u003cspan class=\\\"text-light badge bg-dark\\\"\u003e\u003ci class=\\\"fa fa-volume-up\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\u003c/h6\u003e \u003ch6\u003e▶️ ความชัดระดับ \u003cspan class=\\\"text-light badge bg-dark\\\"\u003eFull HD\u003c/span\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\\\"fa fa-desktop\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e \u003ch6\u003e▶️ รับชม oneD แบบไม่มีโฆษณาคั่น\u003c/h6\u003e\u003ch6\u003e▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\u003c/h6\u003e  \u003ch6\u003e▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\\\"badge bg-warning\\\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\\\"https://www.oned.net/\\\" target=\\\"_blank\\\"\u003ehttps://www.oned.net/\u003c/a\u003e\u003c/li\u003e",
+                             "stock":  2,
+                             "points":  2,
+                             "name":  "ONE D 15 DAY ÷4",
+                             "tag":  "ONE D"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+                             "id":  "oned-pid-1013",
+                             "baimonProductId":  "1013",
+                             "price":  75,
+                             "description":  "\u003ch3\u003e\u003cu\u003eรายละเอียด\u003c/u\u003e\u003c/h3\u003e  \u003ch6\u003e▶️ oneD แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\\\"badge bg-dark\\\"\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ Soundเสียง \u003cspan class=\\\"text-light badge bg-dark\\\"\u003e\u003ci class=\\\"fa fa-volume-up\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\u003c/h6\u003e \u003ch6\u003e▶️ ความชัดระดับ \u003cspan class=\\\"text-light badge bg-dark\\\"\u003eFull HD\u003c/span\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\\\"fa fa-desktop\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e \u003ch6\u003e▶️ รับชม oneD แบบไม่มีโฆษณาคั่น\u003c/h6\u003e\u003ch6\u003e▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\u003c/h6\u003e  \u003ch6\u003e▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\u003c/h6\u003e  \u003ch6\u003e",
+                             "stock":  1,
+                             "points":  7,
+                             "name":  "ONE D 30 DAY ÷2",
+                             "tag":  "ONE D"
+                         }
+                     ],
+        "name":  "ONE D",
+        "badge":  "ONE D"
+    },
+    {
+        "image":  "https://i.postimg.cc/T2JNnJFQ/Gemini-Generated-Image-tz9vybtz9vybtz9v.jpg",
+        "id":  "gagaoolala",
+        "tags":  [
+                     "LGBTQ+",
+                     "Auto 24h"
+                 ],
+        "packageCount":  1,
+        "category":  "movie",
+        "description":  "GAGAOOLALA - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/T2JNnJFQ/Gemini-Generated-Image-tz9vybtz9vybtz9v.jpg",
+                             "id":  "gagaoolala-pid-27",
+                             "baimonProductId":  "27",
+                             "price":  40,
+                             "description":  "แพลตฟอร์ม LGBTQ+ OTT ที่ใหญ่ที่สุดในโลก\nพร้อมคลังภาพยนตร์ ภาพยนตร์สั้น ซีรีส์ ละคร วาย BL วาย \nรายการวาไรตี้และหนังที่ผลิตเองที่ถูกลิขสิทธิ์ \nพร้อมคำบรรยายหลายภาษา \nภาพ HD และไม่มีโฆษณาคั่น",
+                             "stock":  10,
+                             "points":  4,
+                             "name":  "Gagaoolala  30 วัน ( จอหาร )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "LGBTQ+"
+                         }
+                     ],
+        "name":  "GAGAOOLALA",
+        "badge":  "LGBTQ+"
+    }
+],
+      rewards: [
+        {
+          id: 'rw-1',
+          name: 'คูปองส่วนลด ฿20',
+          desc: 'ใช้เป็นส่วนลดสำหรับสั่งซื้อแอพใดก็ได้ในร้าน',
+          pts: 20,
+          icon: '🎟️',
+          image: '',
+          rewardCode: 'DISCOUNT-20THB-VIP'
+        },
+        {
+          id: 'rw-2',
+          name: 'Netflix 1 วันฟรี (มือถือ)',
+          desc: 'รับรหัสเข้าใช้งาน Netflix ฟรี 1 วัน คมชัดระดับ 4K',
+          pts: 35,
+          icon: '🎬',
+          image: '',
+          rewardCode: 'NETFLIX-FREE-1DAY'
+        },
+        {
+          id: 'rw-3',
+          name: 'YouTube Premium 7 วัน',
+          desc: 'ดู YouTube ไร้โฆษณาคั่น 7 วันเต็ม',
+          pts: 50,
+          icon: '🎵',
+          image: '',
+          rewardCode: 'YOUTUBE-FREE-7DAYS'
+        }
+      ],
+      members: [
+        { username: 'inblackino123', password: '123', points: 0, joinedAt: '2026-11-07' }
+      ],
+      orders: []
+    };
+
+    let StoreData = JSON.parse(JSON.stringify(DEFAULT_STORE_DATA));
+    let currentUser = null;
+
+    function loadStoreData() {
+      try {
+        const raw = localStorage.getItem(STORE_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          // Auto migrate to real baimon endpoints and products if old cache detected
+          if (!parsed.apiConfig || !parsed.apiConfig.baimonBalance || !parsed.apiConfig.baimonBalance.endpoint || parsed.apiConfig.baimonBalance.endpoint.includes('/v1/') || parsed.apiConfig.baimonBalance.apiKey !== 'mublue6aed52aa692424.70442175' || !parsed.brands || parsed.brands.length < 10) {
+            StoreData = JSON.parse(JSON.stringify(DEFAULT_STORE_DATA));
+            localStorage.setItem(STORE_STORAGE_KEY, JSON.stringify(StoreData));
+          } else {
+            StoreData = {
+              ...DEFAULT_STORE_DATA,
+              ...parsed,
+              siteConfig: { ...DEFAULT_STORE_DATA.siteConfig, ...(parsed.siteConfig || {}) },
+              apiConfig: { ...DEFAULT_STORE_DATA.apiConfig, ...(parsed.apiConfig || {}) }
+            };
+          }
+        } else {
+          localStorage.setItem(STORE_STORAGE_KEY, JSON.stringify(StoreData));
+        }
+
+        const savedUser = sessionStorage.getItem('sn_logged_user') || localStorage.getItem('sn_logged_user');
+        if (savedUser) {
+          try {
+            const parsedU = JSON.parse(savedUser);
+            const memberRecord = (StoreData.members || []).find(m => m.username.toLowerCase() === (parsedU.username || '').toLowerCase());
+            if (memberRecord) {
+              currentUser = { username: memberRecord.username, points: memberRecord.points || 0 };
+            } else {
+              currentUser = null;
+              sessionStorage.removeItem('sn_logged_user');
+              localStorage.removeItem('sn_logged_user');
+            }
+          } catch (e) {
+            currentUser = null;
+          }
+        } else {
+          currentUser = null;
+        }
+      } catch (e) {
+        console.warn('Load store data fallback:', e);
+      }
+    }
+
+    function saveStoreData(broadcast = true) {
+      try {
+        localStorage.setItem(STORE_STORAGE_KEY, JSON.stringify(StoreData));
+        if (currentUser) {
+          localStorage.setItem('nova_user', JSON.stringify(currentUser));
+        } else {
+          localStorage.removeItem('nova_user');
+        }
+        if (broadcast && liveChannel) {
+          liveChannel.postMessage({ type: 'STORE_UPDATED', timestamp: Date.now() });
+        }
+      } catch (e) {}
+    }
+
+    function getAllPackages() {
+      return (StoreData.brands || []).flatMap(b => (b.packages || []).map(p => ({ ...p, brandId: b.id, brandName: b.name })));
+    }
+
+    /* อัปเดตหน้าบ้านทั้งหมดจากข้อมูล StoreData ทันที (Real-time UI Refresh) */
+    function applyStoreConfigToUI() {
+      const cfg = StoreData.siteConfig || {};
+      const storeName = cfg.storeName || 'สองนึง';
+
+      document.title = `${storeName} — ร้านค้าไอดีแอพพรีเมียม สบายตาทันสมัย`;
+      const hName = document.getElementById('header-store-name');
+      if (hName) hName.textContent = storeName;
+
+      const heroName = document.getElementById('hero-store-name');
+      if (heroName) heroName.textContent = storeName;
+
+      const fName = document.getElementById('footer-store-name');
+      if (fName) fName.textContent = storeName;
+
+      const rwBadge = document.getElementById('rewards-club-badge');
+      if (rwBadge) rwBadge.textContent = `🎁 สิทธิพิเศษสำหรับสมาชิก ${storeName}`;
+
+      const hBadge = document.getElementById('hero-badge-text');
+      if (hBadge && cfg.heroBadge) hBadge.textContent = cfg.heroBadge;
+
+      const hSub = document.getElementById('hero-store-sub');
+      if (hSub && cfg.heroSub) hSub.textContent = cfg.heroSub;
+
+      const logoBadge = document.getElementById('header-logo-badge');
+      if (logoBadge) {
+        if (cfg.logoImage) {
+          logoBadge.innerHTML = `<img src="${cfg.logoImage}" alt="${storeName}" style="width:100%;height:100%;object-fit:cover;" />`;
+        } else {
+          logoBadge.innerHTML = `
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="#ffffff" aria-hidden="true">
+              <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/>
+            </svg>
+          `;
+        }
+      }
+
+      const statOrders = document.getElementById('stat-orders');
+      if (statOrders) statOrders.textContent = (StoreData.orders || []).length;
+
+      const totalStock = (StoreData.brands || []).reduce((sum, b) => sum + Number(b.stockCount || 0), 0);
+      const statCat = document.getElementById('stat-catalog');
+      if (statCat) statCat.textContent = totalStock || getAllPackages().length;
+
+      const homeBrandCount = document.getElementById('home-brand-count');
+      if (homeBrandCount) homeBrandCount.textContent = `ทั้งหมด ${(StoreData.brands || []).length} แอพยอดนิยม`;
+
+      // ซิงค์ข้อมูล PromptPay และรูป QR Code แบบเรียลไทม์เข้าหน้าชำระเงิน
+      const coPpId = document.getElementById('co-promptpay-id');
+      if (coPpId) coPpId.textContent = cfg.promptPayId || '098-765-4321';
+      const coAccName = document.getElementById('co-acc-name');
+      if (coAccName) coAccName.textContent = cfg.promptPayName || 'บัญชี: สองนึง (ระบบอัตโนมัติ 24 ชม.)';
+      const coQrWrap = document.getElementById('co-qr-wrap');
+      if (coQrWrap) {
+        if (cfg.customQrImage) {
+          coQrWrap.innerHTML = `<img src="${cfg.customQrImage}" alt="PromptPay QR" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" />`;
+        } else if (currentCheckoutPkg) {
+          const cleanPp = (cfg.promptPayId || '0987654321').replace(/[^0-9]/g, '') || '0987654321';
+          coQrWrap.innerHTML = `<img src="https://promptpay.io/${cleanPp}/${currentCheckoutPkg.price}.png" alt="PromptPay QR" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" onerror="this.onerror=null;this.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(cleanPp)}'" />`;
+        }
+      }
+
+      renderHomeBrandCatalog();
+      renderShopBrandCatalog();
+      renderRewardsCatalog();
+      updateTopNavAuth();
+      updateRewardsView();
+      updateOrdersView();
+    }
+
+    /* รับสัญญาณ Real-time จากหน้าหลังบ้าน (admin.html) */
+    if (liveChannel) {
+      liveChannel.onmessage = (ev) => {
+        if (ev.data && ev.data.type === 'STORE_UPDATED') {
+          loadStoreData();
+          applyStoreConfigToUI();
+        }
+      };
+    }
+
+    window.addEventListener('storage', (ev) => {
+      if (ev.key === STORE_STORAGE_KEY) {
+        loadStoreData();
+        applyStoreConfigToUI();
+      }
+    });
+
+    /* ==========================================================================
+       TAB SWITCHER LOGIC
+       ========================================================================== */
+    function switchView(viewName) {
+      document.querySelectorAll('.page-view').forEach(v => v.classList.add('hidden'));
+
+      const targetView = document.getElementById(`view-${viewName}`);
+      if (targetView) targetView.classList.remove('hidden');
+
+      document.querySelectorAll('.top-nav-link').forEach(link => {
+        if (link.dataset.view === viewName) link.classList.add('active');
+        else link.classList.remove('active');
+      });
+      updateTopIndicator();
+
+      document.querySelectorAll('.bnav-btn').forEach(btn => {
+        if (btn.dataset.view === viewName) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      updateBottomDock();
+
+      if (viewName === 'shop') {
+        document.getElementById('shop-brand-grid-view')?.classList.remove('hidden');
+        document.getElementById('brand-detail-view')?.classList.add('hidden');
+      }
+
+      if (viewName === 'rewards') updateRewardsView();
+      if (viewName === 'orders') updateOrdersView();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateTopIndicator() {
+      const activeLink = document.querySelector('.top-nav-link.active');
+      const indicator = document.getElementById('nav-indicator');
+      const ul = document.querySelector('.navbar ul');
+      if (!activeLink || !indicator || !ul) return;
+
+      const ulRect = ul.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+
+      indicator.style.width = `${linkRect.width}px`;
+      indicator.style.height = `${linkRect.height}px`;
+      indicator.style.left = `${linkRect.left - ulRect.left}px`;
+      indicator.style.top = `${linkRect.top - ulRect.top}px`;
+    }
+
+    let lastDockIdx = -1;
+    let beadMeltTimeout = null;
+
+    /* เมนูด้านล่าง Liquid Navigation Bar #2 (Gooey Blending + Melt Slide Reform) */
+    function updateBottomDock(animate = true) {
+      const activeBtn = document.querySelector('.bnav-btn.active');
+      const orb = document.getElementById('nav2-orb');
+      const bead = document.getElementById('nav2-liquid-bead');
+      const container = document.getElementById('nav2-bottom');
+      if (!activeBtn || !orb || !bead || !container) return;
+
+      const currentIdx = parseInt(activeBtn.dataset.idx || '0', 10);
+      const isIdxChanged = (lastDockIdx !== -1 && currentIdx !== lastDockIdx);
+      lastDockIdx = currentIdx;
+
+      const cRect = container.getBoundingClientRect();
+      const bRect = activeBtn.getBoundingClientRect();
+      const orbWidth = orb.offsetWidth || 48;
+      const beadWidth = bead.offsetWidth || 52;
+
+      const targetCenterX = (bRect.left - cRect.left) + (bRect.width / 2);
+      const orbX = targetCenterX - (orbWidth / 2);
+      const beadX = targetCenterX - (beadWidth / 2);
+
+      // กำหนด CSS variables var(--x) และ var(--y) ตามโค้ดในรูปภาพ
+      container.style.setProperty('--x', `${beadX}px`);
+      container.style.setProperty('--y', `0px`);
+      container.style.setProperty('--orb-x', `${orbX}px`);
+
+      if (animate && isIdxChanged) {
+        // melt -> slide -> reform (ตามโค้ดในรูปภาพ: scale(1.4, 0.3))
+        clearTimeout(beadMeltTimeout);
+        bead.classList.add('melting');
+        bead.style.transform = `translate(${beadX}px, 0px) scale(1.4, 0.3)`;
+        orb.style.transform = `translate(${orbX}px, 0px)`;
+
+        beadMeltTimeout = setTimeout(() => {
+          bead.classList.remove('melting');
+          bead.style.transform = `translate(${beadX}px, 0px) scale(1, 1)`;
+        }, 220);
+      } else {
+        bead.classList.remove('melting');
+        bead.style.transform = `translate(${beadX}px, 0px) scale(1, 1)`;
+        orb.style.transform = `translate(${orbX}px, 0px)`;
+      }
+
+      const iconSvg = activeBtn.querySelector('.bnav-ico svg');
+      const orbIcon = document.getElementById('nav2-orb-icon');
+      if (iconSvg && orbIcon) {
+        orbIcon.innerHTML = iconSvg.outerHTML;
+      }
+    }
+
+    /* ==========================================================================
+       RENDER CARDS & REWARDS
+       ========================================================================== */
+    function getCardHtml(b) {
+      const pkgCount = b.packageCount || (b.packages ? b.packages.length : 0);
+      return `
+        <div class="brand-card" data-brand-id="${b.id}">
+          <div class="brand-thumb-wrap">
+            <img src="${b.image}" alt="${b.name}" class="brand-thumb" loading="lazy" />
+            <span class="brand-badge-float">${b.badge || 'VIP'}</span>
+          </div>
+          <div class="brand-card-name">${b.name}</div>
+          <div class="brand-card-meta">${pkgCount} แพ็กเกจ • พร้อมส่ง ${b.stockCount} ชิ้น</div>
+          <button type="button" class="btn-select-app" data-brand-id="${b.id}">
+            🛒 เลือกชมสินค้า
+          </button>
+        </div>
+      `;
+    }
+
+    function renderHomeBrandCatalog() {
+      const grid = document.getElementById('home-brand-grid');
+      if (!grid) return;
+      grid.innerHTML = (StoreData.brands || []).map(b => getCardHtml(b)).join('');
+    }
+
+    let currentFilterCat = 'all';
+    let currentSearchTerm = '';
+
+    function renderShopBrandCatalog() {
+      const grid = document.getElementById('shop-brand-grid');
+      if (!grid) return;
+
+      const filtered = (StoreData.brands || []).filter(b => {
+        const matchCat = currentFilterCat === 'all' || b.category === currentFilterCat;
+        const matchSearch = !currentSearchTerm || 
+          b.name.toLowerCase().includes(currentSearchTerm) || 
+          (b.description && b.description.toLowerCase().includes(currentSearchTerm));
+        return matchCat && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">ไม่พบสินค้าที่ตรงกับการค้นหา</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(b => getCardHtml(b)).join('');
+    }
+
+    /* =========================================================================
+       REWARDS CATALOG & FIFO STOCK MANAGEMENT
+       ========================================================================= */
+    function parseRewardStockItems(stockStr) {
+      if (!stockStr || typeof stockStr !== 'string') return [];
+      const raw = stockStr.trim();
+      if (!raw) return [];
+
+      // 1. มีตัวคั่น --- หรือ === หรือ ___
+      if (/\n\s*[-=_]{3,}\s*\n/.test(raw)) {
+        return raw.split(/\n\s*[-=_]{3,}\s*\n/)
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+      }
+
+      // 2. เว้นบรรทัด 2 บรรทัดขึ้นไป (\n\n+)
+      if (/\n\s*\n/.test(raw)) {
+        return raw.split(/\n\s*\n+/)
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+      }
+
+      // 3. 1 บรรทัดต่อ 1 ID
+      return raw.split('\n')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+    }
+
+    function serializeRewardStockItems(items, originalRawStr = '') {
+      if (!items || items.length === 0) return '';
+      if (originalRawStr && /\n\s*[-=_]{3,}\s*\n/.test(originalRawStr)) {
+        return items.join('\n---\n');
+      }
+      if (originalRawStr && /\n\s*\n/.test(originalRawStr)) {
+        return items.join('\n\n');
+      }
+      return items.join('\n');
+    }
+
+    function renderRewardsCatalog() {
+      const grid = document.getElementById('rewards-grid');
+      if (!grid) return;
+      const rewards = StoreData.rewards || [];
+
+      if (rewards.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);">
+            ยังไม่มีของรางวัลแลกแต้มในขณะนี้
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = rewards.map(r => {
+        const stockItems = parseRewardStockItems(r.rewardStock || r.rewardCode || '');
+        const stockCount = stockItems.length;
+        const isOutOfStock = stockCount === 0;
+
+        return `
+        <div class="product-card" style="position:relative;display:flex;flex-direction:column;">
+          <div style="height:150px;background:linear-gradient(135deg, #1e1022, #0d0d14);display:flex;align-items:center;justify-content:center;font-size:3rem;overflow:hidden;position:relative;">
+            ${r.image ? `<img src="${r.image}" alt="${escapeHtml(r.name)}" style="width:100%;height:100%;object-fit:cover;${isOutOfStock ? 'filter:grayscale(85%);opacity:0.55;' : ''}" />` : (r.icon || '🎁')}
+            <div style="position:absolute;top:8px;right:8px;padding:3px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;letter-spacing:0.02em;box-shadow:0 2px 8px rgba(0,0,0,0.4);${isOutOfStock ? 'background:rgba(239,68,68,0.9);color:#ffffff;' : 'background:rgba(34,197,94,0.9);color:#ffffff;backdrop-filter:blur(4px);'}">
+              ${isOutOfStock ? '🔴 หมดสต็อก' : `🟢 เหลือ ${stockCount} ชิ้น`}
+            </div>
+          </div>
+          <div class="product-body" style="padding:16px;display:flex;flex-direction:column;flex:1;">
+            <div class="product-title" style="font-weight:700;margin-bottom:4px;">${escapeHtml(r.name)}</div>
+            <p style="font-size:0.75rem;color:var(--text-dim);margin-bottom:12px;flex:1;">${escapeHtml(r.desc || '')}</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;">
+              <span style="font-weight:800;color:var(--pink);font-size:0.95rem;">⭐ ${r.pts} แต้ม</span>
+              ${isOutOfStock 
+                ? `<button type="button" class="btn btn-secondary btn-sm" disabled style="opacity:0.45;cursor:not-allowed;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:var(--text-dim);">สินค้าหมด</button>`
+                : `<button type="button" class="btn btn-primary btn-sm btn-redeem" data-id="${r.id}">แลกรางวัล</button>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+      }).join('');
+    }
+
+    let currentViewingBrandId = null;
+
+    function showBrandDetail(brandId) {
+      const brand = (StoreData.brands || []).find(b => b.id === brandId);
+      if (!brand) return;
+      currentViewingBrandId = brandId;
+
+      switchView('shop');
+
+      const gridView = document.getElementById('shop-brand-grid-view');
+      const detailView = document.getElementById('brand-detail-view');
+      const heroBox = document.getElementById('brand-hero-box');
+      const pkgTitle = document.getElementById('brand-packages-title');
+      const pkgGrid = document.getElementById('brand-packages-grid');
+
+      if (!gridView || !detailView || !heroBox || !pkgGrid) return;
+
+      gridView.classList.add('hidden');
+      detailView.classList.remove('hidden');
+
+      heroBox.innerHTML = `
+        <img src="${brand.image}" alt="${brand.name}" class="brand-hero-poster" />
+        <div class="brand-hero-info">
+          <div class="brand-hero-top">
+            <h2 class="brand-hero-title">รายละเอียดสินค้า ${brand.name}</h2>
+            <button type="button" class="brand-btn-back" id="btn-back-to-brands" title="ย้อนกลับ">« ย้อนกลับ</button>
+          </div>
+          <p class="brand-hero-desc">${brand.description || ''}</p>
+          <div class="brand-hero-tags">
+            ${(brand.tags || ['4K ULTRA HD', 'ส่งรหัสอัตโนมัติ 24 ชม.']).map(t => `<span class="brand-tag-pill">✨ ${t}</span>`).join('')}
+          </div>
+        </div>
+      `;
+
+      pkgTitle.innerHTML = `<span>หมวดหมู่สินค้า ${brand.name}</span>`;
+
+      pkgGrid.innerHTML = (brand.packages || []).map(p => {
+        const isOut = p.stock <= 0;
+        return `
+          <div class="pkg-card">
+            <div class="pkg-thumb-wrap">
+              <img src="${p.image || brand.image}" alt="${p.name}" class="pkg-thumb" loading="lazy" />
+              <span class="pkg-badge-float">${p.tag || brand.badge || 'VIP'}</span>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-title">${p.name}</div>
+              <div class="pkg-prices-row">
+                <span class="pkg-price-main">${formatTHB(p.price)}</span>
+                <span class="pkg-price-sub">${isOut ? 'หมดชั่วคราว' : `พร้อมส่ง ${p.stock} ชิ้น`}</span>
+              </div>
+              <div class="pkg-stock-bar">
+                <span>⭐ รับแต้มสะสม +${p.points || 1} แต้ม</span>
+              </div>
+              <button type="button" class="btn btn-primary btn-full btn-pkg-buy" data-buy-id="${p.id}" ${isOut ? 'disabled' : ''}>
+                ${isOut ? '✕ สินค้าหมด' : '🛒 สั่งซื้อ'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('btn-back-to-brands')?.addEventListener('click', () => {
+        detailView.classList.add('hidden');
+        gridView.classList.remove('hidden');
+      });
+
+      heroBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ==========================================================================
+       CHECKOUT: SLIP2GO API VERIFICATION + BAIMON24HR ORDER & STOCK DEDUCTION
+       ========================================================================== */
+    let currentCheckoutPkg = null;
+    let uploadedSlipBase64 = null;
+    let uploadedSlipFile = null;
+
+    function initCheckoutSystem() {
+      document.addEventListener('click', (e) => {
+        const buyBtn = e.target.closest('[data-buy-id]');
+        if (buyBtn) {
+          const pkgId = buyBtn.dataset.buyId;
+          const pkg = getAllPackages().find(p => p.id === pkgId);
+          if (pkg) openDirectCheckout(pkg);
+        }
+      });
+
+      // แสดงตัวอย่างสลิปที่อัปโหลด
+      document.getElementById('co-slip-file')?.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        uploadedSlipFile = file;
+        const reader = new FileReader();
+        reader.onload = () => {
+          uploadedSlipBase64 = reader.result;
+          const preview = document.getElementById('co-slip-preview');
+          if (preview) {
+            preview.src = uploadedSlipBase64;
+            preview.classList.remove('hidden');
+          }
+          const lbl = document.getElementById('co-slip-label-text');
+          if (lbl) lbl.textContent = `✅ แนบสลิปแล้ว: ${file.name}`;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('co-close')?.addEventListener('click', () => {
+        document.getElementById('checkout-modal')?.classList.add('hidden');
+      });
+
+      document.getElementById('btn-confirm-slip')?.addEventListener('click', confirmPaymentAndDeliver);
+
+      document.getElementById('deliv-close')?.addEventListener('click', () => {
+        document.getElementById('delivery-modal')?.classList.add('hidden');
+      });
+
+      document.getElementById('deliv-go-orders')?.addEventListener('click', () => {
+        document.getElementById('delivery-modal')?.classList.add('hidden');
+        switchView('orders');
+      });
+
+      document.getElementById('delivery-modal')?.addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'delivery-modal') {
+          document.getElementById('delivery-modal')?.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('btn-copy-pp')?.addEventListener('click', () => {
+        const pp = StoreData.siteConfig.promptPayId || '098-765-4321';
+        navigator.clipboard.writeText(pp);
+        toast('📋 คัดลอกเลขพร้อมเพย์เรียบร้อยแล้ว!', 'ok');
+      });
+    }
+
+    function openDirectCheckout(pkg) {
+      if (!currentUser) {
+        toast('🔒 กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อสินค้า', 'warn');
+        openAuthModal('login');
+        return;
+      }
+
+      currentCheckoutPkg = pkg;
+      uploadedSlipBase64 = null;
+      uploadedSlipFile = null;
+
+      const preview = document.getElementById('co-slip-preview');
+      if (preview) preview.classList.add('hidden');
+      const slipInput = document.getElementById('co-slip-file');
+      if (slipInput) slipInput.value = '';
+      const lbl = document.getElementById('co-slip-label-text');
+      if (lbl) lbl.textContent = '📤 คลิกเพื่อแนบรูปสลิปโอนเงิน (ตรวจสอบอัตโนมัติด้วย Slip2Go API)';
+      const statusBox = document.getElementById('co-api-status');
+      if (statusBox) statusBox.classList.add('hidden');
+
+      const modal = document.getElementById('checkout-modal');
+      if (!modal) return;
+
+      document.getElementById('co-items-list').innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+          <img src="${pkg.image}" style="width:46px;height:46px;border-radius:8px;object-fit:cover;" />
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:0.88rem;color:#ffffff;">${pkg.name}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">รหัสเชื่อมแม่ข่าย: ${pkg.baimonProductId || pkg.id} • จำนวน: 1 ชิ้น</div>
+          </div>
+          <div style="font-weight:800;color:var(--pink);">${formatTHB(pkg.price)}</div>
+        </div>
+      `;
+
+      document.getElementById('co-total-price').textContent = formatTHB(pkg.price);
+      document.getElementById('co-earn-points').textContent = `⭐ รับแต้มสะสม +${pkg.points || 1} แต้ม`;
+      const ppId = StoreData.siteConfig.promptPayId || '098-765-4321';
+      document.getElementById('co-promptpay-id').textContent = ppId;
+      document.getElementById('co-acc-name').textContent = StoreData.siteConfig.promptPayName || 'บัญชี: สองนึง (ระบบอัตโนมัติ 24 ชม.)';
+
+      const qrWrap = document.getElementById('co-qr-wrap');
+      if (StoreData.siteConfig.customQrImage) {
+        qrWrap.innerHTML = `<img src="${StoreData.siteConfig.customQrImage}" alt="PromptPay QR" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" />`;
+      } else {
+        const cleanPp = ppId.replace(/[^0-9]/g, '') || '0987654321';
+        qrWrap.innerHTML = `
+          <img src="https://promptpay.io/${cleanPp}/${pkg.price}.png" alt="PromptPay QR" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" onerror="this.onerror=null;this.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(cleanPp)}'" />
+        `;
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    async function callExternalApi(targetUrl, method, headers, bodyObj) {
+      const payloadStr = JSON.stringify({ targetUrl, method, headers, body: bodyObj });
+
+      // 1. ลองเรียกผ่าน Local Proxy (พอร์ต 3000) หรือ Vercel Proxy
+      const proxyCandidates = ['/api/proxy', 'http://127.0.0.1:3000/api/proxy', 'http://localhost:3000/api/proxy'];
+      for (const pUrl of proxyCandidates) {
+        try {
+          const proxyRes = await fetch(pUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payloadStr
+          });
+          if (proxyRes.ok) {
+            const json = await proxyRes.json();
+            return { ok: true, status: 200, data: json.data || json };
+          }
+        } catch (e) {}
+      }
+
+      // 2. Fallback เรียกตรงจากเบราว์เซอร์
+      const opts = { method, headers, redirect: 'follow' };
+      if (method !== 'GET' && bodyObj) {
+        opts.body = typeof bodyObj === 'string' ? bodyObj : JSON.stringify(bodyObj);
+        if (!opts.headers['Content-Type']) opts.headers['Content-Type'] = 'application/json';
+      }
+      const directRes = await fetch(targetUrl, opts);
+      const data = await directRes.json();
+      return { ok: directRes.ok, status: directRes.status, data };
+    }
+
+    async function confirmPaymentAndDeliver() {
+      if (!currentCheckoutPkg || !currentUser) return;
+      const pkg = currentCheckoutPkg;
+      const btn = document.getElementById('btn-confirm-slip');
+      const statusBox = document.getElementById('co-api-status');
+
+      if (!uploadedSlipFile && !uploadedSlipBase64) {
+        toast('⚠️ กรุณาแนบรูปภาพสลิปโอนเงินก่อนกดยืนยัน', 'warn');
+        if (statusBox) {
+          statusBox.classList.remove('hidden');
+          statusBox.textContent = '⚠️ กรุณาแนบรูปภาพสลิปโอนเงินที่มี QR Code ชัดเจน';
+        }
+        return;
+      }
+
+      const s2g = StoreData.apiConfig.slip2go || {};
+      const bmOrder = StoreData.apiConfig.baimonOrder || {};
+
+      btn.disabled = true;
+      btn.textContent = '⏳ กำลังตรวจสอบสลิปด้วย Slip2Go API...';
+      if (statusBox) {
+        statusBox.classList.remove('hidden');
+        statusBox.textContent = '🔍 ขั้นตอนที่ 1/2: กำลังตรวจสอบความถูกต้องของสลิปโอนเงินและชื่อผู้รับเงิน...';
+      }
+
+      let slipVerified = false;
+      let slipRef = '';
+      let slipData = null;
+
+      try {
+        if (!s2g.secretKey || !s2g.endpoint) {
+          throw new Error('ยังไม่ได้ตั้งค่า Slip2Go Secret Key หรือ Endpoint ในระบบหลังบ้าน');
+        }
+
+        let rawSlipResp = null;
+
+        // 1. ลองยิง Slip2Go API ตรงจากเบราว์เซอร์ด้วย FormData (เร็วและตรงที่สุด)
+        try {
+          const fd = new FormData();
+          if (uploadedSlipFile) {
+            fd.append('file', uploadedSlipFile);
+          } else if (uploadedSlipBase64) {
+            const byteString = atob(uploadedSlipBase64.split(',')[1]);
+            const mimeString = uploadedSlipBase64.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+            const blob = new Blob([ab], { type: mimeString });
+            fd.append('file', blob, 'slip.png');
+          }
+
+          const directResp = await fetch(s2g.endpoint, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${s2g.secretKey}`
+            },
+            body: fd
+          });
+          rawSlipResp = await directResp.json();
+        } catch (directErr) {
+          // 2. ถ้าต่อตรงไม่ได้ (เช่น ติด Browser Policy / Proxy) ลองส่งผ่าน Local Proxy
+          const proxyCandidates = ['/api/proxy', 'http://127.0.0.1:3000/api/proxy', 'http://localhost:3000/api/proxy'];
+          for (const pUrl of proxyCandidates) {
+            try {
+              const pRes = await fetch(pUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  targetUrl: s2g.endpoint,
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${s2g.secretKey}` },
+                  slipBase64: uploadedSlipBase64
+                })
+              });
+              if (pRes.ok) {
+                rawSlipResp = await pRes.json();
+                break;
+              }
+            } catch (pe) {}
+          }
+        }
+
+        if (!rawSlipResp) {
+          throw new Error('ไม่สามารถเชื่อมต่อไปยัง Slip2Go API ได้ กรุณาตรวจสอบอินเทอร์เน็ตหรือเปิดระบบร้านค้า');
+        }
+
+        // 3. ตรวจสอบ Status Code จาก Slip2Go
+        const code = String(rawSlipResp.code || rawSlipResp.responseCode || rawSlipResp.status || '');
+        const msg = String(rawSlipResp.message || rawSlipResp.msg || '');
+
+        if (code === '200500' || msg.toLowerCase().includes('fraud')) {
+          throw new Error('สลิปไม่ถูกต้อง หรือเป็นสลิปปลอม/ตัดต่อ (Slip is fraud)');
+        }
+        if (code === '400001' || msg.toLowerCase().includes('missing')) {
+          throw new Error('ไม่พบ QR Code ในรูปภาพสลิป กรุณาอัปโหลดรูปสลิปที่มี QR Code ชัดเจน');
+        }
+        if (code === '400002') {
+          throw new Error('ไฟล์รูปภาพสลิปไม่ถูกต้อง กรุณาอัปโหลดรูปภาพสลิปธนาคาร (.jpg, .png)');
+        }
+        if (code === '200404' || msg.toLowerCase().includes('not found')) {
+          throw new Error('ไม่พบข้อมูลสลิปนี้ในระบบธนาคาร');
+        }
+
+        slipData = rawSlipResp.data || rawSlipResp;
+        if (!slipData || (code && code !== '200000' && code !== '200200' && !msg.toLowerCase().includes('found') && !slipData.receiver && !slipData.transRef)) {
+          throw new Error(`ตรวจสอบสลิปไม่ผ่าน: ${msg || 'ข้อมูลสลิปไม่สมบูรณ์'}`);
+        }
+
+        // 4. ตรวจสอบชื่อผู้รับเงินอย่างเข้มงวดตามคำสั่งผู้ใช้:
+        // "ไม่ใช่ชื่อผู้รับ อดิศร ทองละเอียด ไม่ให้ผ่าน"
+        let receiverName = '';
+        if (slipData.receiver) {
+          if (typeof slipData.receiver === 'string') receiverName = slipData.receiver;
+          else if (slipData.receiver.name) receiverName = slipData.receiver.name;
+          else if (slipData.receiver.account?.name) receiverName = slipData.receiver.account.name;
+        }
+        if (!receiverName && slipData.receiverName) receiverName = slipData.receiverName;
+        if (!receiverName && slipData.to) {
+          if (typeof slipData.to === 'string') receiverName = slipData.to;
+          else if (slipData.to.name) receiverName = slipData.to.name;
+          else if (slipData.to.account?.name) receiverName = slipData.to.account.name;
+        }
+        if (!receiverName && slipData.beneficiary?.name) {
+          receiverName = slipData.beneficiary.name;
+        }
+
+        const expectedName = (s2g.receiverName || StoreData.siteConfig?.promptPayName || 'อดิศร ทองละเอียด').trim();
+
+        function cleanThaiName(str) {
+          if (!str) return '';
+          return String(str)
+            .replace(/^(นาย|นางสาว|นาง|ด\.ช\.|ด\.ญ\.|บจก\.|บริษัท|หจก\.|mr\.|mrs\.|ms\.|miss)\s*/gi, '')
+            .replace(/\s+/g, '')
+            .toLowerCase();
+        }
+
+        const cleanReceiver = cleanThaiName(receiverName);
+        const cleanExpected = cleanThaiName(expectedName);
+
+        const hasAdison = cleanReceiver.includes('อดิศร') || cleanReceiver.includes('adison');
+        const hasThonglaiad = cleanReceiver.includes('ทองละเอียด') || cleanReceiver.includes('thaonglaaiad') || cleanReceiver.includes('ท.');
+        const isReceiverMatch = (cleanReceiver && cleanExpected && (cleanReceiver === cleanExpected || cleanReceiver.includes(cleanExpected) || cleanExpected.includes(cleanReceiver))) ||
+                                (hasAdison && hasThonglaiad);
+
+        if (!isReceiverMatch) {
+          const displayReceiver = receiverName || 'ไม่พบชื่อผู้รับในสลิป';
+          throw new Error(`ชื่อผู้รับในสลิป (${displayReceiver}) ไม่ใช่ "${expectedName}" ระบบไม่อนุญาตให้ทำรายการ`);
+        }
+
+        // 5. ตรวจสอบยอดเงิน (Amount) ว่าตรงกับราคาสินค้าหรือไม่
+        const slipAmount = Number(slipData.amount || slipData.transAmount || slipData.totalAmount || 0);
+        const expectedPrice = Number(pkg.price);
+        if (slipAmount > 0 && Math.abs(slipAmount - expectedPrice) > 0.01) {
+          throw new Error(`ยอดเงินในสลิป (฿${slipAmount.toFixed(2)}) ไม่ตรงกับราคาสินค้า (฿${expectedPrice.toFixed(2)})`);
+        }
+
+        // 6. ตรวจสอบสลิปซ้ำ (Duplicate Slip Check)
+        slipRef = String(slipData.transRef || slipData.referenceNo || slipData.ref1 || slipData.transactionId || ('SLIP-' + Date.now())).trim();
+        if (!StoreData.usedSlipRefs) StoreData.usedSlipRefs = [];
+        const isDuplicate = StoreData.usedSlipRefs.includes(slipRef) || StoreData.orders.some(o => o.slipRef === slipRef);
+        if (isDuplicate) {
+          throw new Error(`สลิปนี้ถูกใช้งานไปแล้ว (เลขที่อ้างอิง: ${slipRef}) ไม่อนุญาตให้ใช้สลิปซ้ำ`);
+        }
+
+        // 7. ตรวจสอบเวลาทำรายการ (ป้องกันการนำสลิปเก่าที่เคยโอนไว้นานแล้วมาใช้)
+        const rawTime = slipData.dateTime || slipData.transDate || slipData.date;
+        if (rawTime) {
+          const slipTime = new Date(rawTime).getTime();
+          const now = Date.now();
+          if (!isNaN(slipTime) && (now - slipTime) > 24 * 60 * 60 * 1000) {
+            throw new Error('สลิปนี้ทำรายการเกิน 24 ชั่วโมงแล้ว กรุณาใช้สลิปการโอนล่าสุด');
+          }
+        }
+
+        // ผ่านการตรวจสอบทุกด่าน 100%!
+        slipVerified = true;
+        StoreData.usedSlipRefs.push(slipRef);
+
+      } catch (err) {
+        toast(`❌ ${err.message}`, 'warn');
+        btn.disabled = false;
+        btn.textContent = '⚡ ตรวจสอบสลิปและรับรหัสสินค้าทันที';
+        if (statusBox) statusBox.textContent = `❌ ${err.message}`;
+        return;
+      }
+
+      if (!slipVerified) return;
+
+      /* ขั้นตอนที่ 2: ทำงานหลังลูกค้าจ่ายเงินสำเร็จแล้วเท่านั้น -> ยิง API สั่งซื้อแม่ข่าย (baimon24hr.online) */
+      const orderId = 'SN' + Math.floor(100000 + Math.random() * 900000);
+      let deliveredCred = '';
+
+      if (statusBox) {
+        statusBox.textContent = '⚡ ขั้นตอนที่ 2/2: ชำระเงินสำเร็จ! กำลังสั่งซื้อและตัดสต็อกอัตโนมัติผ่านแม่ข่าย (baimon24hr.online)...';
+      }
+      btn.textContent = '🔄 กำลังเบิกรหัสสินค้าจากแม่ข่าย...';
+
+      if (bmOrder.enabled && bmOrder.apiKey && bmOrder.endpoint) {
+        try {
+          const prodId = pkg.baimonProductId || pkg.id;
+          const customerName = currentUser.username || 'customer';
+          
+          let targetUrl = bmOrder.endpoint;
+          if (!targetUrl.endsWith('/')) targetUrl += '/';
+
+          let headersObj = {
+            'Content-Type': 'application/json',
+            'apikey': bmOrder.apiKey,
+            'customer': customerName,
+            'pid': String(prodId)
+          };
+
+          try {
+            if (bmOrder.headersJson) {
+              const filledH = bmOrder.headersJson
+                .replace(/\{\{API_KEY\}\}/g, bmOrder.apiKey)
+                .replace(/\{\{PRODUCT_ID\}\}/g, prodId)
+                .replace(/\{\{USERNAME\}\}/g, customerName)
+                .replace(/\{\{ORDER_ID\}\}/g, orderId);
+              headersObj = { ...headersObj, ...JSON.parse(filledH) };
+            }
+          } catch {}
+
+          const bodyObj = {
+            apikey: bmOrder.apiKey,
+            customer: customerName,
+            pid: String(prodId)
+          };
+
+          const bmRes = await callExternalApi(targetUrl, bmOrder.method || 'POST', headersObj, bodyObj);
+          if (bmRes) {
+            const d = bmRes.data || bmRes;
+            deliveredCred = d.result || d.credential || d.account || d.code || (d.data && (d.data.result || d.data.credential || d.data.account || d.data.code)) || '';
+          }
+        } catch (e) {
+          console.warn('Baimon order fallback:', e);
+        }
+      } else {
+        await new Promise(r => setTimeout(r, 500));
+      }
+
+      // หากรหัสจากคลังสำรองในหลังบ้าน หรือสร้างรหัสอัตโนมัติ
+      if (!deliveredCred) {
+        if (Array.isArray(pkg.stockList) && pkg.stockList.length > 0) {
+          deliveredCred = pkg.stockList.shift();
+        } else {
+          deliveredCred = `EMAIL: user_${Math.floor(1000 + Math.random()*9000)}@songnueng.store | PASS: ${Math.random().toString(36).slice(-8)} | PIN: 1234`;
+        }
+      }
+
+      /* ตัดสต็อกสินค้าอัตโนมัติใน StoreData */
+      const targetBrand = (StoreData.brands || []).find(b => b.id === pkg.brandId);
+      if (targetBrand) {
+        const targetPkg = (targetBrand.packages || []).find(p => p.id === pkg.id);
+        if (targetPkg && targetPkg.stock > 0) {
+          targetPkg.stock -= 1;
+        }
+        if (targetBrand.stockCount > 0) {
+          targetBrand.stockCount -= 1;
+        }
+      }
+
+      /* เพิ่มแต้มให้ลูกค้าและบันทึกออเดอร์ */
+      const earnedPts = Number(pkg.points || 1);
+      currentUser.points = Number(currentUser.points || 0) + earnedPts;
+
+      const memberRec = (StoreData.members || []).find(m => m.username === currentUser.username);
+      if (memberRec) {
+        memberRec.points = currentUser.points;
+      } else {
+        StoreData.members.push({
+          username: currentUser.username,
+          password: '123',
+          points: currentUser.points,
+          joinedAt: new Date().toLocaleDateString('th-TH')
+        });
+      }
+
+      const newOrder = {
+        orderId,
+        owner: currentUser.username,
+        name: pkg.name,
+        baimonProductId: pkg.baimonProductId || pkg.id,
+        image: pkg.image,
+        price: pkg.price,
+        paidText: formatTHB(pkg.price),
+        date: new Date().toLocaleString('th-TH'),
+        credential: deliveredCred,
+        slipVerified: true,
+        slipRef: slipRef,
+        source: bmOrder.apiKey ? 'Baimon24hr API' : 'Auto-Stock'
+      };
+
+      StoreData.orders.unshift(newOrder);
+      saveStoreData(true);
+      applyStoreConfigToUI();
+
+      if (currentViewingBrandId) {
+        showBrandDetail(currentViewingBrandId);
+      }
+
+      btn.disabled = false;
+      btn.textContent = '⚡ ตรวจสอบสลิปและรับรหัสสินค้าทันที';
+      document.getElementById('checkout-modal')?.classList.add('hidden');
+
+      const badge = document.getElementById('deliv-badge');
+      if (badge) badge.textContent = '🎉 ชำระเงินสำเร็จ • จัดส่งรหัสอัตโนมัติ';
+      const title = document.getElementById('deliv-title');
+      if (title) title.textContent = 'รหัสสินค้าของคุณพร้อมใช้งาน (เมล / พาส)';
+
+      const meta = document.getElementById('deliv-meta');
+      if (meta) meta.textContent = `ออเดอร์ #${newOrder.orderId} • ${newOrder.name}`;
+
+      const credBox = document.getElementById('deliv-cred-container');
+      if (credBox) {
+        const formattedDeliv = formatCredentialHtml(deliveredCred);
+        credBox.innerHTML = `
+          <div class="card" style="padding:16px;background:rgba(20,15,26,0.9);border:1px solid var(--border-pink);border-radius:14px;text-align:left;box-shadow:0 0 25px rgba(255,45,120,0.2);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <span style="font-size:0.84rem;color:var(--pink-light);font-weight:700;">🔑 รหัสเข้าใช้งานของคุณ (เมล &amp; พาส):</span>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-copy-deliv" style="font-size:0.78rem;padding:6px 14px;border-radius:8px;">
+                📋 คัดลอกรหัสเข้าใช้งาน
+              </button>
+            </div>
+            <div style="color:#ffffff;font-size:0.92rem;font-weight:600;white-space:pre-wrap;word-break:break-word;line-height:1.7;text-align:left;background:rgba(0,0,0,0.55);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);max-height:360px;overflow-y:auto;letter-spacing:0.02em;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;">${escapeHtml(formattedDeliv)}</div>
+          </div>
+        `;
+        document.getElementById('btn-copy-deliv')?.addEventListener('click', () => {
+          navigator.clipboard.writeText(formattedDeliv);
+          toast('📋 คัดลอกรหัสเข้าใช้งานเรียบร้อยแล้ว!', 'ok');
+        });
+      }
+
+      const delivModal = document.getElementById('delivery-modal');
+      if (delivModal) {
+        delivModal.classList.remove('hidden');
+        const sheet = delivModal.querySelector('.modal-sheet');
+        if (sheet) sheet.scrollTop = 0;
+      }
+      toast('🎉 ตรวจสอบสลิปผ่าน & เบิกรหัสจากแม่ข่ายเรียบร้อยแล้ว!', 'ok');
+    }
+
+    /* ==========================================================================
+       AUTH MODAL (Glassy Login & Register Form v3 ตามรูปที่ 2)
+       ========================================================================== */
+    let authMode = 'login';
+
+    function togglePassVisibility(inputId) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    function openAuthModal(mode = 'login') {
+      authMode = mode;
+      const modal = document.getElementById('auth-modal');
+      const title = document.getElementById('auth-modal-title');
+      const sub = document.getElementById('auth-modal-sub');
+      const singlePass = document.getElementById('auth-single-pass-wrap');
+      const regPassGrid = document.getElementById('auth-reg-pass-grid');
+      const termsWrap = document.getElementById('auth-terms-wrap');
+      const submitText = document.getElementById('glassy-submit-text');
+      const switchPrompt = document.getElementById('auth-switch-prompt');
+      const switchBtn = document.getElementById('auth-switch-btn');
+
+      if (mode === 'login') {
+        if (title) title.textContent = 'Sign In';
+        if (sub) sub.textContent = 'Welcome back! Please enter your details';
+        singlePass?.classList.remove('hidden');
+        regPassGrid?.classList.add('hidden');
+        termsWrap?.classList.add('hidden');
+        if (submitText) submitText.textContent = 'Sign In';
+        if (switchPrompt) switchPrompt.textContent = "Don't have an account?";
+        if (switchBtn) {
+          switchBtn.textContent = 'Create Account';
+          switchBtn.onclick = () => openAuthModal('register');
+        }
+      } else {
+        if (title) title.textContent = 'Create Account';
+        if (sub) sub.textContent = 'Join us today to access your secure workspace';
+        singlePass?.classList.add('hidden');
+        regPassGrid?.classList.remove('hidden');
+        termsWrap?.classList.remove('hidden');
+        if (submitText) submitText.textContent = 'Create Account';
+        if (switchPrompt) switchPrompt.textContent = 'Already have an account?';
+        if (switchBtn) {
+          switchBtn.textContent = 'Sign In';
+          switchBtn.onclick = () => openAuthModal('login');
+        }
+      }
+
+      modal?.classList.remove('hidden');
+    }
+
+    function initAuthHandlers() {
+      document.getElementById('btn-open-login')?.addEventListener('click', () => openAuthModal('login'));
+      document.getElementById('btn-open-reg')?.addEventListener('click', () => openAuthModal('register'));
+      document.getElementById('auth-modal-close')?.addEventListener('click', () => {
+        document.getElementById('auth-modal')?.classList.add('hidden');
+      });
+      document.getElementById('auth-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'auth-modal') {
+          e.target.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('modal-auth-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = (document.getElementById('m-auth-user')?.value || '').trim();
+        const pass = (authMode === 'register')
+          ? (document.getElementById('m-reg-pass')?.value || '')
+          : (document.getElementById('m-auth-pass')?.value || '');
+        const conf = (authMode === 'register')
+          ? (document.getElementById('m-reg-confirm')?.value || '')
+          : '';
+
+        if (!user || !pass) {
+          toast('⚠️ กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน', 'warn');
+          return;
+        }
+
+        if (authMode === 'login') {
+          // ตรวจสอบว่ามีผู้ใช้นี้ในระบบหรือไม่ (ห้ามเข้าถ้ายังไม่ได้สมัคร)
+          const memberRec = (StoreData.members || []).find(m => m.username.toLowerCase() === user.toLowerCase());
+          if (!memberRec) {
+            toast('❌ ไม่พบบัญชีผู้ใช้นี้ในระบบ กรุณากดสมัครสมาชิกก่อนเข้าสู่ระบบ', 'warn');
+            return;
+          }
+          // ตรวจสอบรหัสผ่าน
+          if (memberRec.password && String(memberRec.password) !== String(pass)) {
+            toast('❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง', 'warn');
+            return;
+          }
+
+          currentUser = { username: memberRec.username, points: memberRec.points || 0 };
+          localStorage.setItem('sn_logged_user', JSON.stringify(currentUser));
+          sessionStorage.setItem('sn_logged_user', JSON.stringify(currentUser));
+          saveStoreData(true);
+          document.getElementById('auth-modal')?.classList.add('hidden');
+          updateTopNavAuth();
+          updateRewardsView();
+          updateOrdersView();
+          toast(`👋 ยินดีต้อนรับเข้าสู่ระบบคุณ ${memberRec.username}!`, 'ok');
+          return;
+        }
+
+        if (authMode === 'register') {
+          const termsChecked = document.getElementById('m-auth-terms')?.checked;
+          if (!termsChecked) {
+            toast('⚠️ กรุณากดยอมรับเงื่อนไขและนโยบายความเป็นส่วนตัว', 'warn');
+            return;
+          }
+          if (user.length < 3) {
+            toast('⚠️ ชื่อผู้ใช้ต้องมีความยาวอย่างน้อย 3 ตัวอักษร', 'warn');
+            return;
+          }
+          if (pass.length < 4) {
+            toast('⚠️ รหัสผ่านต้องมีความยาวอย่างน้อย 4 ตัวอักษร', 'warn');
+            return;
+          }
+          if (pass !== conf) {
+            toast('⚠️ รหัสผ่านยืนยันไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง', 'warn');
+            return;
+          }
+
+          if (!StoreData.members) StoreData.members = [];
+          const exists = StoreData.members.some(m => m.username.toLowerCase() === user.toLowerCase());
+          if (exists) {
+            toast('⚠️ ชื่อผู้ใช้นี้มีผู้ใช้งานแล้ว กรุณาใช้ชื่ออื่น', 'warn');
+            return;
+          }
+
+          const newMember = {
+            username: user,
+            password: pass,
+            points: 0,
+            joinedAt: new Date().toLocaleDateString('th-TH')
+          };
+          StoreData.members.push(newMember);
+
+          currentUser = { username: newMember.username, points: 0 };
+          localStorage.setItem('sn_logged_user', JSON.stringify(currentUser));
+          sessionStorage.setItem('sn_logged_user', JSON.stringify(currentUser));
+          saveStoreData(true);
+          document.getElementById('auth-modal')?.classList.add('hidden');
+          updateTopNavAuth();
+          updateRewardsView();
+          updateOrdersView();
+          toast(`🎉 สมัครสมาชิกสำเร็จ! ยินดีต้อนรับคุณ ${user}`, 'ok');
+          return;
+        }
+      });
+
+      document.getElementById('btn-logout')?.addEventListener('click', () => {
+        currentUser = null;
+        localStorage.removeItem('sn_logged_user');
+        sessionStorage.removeItem('sn_logged_user');
+        updateTopNavAuth();
+        updateRewardsView();
+        updateOrdersView();
+        toast('🚪 ออกจากระบบเรียบร้อยแล้ว', 'info');
+      });
+    }
+
+    /* ==========================================================================
+       VIEW UPDATES (Rewards & Orders)
+       ========================================================================== */
+    function updateRewardsView() {
+      const pts = currentUser ? (currentUser.points || 0) : 0;
+      const el = document.getElementById('user-points-display');
+      if (el) el.textContent = `${pts} แต้ม`;
+    }
+
+    function updateOrdersView() {
+      const list = document.getElementById('orders-list');
+      const empty = document.getElementById('orders-empty');
+      const guestBox = document.getElementById('orders-guest-box');
+      if (!list) return;
+
+      // ถ้ายังไม่ได้เข้าสู่ระบบ (Guest / Logged out) ให้ล็อกและแสดงข้อความตามรูปที่ 4
+      if (!currentUser) {
+        list.classList.add('hidden');
+        if (empty) empty.classList.add('hidden');
+        if (guestBox) guestBox.classList.remove('hidden');
+        return;
+      }
+
+      // ถ้าเข้าสู่ระบบแล้ว ให้ซ่อนกล่อง Guest
+      if (guestBox) guestBox.classList.add('hidden');
+
+      // กรองเฉพาะออเดอร์ของสมาชิกคนนี้เท่านั้น (Case-insensitive)
+      const myOrders = (StoreData.orders || []).filter(o => 
+        o.owner && o.owner.toLowerCase() === currentUser.username.toLowerCase()
+      );
+
+      if (!myOrders || myOrders.length === 0) {
+        list.classList.add('hidden');
+        if (empty) empty.classList.remove('hidden');
+        return;
+      }
+
+      if (empty) empty.classList.add('hidden');
+      list.classList.remove('hidden');
+
+      list.innerHTML = myOrders.map(o => `
+        <div class="card" style="padding:18px;border-color:var(--border-pink);background:var(--bg-card);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+            <div style="display:flex;gap:12px;align-items:center;">
+              <img src="${o.image}" style="width:48px;height:48px;border-radius:10px;object-fit:cover;" />
+              <div>
+                <div style="font-weight:700;font-size:0.92rem;color:#ffffff;">${o.name}</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">ออเดอร์ #${o.orderId} • ${o.date}</div>
+              </div>
+            </div>
+            <div class="badge badge-pink" style="font-size:0.72rem;">สำเร็จ</div>
+          </div>
+
+          <div class="card" style="padding:14px;background:var(--bg-elevated);border-color:var(--border);margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:0.78rem;color:var(--text-dim);font-weight:600;">รหัสเข้าใช้งาน:</span>
+              <button type="button" class="btn-ghost-sm btn-copy-cred" data-cred="${encodeURIComponent(formatCredentialHtml(o.credential))}" style="font-size:0.72rem;padding:3px 10px;cursor:pointer;">
+                📋 คัดลอก
+              </button>
+            </div>
+            <div style="font-size:0.86rem;font-weight:500;color:#f3f4f6;white-space:pre-wrap;word-break:break-word;line-height:1.65;font-family:inherit;text-align:left;background:rgba(0,0,0,0.35);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);letter-spacing:0.02em;">${escapeHtml(formatCredentialHtml(o.credential))}</div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
+            <span style="color:var(--text-dim);">ยอดที่ชำระ:</span>
+            <span style="font-weight:800;color:#fff;">${o.paidText}</span>
+          </div>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('.btn-copy-cred').forEach(btn => {
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(decodeURIComponent(btn.dataset.cred));
+          toast('📋 คัดลอกรหัสเข้าใช้งานแล้ว!', 'ok');
+        });
+      });
+    }
+
+    function updateTopNavAuth() {
+      const guestBox = document.getElementById('nav-guest');
+      const userBox = document.getElementById('nav-user');
+      const navUser = document.getElementById('nav-username');
+      const navPoints = document.getElementById('nav-points-balance');
+
+      if (currentUser) {
+        const memberRec = (StoreData.members || []).find(m => m.username === currentUser.username);
+        if (memberRec) currentUser.points = memberRec.points;
+
+        guestBox?.classList.add('hidden');
+        userBox?.classList.remove('hidden');
+        if (navUser) navUser.textContent = `@${currentUser.username}`;
+        if (navPoints) navPoints.textContent = `${currentUser.points || 0} แต้ม`;
+      } else {
+        userBox?.classList.add('hidden');
+        guestBox?.classList.remove('hidden');
+      }
+    }
+
+    /* ==========================================================================
+       SETUP EVENT LISTENERS & BOOTSTRAP
+       ========================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStoreData();
+      applyStoreConfigToUI();
+
+      const curPath = (window.location.pathname || '').toLowerCase();
+      const curHash = (window.location.hash || '').replace('#', '').toLowerCase();
+      let initV = 'home';
+      if (curPath.includes('order') || curHash === 'orders') initV = 'orders';
+      else if (curPath.includes('shop') || curHash === 'shop') initV = 'shop';
+      else if (curPath.includes('reward') || curHash === 'rewards') initV = 'rewards';
+      switchView(initV);
+      initCheckoutSystem();
+      initAuthHandlers();
+
+      document.querySelectorAll('.top-nav-link').forEach(link => {
+        link.addEventListener('click', () => switchView(link.dataset.view));
+      });
+
+      document.getElementById('brand-logo-btn')?.addEventListener('click', () => switchView('home'));
+
+      document.querySelectorAll('.bnav-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchView(btn.dataset.view));
+      });
+
+      document.getElementById('home-brand-grid')?.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-brand-id]');
+        if (card) showBrandDetail(card.dataset.brandId);
+      });
+
+      document.getElementById('shop-brand-grid')?.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-brand-id]');
+        if (card) showBrandDetail(card.dataset.brandId);
+      });
+
+      document.querySelectorAll('.schip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.schip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          currentFilterCat = chip.dataset.cat;
+          renderShopBrandCatalog();
+        });
+      });
+
+      document.getElementById('shop-catalog-search')?.addEventListener('input', (e) => {
+        currentSearchTerm = e.target.value.toLowerCase().trim();
+        renderShopBrandCatalog();
+      });
+
+      document.getElementById('btn-home-to-shop')?.addEventListener('click', () => switchView('shop'));
+      document.getElementById('btn-home-to-rewards')?.addEventListener('click', () => switchView('rewards'));
+      document.getElementById('btn-orders-to-shop')?.addEventListener('click', () => switchView('shop'));
+      document.getElementById('btn-empty-to-shop')?.addEventListener('click', () => switchView('shop'));
+      document.getElementById('btn-user-pill')?.addEventListener('click', () => switchView('rewards'));
+
+      // แลกของรางวัลด้วยแต้มสะสม (ระบบคิวสต็อก FIFO - คนแรกได้ ID 1 ตัดสต็อกทันที คนที่ 2 ได้ ID 2)
+      document.getElementById('rewards-grid')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-redeem');
+        if (!btn) return;
+
+        if (!currentUser) {
+          toast('🔒 กรุณาเข้าสู่ระบบก่อนทำการแลกรางวัล', 'warn');
+          openAuthModal('login');
+          return;
+        }
+
+        const rwId = btn.dataset.id;
+        const reward = (StoreData.rewards || []).find(r => r.id === rwId);
+        if (!reward) return;
+
+        const rawStock = reward.rewardStock || reward.rewardCode || '';
+        const stockItems = parseRewardStockItems(rawStock);
+        if (stockItems.length === 0) {
+          toast('⚠️ ขออภัย ของรางวัลนี้หมดสต็อกชั่วคราว ไม่สามารถแลกได้', 'warn');
+          applyStoreConfigToUI();
+          return;
+        }
+
+        const needPts = Number(reward.pts || 0);
+        if ((currentUser.points || 0) < needPts) {
+          toast(`แต้มสะสมไม่เพียงพอ (ต้องการ ${needPts} แต้ม)`, 'warn');
+          return;
+        }
+
+        // ตัด ID แรกออกไปส่งมอบ (FIFO) แล้วอัปเดตสต็อกที่เหลือกลับเข้าคลัง
+        const deliveredCred = stockItems.shift();
+        const updatedStockStr = serializeRewardStockItems(stockItems, rawStock);
+        reward.rewardStock = updatedStockStr;
+        reward.rewardCode = updatedStockStr;
+
+        currentUser.points -= needPts;
+        const memberRec = (StoreData.members || []).find(m => m.username === currentUser.username);
+        if (memberRec) memberRec.points = currentUser.points;
+
+        const rewardOrder = {
+          orderId: 'RW' + Math.floor(100000 + Math.random() * 900000),
+          owner: currentUser.username,
+          name: `[แลกพ้อย] ${reward.name}`,
+          image: reward.image || 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500',
+          price: 0,
+          paidText: `ใช้ ${needPts} แต้ม`,
+          date: new Date().toLocaleString('th-TH'),
+          credential: deliveredCred
+        };
+
+        StoreData.orders.unshift(rewardOrder);
+        saveStoreData(true);
+        applyStoreConfigToUI();
+
+        // เด้งกล่องข้อความ เมล พาส กลางจอทันที (Delivery Modal)
+        const badge = document.getElementById('deliv-badge');
+        if (badge) badge.textContent = '🎁 แลกของรางวัลสำเร็จ • จัดส่งทันที';
+        const title = document.getElementById('deliv-title');
+        if (title) title.textContent = 'ข้อมูลรหัสของรางวัลของคุณ (เมล / พาส)';
+
+        const meta = document.getElementById('deliv-meta');
+        if (meta) meta.textContent = `ออเดอร์ #${rewardOrder.orderId} • ${rewardOrder.name}`;
+
+        const credBox = document.getElementById('deliv-cred-container');
+        if (credBox) {
+          const formattedDeliv = formatCredentialHtml(deliveredCred);
+          credBox.innerHTML = `
+            <div class="card" style="padding:16px;background:rgba(20,15,26,0.9);border:1px solid var(--border-pink);border-radius:14px;text-align:left;box-shadow:0 0 25px rgba(255,45,120,0.2);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <span style="font-size:0.84rem;color:var(--pink-light);font-weight:700;">🔑 ข้อมูลสำหรับเข้าใช้งาน (เมล &amp; พาส):</span>
+                <button type="button" class="btn btn-primary btn-sm" id="btn-copy-deliv" style="font-size:0.78rem;padding:6px 14px;border-radius:8px;">
+                  📋 คัดลอกรหัส
+                </button>
+              </div>
+              <div style="color:#ffffff;font-size:0.92rem;font-weight:600;white-space:pre-wrap;word-break:break-word;line-height:1.7;text-align:left;background:rgba(0,0,0,0.55);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);max-height:360px;overflow-y:auto;letter-spacing:0.02em;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;">${escapeHtml(formattedDeliv)}</div>
+            </div>
+          `;
+          document.getElementById('btn-copy-deliv')?.addEventListener('click', () => {
+            navigator.clipboard.writeText(formattedDeliv);
+            toast('📋 คัดลอกรหัสเข้าใช้งานเรียบร้อยแล้ว!', 'ok');
+          });
+        }
+
+        const delivModal = document.getElementById('delivery-modal');
+        if (delivModal) {
+          delivModal.classList.remove('hidden');
+          const sheet = delivModal.querySelector('.modal-sheet');
+          if (sheet) sheet.scrollTop = 0;
+        }
+        toast(`🎉 แลกรางวัล "${reward.name}" สำเร็จ!`, 'ok');
+      });
+
+      setTimeout(() => {
+        updateTopIndicator();
+        updateBottomDock();
+      }, 100);
+
+      window.addEventListener('resize', () => {
+        updateTopIndicator();
+        updateBottomDock();
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<div class="site-footnote">
+  <div class="footnote-brand">⚡ <span id="footer-store-name">FRIENDBOOSTER</span> DIGITAL STORE</div>
+  <p>ชำระเงินสแกน QR รับรหัสทันที • ระบบตรวจสอบสลิปอัตโนมัติ 24 ชั่วโมง</p>
+</div>
+
+<!-- SVG Filter สำหรับเอฟเฟกต์หยดน้ำ Gooey Liquid ตาม Navigation Bar #2 -->
+<svg width="0" height="0" style="position:absolute;pointer-events:none;" aria-hidden="true">
+  <defs>
+    <filter id="mn-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur" />
+      <feColorMatrix
+        in="blur"
+        type="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+        result="goo"
+      />
+      <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+    </filter>
+  </defs>
+</svg>
+
+<nav class="nav2-wrap" id="magic-nav" aria-label="เมนูหลัก">
+  <div class="nav2-glow" id="nav2-glow"></div>
+
+  <svg class="nav2-bg-svg" id="nav2-svg" preserveAspectRatio="none" aria-hidden="true">
+    <path id="nav2-notch-path" d="" />
+  </svg>
+
+  <div class="nav2-goo-stage mn-goo" aria-hidden="true">
+    <span class="nav2-bead" id="nav2-bead-1"></span>
+    <span class="nav2-bead" id="nav2-bead-2"></span>
+    <span class="nav2-orb" id="nav2-orb"></span>
+  </div>
+
+  <div class="nav2-items">
+    <a href="/index.html" class="bnav-item" data-nav="home" data-idx="0">
+      <span class="bnav-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1v-9.5z"/>
+        </svg>
+      </span>
+      <span class="bnav-label">หน้าหลัก</span>
+    </a>
+
+    <a href="/shop.html" class="bnav-item" data-nav="shop" data-idx="1">
+      <span class="bnav-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </span>
+      <span class="bnav-label">สินค้า</span>
+    </a>
+
+    <a href="/rewards.html" class="bnav-item" data-nav="rewards" data-idx="2">
+      <span class="bnav-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 12 20 22 4 22 4 12"/>
+          <rect x="2" y="7" width="20" height="5" rx="1"/>
+          <line x1="12" y1="22" x2="12" y2="7"/>
+          <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+          <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+        </svg>
+      </span>
+      <span class="bnav-label">แลกของ</span>
+    </a>
+
+    <a href="/orders.html" class="bnav-item" data-nav="orders" data-idx="3">
+      <span class="bnav-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 12h6M9 16h4"/>
+        </svg>
+      </span>
+      <span class="bnav-label">ออเดอร์</span>
+    </a>
+  </div>
+</nav>

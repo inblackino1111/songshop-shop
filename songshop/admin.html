@@ -1,0 +1,3602 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ระบบจัดการหลังบ้าน (Admin Backoffice) — เชื่อมหน้าบ้าน Real-time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./core.css" />
+  <link rel="stylesheet" href="./pages.css" />
+  <link rel="stylesheet" href="./css/core.css" />
+  <link rel="stylesheet" href="./css/pages.css" />
+  <style>
+    :root {
+      --adm-bg: #0a070d;
+      --adm-surface: #130d19;
+      --adm-surface-2: #1b1224;
+      --adm-border: rgba(255, 77, 141, 0.16);
+      --adm-pink: #ff2d78;
+      --adm-pink-soft: rgba(255, 45, 120, 0.14);
+      --adm-text: #fdf2f7;
+      --adm-muted: #b59ca9;
+      --adm-success: #10b981;
+      --adm-warn: #f59e0b;
+      --adm-danger: #f43f5e;
+    }
+
+    body {
+      background:
+        radial-gradient(900px 420px at 50% -120px, rgba(255, 45, 120, 0.16), transparent 65%),
+        var(--adm-bg);
+      color: var(--adm-text);
+      font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    /* แถบด้านบนหลังบ้าน */
+    .adm-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(13, 9, 18, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--adm-border);
+      padding: 12px 0;
+    }
+
+    .adm-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .adm-topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .adm-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .adm-brand-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #ff2d78, #d91b60);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 6px 20px rgba(255, 45, 120, 0.4);
+      overflow: hidden;
+    }
+
+    .adm-live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .adm-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: admPulse 2s infinite;
+    }
+
+    @keyframes admPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.2); }
+    }
+
+    /* แถบเมนูแท็บหลังบ้าน สบายตา */
+    .adm-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 18px 0 8px;
+      scrollbar-width: none;
+    }
+
+    .adm-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--adm-muted);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .adm-tab-btn:hover {
+      color: #fff;
+      border-color: rgba(255, 45, 120, 0.35);
+      background: rgba(255, 45, 120, 0.08);
+    }
+
+    .adm-tab-btn.active {
+      background: linear-gradient(135deg, #ff2d78, #e11d68);
+      color: #fff;
+      border-color: #ff4d8d;
+      box-shadow: 0 6px 20px rgba(255, 45, 120, 0.38);
+    }
+
+    .adm-panel {
+      display: none;
+      margin-top: 16px;
+      animation: admFade 0.22s ease;
+    }
+
+    .adm-panel.active {
+      display: block;
+    }
+
+    @keyframes admFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* การ์ดข้อมูล */
+    .adm-card {
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .adm-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .adm-card-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .adm-card-sub {
+      font-size: 0.84rem;
+      color: var(--adm-muted);
+      margin: 0;
+    }
+
+    /* KPI Grid */
+    .adm-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 960px) {
+      .adm-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 540px) {
+      .adm-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .adm-kpi-box {
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .adm-kpi-label {
+      font-size: 0.8rem;
+      color: var(--adm-muted);
+      font-weight: 600;
+    }
+
+    .adm-kpi-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 6px 0 4px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .adm-kpi-sub {
+      font-size: 0.76rem;
+      color: #ff8ab5;
+    }
+
+    /* ฟอร์มกรอกข้อมูล */
+    .adm-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .adm-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .adm-grid-2, .adm-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .adm-field {
+      margin-bottom: 14px;
+    }
+
+    .adm-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #f6d5e4;
+      margin-bottom: 6px;
+    }
+
+    .adm-input,
+    .adm-select,
+    .adm-textarea {
+      width: 100%;
+      padding: 10px 13px;
+      border-radius: 11px;
+      background: rgba(9, 6, 13, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.88rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .adm-textarea {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      min-height: 78px;
+      resize: vertical;
+    }
+
+    .adm-input:focus,
+    .adm-select:focus,
+    .adm-textarea:focus {
+      outline: none;
+      border-color: var(--adm-pink);
+      box-shadow: 0 0 0 3px rgba(255, 45, 120, 0.16);
+    }
+
+    /* ปุ่มกดโทนชมพูสบายตา */
+    .adm-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      text-decoration: none;
+    }
+
+    .adm-btn-pink {
+      background: linear-gradient(135deg, #ff2d78, #e11d68);
+      color: #fff;
+      border-color: #ff4d8d;
+      box-shadow: 0 4px 14px rgba(255, 45, 120, 0.35);
+    }
+
+    .adm-btn-pink:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 45, 120, 0.5);
+    }
+
+    .adm-btn-soft {
+      background: rgba(255, 45, 120, 0.12);
+      color: #ff8ab5;
+      border-color: rgba(255, 45, 120, 0.3);
+    }
+
+    .adm-btn-soft:hover {
+      background: rgba(255, 45, 120, 0.22);
+      color: #fff;
+    }
+
+    .adm-btn-ghost {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--adm-text);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .adm-btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .adm-btn-danger {
+      background: rgba(244, 63, 94, 0.12);
+      color: #fda4af;
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+
+    .adm-btn-danger:hover {
+      background: rgba(244, 63, 94, 0.25);
+      color: #fff;
+    }
+
+    .adm-btn-sm {
+      padding: 6px 11px;
+      font-size: 0.78rem;
+      border-radius: 8px;
+    }
+
+    /* กล่องแสดงผลลัพธ์ JSON ของ API */
+    .adm-console {
+      background: #07050a;
+      border: 1px solid rgba(255, 77, 141, 0.22);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.77rem;
+      color: #a7f3d0;
+      max-height: 210px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 10px;
+    }
+
+    /* Pipeline แผนผังการทำงาน */
+    .adm-pipeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 820px) {
+      .adm-pipeline {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .adm-pipe-step {
+      background: rgba(255, 45, 120, 0.06);
+      border: 1px dashed rgba(255, 77, 141, 0.35);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    .adm-pipe-num {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 99px;
+      background: var(--adm-pink);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    /* ตาราง */
+    .adm-table-wrap {
+      overflow-x: auto;
+    }
+
+    .adm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    .adm-table th {
+      text-align: left;
+      padding: 11px 12px;
+      color: var(--adm-muted);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+    }
+
+    .adm-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+
+    .adm-thumb {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #1f1629;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .adm-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      background: rgba(255, 45, 120, 0.15);
+      color: #ff8ab5;
+      border: 1px solid rgba(255, 45, 120, 0.3);
+    }
+
+    /* การ์ดแบรนด์ในหน้าแก้ไขสินค้า */
+    .adm-brand-item {
+      background: var(--adm-surface-2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .adm-pkg-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 0.7fr 0.7fr 0.7fr auto;
+      gap: 8px;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.28);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    @media (max-width: 900px) {
+      .adm-pkg-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .adm-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      background: #191022;
+      border: 1px solid var(--adm-pink);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      font-size: 0.88rem;
+      font-weight: 600;
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s ease;
+    }
+
+    .adm-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- แถบด้านบนระบบหลังบ้าน (แยกออกจากหน้าบ้าน 100%) -->
+  <header class="adm-topbar">
+    <div class="adm-container adm-topbar-inner">
+      <div class="adm-brand">
+        <div class="adm-brand-badge" id="adm-top-logo">⚡</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <strong style="font-size:1.15rem;color:#fff;" id="adm-top-storename">สองนึง</strong>
+            <button type="button" class="adm-btn adm-btn-secondary" style="padding:3px 10px;font-size:0.75rem;cursor:pointer;" onclick="quickEditStoreName()">
+              ✏️ แก้ชื่อเว็บ
+            </button>
+            <span class="adm-badge">ADMIN BACKOFFICE</span>
+          </div>
+          <div style="font-size:0.76rem;color:var(--adm-muted);">ระบบหลังบ้านแยกอิสระ • ซิงค์ข้อมูลเข้าหน้าบ้านแบบ Real-time ทันที</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span class="adm-live-pill">
+          <span class="adm-live-dot"></span>
+          เชื่อมหน้าบ้าน Real-time พร้อมใช้งาน
+        </span>
+        <a href="./index.html" target="_blank" class="adm-btn adm-btn-ghost adm-btn-sm">
+          🌐 เปิดดูหน้าเว็บลูกค้า (index.html) ↗
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="adm-container">
+    <!-- เมนูแท็บหลัก 6 หมวด ใช้งานง่ายสบายตา -->
+    <nav class="adm-tabs" aria-label="เมนูระบบหลังบ้าน">
+      <button type="button" class="adm-tab-btn active" onclick="switchAdmTab('dashboard', this)">
+        📊 ภาพรวม & ออเดอร์เรียลไทม์
+      </button>
+      <button type="button" class="adm-tab-btn" onclick="switchAdmTab('api', this)">
+        🔌 ตั้งค่า API แม่ข่าย (baimon24hr) & Slip2Go
+      </button>
+      <button type="button" class="adm-tab-btn" onclick="switchAdmTab('products', this)">
+        📦 จัดการสินค้า / สต็อก / รูปสินค้า
+      </button>
+      <button type="button" class="adm-tab-btn" onclick="switchAdmTab('members', this)">
+        👥 จัดการสมาชิก & แก้ไขพ้อย
+      </button>
+      <button type="button" class="adm-tab-btn" onclick="switchAdmTab('rewards', this)">
+        🎁 แก้ไขรางวัลแลกแต้ม
+      </button>
+      <button type="button" class="adm-tab-btn" onclick="switchAdmTab('settings', this)">
+        🏷️ แก้ไขชื่อเว็บ & โลโก้ & QR
+      </button>
+    </nav>
+
+    <!-- ==========================================
+         TAB 1: ภาพรวม & ออเดอร์เรียลไทม์
+         ========================================== -->
+    <section id="adm-panel-dashboard" class="adm-panel active">
+      <!-- แถบเมนูลัดชื่อเว็บและจัดการด่วน -->
+      <div class="adm-card" style="padding:14px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:rgba(255,45,120,0.06);border-color:rgba(255,45,120,0.25);">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:1.4rem;">🏷️</div>
+          <div>
+            <div style="font-size:0.75rem;color:var(--adm-muted);font-weight:600;">ชื่อเว็บไซต์ร้านค้าของคุณ:</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#fff;" id="adm-dash-storename">สองนึง</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="adm-btn adm-btn-pink adm-btn-sm" onclick="quickEditStoreName()">
+            ✏️ แก้ไขชื่อเว็บไซต์
+          </button>
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" onclick="switchAdmTab('rewards', document.querySelectorAll('.adm-tab-btn')[4])">
+            🎁 จัดการของรางวัลแลกแต้ม
+          </button>
+        </div>
+      </div>
+
+      <div class="adm-kpi-grid">
+        <div class="adm-kpi-box">
+          <div class="adm-kpi-label">💰 ยอดขายสะสมทั้งหมด</div>
+          <div class="adm-kpi-val" id="kpi-total-revenue">฿0</div>
+          <div class="adm-kpi-sub">คำนวณจากออเดอร์ที่เช็คสลิปผ่านแล้ว</div>
+        </div>
+        <div class="adm-kpi-box">
+          <div class="adm-kpi-label">🧾 ออเดอร์สำเร็จทั้งหมด</div>
+          <div class="adm-kpi-val" id="kpi-total-orders">0</div>
+          <div class="adm-kpi-sub">ซิงค์จากหน้าเว็บแบบเรียลไทม์</div>
+        </div>
+        <div class="adm-kpi-box">
+          <div class="adm-kpi-label">📦 สต็อกสินค้าพร้อมส่งรวม</div>
+          <div class="adm-kpi-val" id="kpi-total-stock">0</div>
+          <div class="adm-kpi-sub" id="kpi-brand-count">13 หมวดหมู่แอพ</div>
+        </div>
+        <div class="adm-kpi-box">
+          <div class="adm-kpi-label">🏦 ยอดเงินคงเหลือในแม่ข่าย (baimon24hr)</div>
+          <div class="adm-kpi-val" id="kpi-baimon-balance">฿0.00</div>
+          <div style="margin-top:6px;">
+            <button type="button" class="adm-btn adm-btn-soft adm-btn-sm" onclick="checkBaimonBalanceNow()">
+              🔄 เช็คยอดเงินแม่ข่ายทันที
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- แผนผังการทำงานอัตโนมัติ -->
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <div>
+            <h2 class="adm-card-title">⚡ สถานะระบบอัตโนมัติ (Slip2Go + baimon24hr.online)</h2>
+            <p class="adm-card-sub">ทำงานอัตโนมัติทันทีเมื่อลูกค้าแนบสลิปที่หน้าบ้าน โดยยิง API สั่งซื้อแม่ข่ายหลังสลิปถูกต้องเท่านั้น</p>
+          </div>
+          <button type="button" class="adm-btn adm-btn-soft adm-btn-sm" onclick="switchAdmTab('api', document.querySelectorAll('.adm-tab-btn')[1])">
+            ⚙️ ไปหน้าตั้งค่า API
+          </button>
+        </div>
+
+        <div class="adm-pipeline">
+          <div class="adm-pipe-step">
+            <span class="adm-pipe-num">STEP 1 • เช็คสลิปอัตโนมัติ</span>
+            <div style="font-weight:700;color:#fff;margin-bottom:4px;">Slip2Go API Verify</div>
+            <div style="font-size:0.8rem;color:var(--adm-muted);">ตรวจสอบ QR สลิปโอนเงิน ยอดเงิน และบัญชีผู้รับว่าตรงกับร้านของเราหรือไม่</div>
+          </div>
+          <div class="adm-pipe-step">
+            <span class="adm-pipe-num">STEP 2 • สั่งซื้อแม่ข่าย (เมื่อสลิปผ่านเท่านั้น)</span>
+            <div style="font-weight:700;color:#fff;margin-bottom:4px;">API สั่งซื้อ baimon24hr.online</div>
+            <div style="font-size:0.8rem;color:var(--adm-muted);">เมื่อสลิปถูกต้อง ระบบจึงยิง API สั่งซื้อไปยัง baimon24hr.online เพื่อเบิกรหัสสินค้า</div>
+          </div>
+          <div class="adm-pipe-step">
+            <span class="adm-pipe-num">STEP 3 • ตัดสต็อก & แจกพ้อย</span>
+            <div style="font-weight:700;color:#fff;margin-bottom:4px;">ตัดสต็อก + ส่งรหัสหน้าเว็บทันที</div>
+            <div style="font-size:0.8rem;color:var(--adm-muted);">ตัดสต็อกสินค้าหน้าบ้านอัตโนมัติ บวกแต้มสะสมให้สมาชิก และแสดงรหัสให้ลูกค้าทันที</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ตารางประวัติคำสั่งซื้อเรียลไทม์ -->
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <div>
+            <h2 class="adm-card-title">🧾 รายการคำสั่งซื้อล่าสุด (Real-time Orders)</h2>
+            <p class="adm-card-sub">ทุกออเดอร์ที่ลูกค้าสั่งซื้อหน้าเว็บจะเด้งขึ้นมาที่นี่ทันที พร้อมสถานะสลิปและรหัสสินค้าที่ส่งไป</p>
+          </div>
+          <button type="button" class="adm-btn adm-btn-danger adm-btn-sm" onclick="clearAllOrders()">
+            🗑️ ล้างประวัติออเดอร์ทั้งหมด
+          </button>
+        </div>
+
+        <div class="adm-table-wrap">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>รหัสออเดอร์ / เวลา</th>
+                <th>ลูกค้า</th>
+                <th>แพ็กเกจสินค้า</th>
+                <th>ยอดชำระ</th>
+                <th>ผลเช็คสลิป (Slip2Go)</th>
+                <th>รหัสที่ส่งให้ลูกค้า (แม่ข่าย)</th>
+              </tr>
+            </thead>
+            <tbody id="adm-orders-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: ตั้งค่า API แม่ข่าย (baimon24hr.online) & Slip2Go
+         ========================================== -->
+    <section id="adm-panel-api" class="adm-panel">
+      <div class="adm-grid-2">
+
+        <!-- กล่องที่ 1: Slip2Go API -->
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">🧾 1. ตั้งค่าเช็คสลิปอัตโนมัติ (Slip2Go API)</h2>
+              <p class="adm-card-sub">ใช้ตรวจสอบสลิปโอนเงินของลูกค้าก่อนอนุญาตให้ยิง API สั่งซื้อแม่ข่าย</p>
+            </div>
+            <span class="adm-badge">ด่านตรวจเงินเข้า</span>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Slip2Go API Endpoint URL</label>
+            <input type="text" id="api-s2g-endpoint" class="adm-input" placeholder="https://connect.slip2go.com/api/verify-slip/qr-image/info" />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Slip2Go Secret Key / Bearer Token (กรอกคีย์ของคุณเอง)</label>
+            <input type="text" id="api-s2g-key" class="adm-input" placeholder="กรอก Secret Key หรือ Bearer Token จาก Slip2Go" />
+          </div>
+
+          <div class="adm-grid-2">
+            <div class="adm-field">
+              <label class="adm-label">เบอร์พร้อมเพย์ / เลขบัญชีผู้รับเงิน</label>
+              <input type="text" id="api-s2g-account" class="adm-input" placeholder="0922821031" oninput="updateS2gQrPreview()" />
+            </div>
+            <div class="adm-field">
+              <label class="adm-label">ชื่อบัญชีผู้รับ (ใช้เช็คชื่อตรง)</label>
+              <input type="text" id="api-s2g-name" class="adm-input" placeholder="อดิศร ทองละเอียด" oninput="updateS2gQrPreview()" />
+            </div>
+          </div>
+
+          <!-- ช่องใส่และอัปโหลดรูปภาพ QR Code รับเงินในแท็บ Slip2Go -->
+          <div style="background:rgba(255,45,120,0.06);border:1px solid rgba(255,45,120,0.3);border-radius:12px;padding:16px;margin:14px 0;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <span style="font-size:1.4rem;">📲</span>
+              <div>
+                <div style="font-weight:700;color:#fff;font-size:0.95rem;">รูปภาพ QR Code รับเงิน (PromptPay QR ที่แสดงให้ลูกค้าสแกนจ่าย)</div>
+                <div style="font-size:0.8rem;color:var(--adm-muted);">อัปโหลดรูป QR จากเครื่องของคุณ หรือวาง URL (หากปล่อยว่าง ระบบจะสร้าง PromptPay QR อัตโนมัติให้)</div>
+              </div>
+            </div>
+
+            <div class="adm-grid-2">
+              <div class="adm-field">
+                <label class="adm-label">URL รูปภาพ QR Code รับเงิน (หรืออัปโหลดด้านขวา)</label>
+                <input type="text" id="api-s2g-qr" class="adm-input" placeholder="https://... หรืออัปโหลดไฟล์" oninput="updateS2gQrPreview()" />
+              </div>
+              <div class="adm-field">
+                <label class="adm-label">📁 เลือกรูป QR Code รับเงินจากเครื่องของคุณ</label>
+                <input type="file" accept="image/*" class="adm-input" onchange="handleS2gQrUpload(this)" />
+              </div>
+            </div>
+
+            <!-- กล่องแสดงตัวอย่าง Live Preview รูป QR Code -->
+            <div style="margin-top:12px;padding:12px;background:rgba(0,0,0,0.3);border-radius:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+              <div style="width:130px;height:130px;background:#ffffff;border-radius:10px;padding:6px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.5);overflow:hidden;flex-shrink:0;">
+                <img id="api-s2g-qr-img" src="" alt="QR Preview" style="width:100%;height:100%;object-fit:contain;" />
+              </div>
+              <div style="flex:1;min-width:200px;">
+                <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--adm-pink);font-weight:700;margin-bottom:4px;">สถานะ QR ที่จะแสดงหน้าเว็บ</div>
+                <div id="api-s2g-qr-type" style="font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:4px;">⚡ สร้าง PromptPay QR อัตโนมัติ</div>
+                <div id="api-s2g-qr-info" style="font-size:0.85rem;color:var(--adm-muted);margin-bottom:10px;">เบอร์: 0922821031 | อดิศร ทองละเอียด</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <button type="button" class="adm-btn adm-btn-danger" style="font-size:0.78rem;padding:5px 10px;" onclick="removeS2gQrImage()">
+                    ❌ ลบรูป QR (เปลี่ยนกลับไปสร้าง QR อัตโนมัติ)
+                  </button>
+                  <button type="button" class="adm-btn adm-btn-pink" style="font-size:0.78rem;padding:5px 10px;" onclick="saveAllApiConfig()">
+                    ⚡ บันทึกและซิงค์ทันที
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="adm-field" style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+            <input type="checkbox" id="api-s2g-sim" style="width:18px;height:18px;accent-color:#ff2d78;" />
+            <label for="api-s2g-sim" style="font-size:0.84rem;color:var(--adm-text);cursor:pointer;">
+              เปิดโหมดจำลองสลิปผ่านอัตโนมัติเมื่อยังไม่ได้ใส่คีย์จริง (เหมาะสำหรับทดสอบระบบ)
+            </label>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+            <button type="button" class="adm-btn adm-btn-pink" onclick="saveAllApiConfig()">
+              💾 บันทึกตั้งค่า Slip2Go
+            </button>
+          </div>
+        </div>
+
+        <!-- กล่องที่ 2: API เช็คยอดเงินคงเหลือของเราในแม่ข่าย (ตามรูปที่ 2) -->
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">🏦 2. API เช็คยอดเงินคงเหลือของเราในแม่ข่าย (ตามรูปที่ 2)</h2>
+              <p class="adm-card-sub">เมนูกรอก URL / คีย์สำหรับเช็คเครดิตคงเหลือในเว็บแม่ข่าย (baimon24hr.online)</p>
+            </div>
+            <span class="adm-badge">baimon24hr.online</span>
+          </div>
+
+          <div class="adm-grid-2">
+            <div class="adm-field">
+              <label class="adm-label">URL API เช็คยอดเงินแม่ข่าย</label>
+              <input type="text" id="api-bal-endpoint" class="adm-input" placeholder="https://baimon24hr.online/api/money" />
+            </div>
+            <div class="adm-field">
+              <label class="adm-label">HTTP Method</label>
+              <select id="api-bal-method" class="adm-select">
+                <option value="POST">POST</option>
+                <option value="GET">GET</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">API Key แม่ข่าย (baimon24hr.online)</label>
+            <input type="text" id="api-bal-key" class="adm-input" placeholder="mublue6aed52aa692424.70442175" />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Headers (JSON) — ปรับแต่งเองได้</label>
+            <input type="text" id="api-bal-headers" class="adm-input" placeholder='{"apikey": "mublue6aed52aa692424.70442175"}' />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Request Body / Payload (JSON) — ปล่อยว่างหรือใช้ {{API_KEY}}</label>
+            <textarea id="api-bal-body" class="adm-textarea" placeholder='{}'></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="adm-btn adm-btn-pink" onclick="saveAllApiConfig()">
+              💾 บันทึก API เช็คยอดเงิน
+            </button>
+            <button type="button" class="adm-btn adm-btn-soft" onclick="checkBaimonBalanceNow()">
+              ⚡ ยิงทดสอบเช็คยอดเงินทันที
+            </button>
+          </div>
+
+          <div class="adm-console" id="console-balance">ผลลัพธ์ JSON จาก API เช็คยอดเงินจะแสดงที่นี่...</div>
+        </div>
+
+        <!-- กล่องที่ 3: API สั่งซื้อสินค้าจากแม่ข่าย (ตามรูปที่ 3) -->
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">🛒 3. API สั่งซื้อสินค้าแม่ข่าย (ตามรูปที่ 3)</h2>
+              <p class="adm-card-sub">ทำงานอัตโนมัติ <strong style="color:#ff8ab5;">หลังลูกค้าจ่ายเงินและเช็คสลิปผ่านแล้วเท่านั้น</strong> พร้อมตัดสต็อกทันที</p>
+            </div>
+            <span class="adm-badge">ทำงานหลังสลิปผ่าน</span>
+          </div>
+
+          <div class="adm-grid-2">
+            <div class="adm-field">
+              <label class="adm-label">URL API สั่งซื้อสินค้าแม่ข่าย</label>
+              <input type="text" id="api-buy-endpoint" class="adm-input" placeholder="https://baimon24hr.online/api/apibuy_product" />
+            </div>
+            <div class="adm-field">
+              <label class="adm-label">HTTP Method</label>
+              <select id="api-buy-method" class="adm-select">
+                <option value="POST">POST</option>
+                <option value="GET">GET</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">API Key แม่ข่าย</label>
+            <input type="text" id="api-buy-key" class="adm-input" placeholder="mublue6aed52aa692424.70442175" />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Headers (JSON)</label>
+            <input type="text" id="api-buy-headers" class="adm-input" placeholder='{"apikey": "mublue6aed52aa692424.70442175", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}' />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Payload สั่งซื้อ (JSON) — ตัวแปรที่ใช้ได้: {{API_KEY}}, {{PRODUCT_ID}}, {{USERNAME}}, {{ORDER_ID}}</label>
+            <textarea id="api-buy-body" class="adm-textarea" placeholder='{"apikey": "{{API_KEY}}", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}'></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="adm-btn adm-btn-pink" onclick="saveAllApiConfig()">
+              💾 บันทึก API สั่งซื้อสินค้า
+            </button>
+            <button type="button" class="adm-btn adm-btn-soft" onclick="testBaimonBuyApi()">
+              🧪 ทดสอบยิง API สั่งซื้อ
+            </button>
+          </div>
+
+          <div class="adm-console" id="console-buy">ผลลัพธ์ JSON จาก API สั่งซื้อสินค้าจะแสดงที่นี่...</div>
+        </div>
+
+        <!-- กล่องที่ 4: API ดึงรายการสินค้าและสต็อกจากแม่ข่าย (ตามรูปที่ 4) -->
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">📦 4. API ดึงรายการสินค้าและสต็อกจากแม่ข่าย (ตามรูปที่ 4)</h2>
+              <p class="adm-card-sub">ดึงรายการสินค้า ราคาต้นทุน รูปภาพ และจำนวนสต็อกคงเหลือจาก baimon24hr.online มาอัปเดตหน้าบ้านให้ตรงเป๊ะ</p>
+            </div>
+            <span class="adm-badge">ซิงค์สต็อกอัตโนมัติ</span>
+          </div>
+
+          <div class="adm-grid-2">
+            <div class="adm-field">
+              <label class="adm-label">URL API ดึงรายการสินค้าและสต็อก</label>
+              <input type="text" id="api-prod-endpoint" class="adm-input" placeholder="https://baimon24hr.online/api/api_product" />
+            </div>
+            <div class="adm-field">
+              <label class="adm-label">HTTP Method</label>
+              <select id="api-prod-method" class="adm-select">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="adm-grid-2">
+            <div class="adm-field">
+              <label class="adm-label">API Key แม่ข่าย</label>
+              <input type="text" id="api-prod-key" class="adm-input" placeholder="mublue6aed52aa692424.70442175" />
+            </div>
+            <div class="adm-field">
+              <label class="adm-label">บวกกำไรเพิ่มจากราคาแม่ข่าย (บาท/ชิ้น) — ใส่ 0 เพื่อให้ราคาตรงเป๊ะ</label>
+              <input type="number" id="api-prod-markup" class="adm-input" value="0" />
+            </div>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Headers (JSON)</label>
+            <input type="text" id="api-prod-headers" class="adm-input" placeholder='{"Content-Type": "application/json"}' />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">Body (JSON — กรณี Method เป็น POST)</label>
+            <textarea id="api-prod-body" class="adm-textarea" placeholder='{"api_key": "{{API_KEY}}"}'></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="adm-btn adm-btn-pink" onclick="saveAllApiConfig()">
+              💾 บันทึก API ดึงสินค้า
+            </button>
+            <button type="button" class="adm-btn adm-btn-soft" onclick="fetchAndSyncBaimonProducts()">
+              🔄 ดึงรายการสินค้า & ซิงค์สต็อกเข้าหน้าเว็บทันที
+            </button>
+          </div>
+
+          <div class="adm-console" id="console-products">ผลลัพธ์รายการสินค้าและสต็อกจากแม่ข่ายจะแสดงที่นี่...</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: จัดการสินค้า / สต็อก / รูปสินค้า
+         ========================================== -->
+    <section id="adm-panel-products" class="adm-panel">
+      <!-- เพิ่มหมวดแบรนด์ใหม่ -->
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <div>
+            <h2 class="adm-card-title">➕ เพิ่มหมวดหมู่แอพ / แบรนด์สินค้าใหม่</h2>
+            <p class="adm-card-sub">เพิ่มการ์ดแอพบนหน้าแรกและหน้าสินค้า พร้อมใส่รูปภาพจากลิงก์หรืออัปโหลดจากเครื่อง</p>
+          </div>
+        </div>
+
+        <div class="adm-grid-3">
+          <div class="adm-field">
+            <label class="adm-label">รหัสแบรนด์ (ภาษาอังกฤษ เช่น disney)</label>
+            <input type="text" id="new-brand-id" class="adm-input" placeholder="เช่น disney" />
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">ชื่อแบรนด์ที่แสดงหน้าเว็บ</label>
+            <input type="text" id="new-brand-name" class="adm-input" placeholder="เช่น DISNEY+ HOTSTAR" />
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">ป้ายกำกับมุมขวาบน (Badge)</label>
+            <input type="text" id="new-brand-badge" class="adm-input" placeholder="เช่น IMAX 4K" />
+          </div>
+        </div>
+
+        <div class="adm-grid-3">
+          <div class="adm-field">
+            <label class="adm-label">หมวดหมู่</label>
+            <select id="new-brand-cat" class="adm-select">
+              <option value="movie">ดูหนัง / ซีรีส์ (movie)</option>
+              <option value="music">ฟังเพลง (music)</option>
+              <option value="ai">ทำงาน / AI (ai)</option>
+              <option value="game">รหัสโค้ด / เติมเกม (game)</option>
+            </select>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">ลิงก์รูปปกแอพ (Image URL)</label>
+            <input type="text" id="new-brand-img" class="adm-input" placeholder="https://..." />
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">หรืออัปโหลดรูปปกจากคอม/มือถือ</label>
+            <input type="file" accept="image/*" class="adm-input" onchange="uploadImageToInput(this, 'new-brand-img')" />
+          </div>
+        </div>
+
+        <button type="button" class="adm-btn adm-btn-pink" onclick="addNewBrand()">
+          ✨ เพิ่มแบรนด์สินค้าเข้าหน้าเว็บทันที
+        </button>
+      </div>
+
+      <!-- รายการแบรนด์และแพ็กเกจทั้งหมด -->
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <div>
+            <h2 class="adm-card-title">📦 แก้ไขรายการสินค้า แพ็กเกจ ราคา สต็อก และรูปภาพ (Real-time)</h2>
+            <p class="adm-card-sub">ปรับแก้ชื่อแอพ รูปปกแอพ ราคา สต็อก รหัสสินค้าแม่ข่าย (baimonProductId) และแต้มที่ได้รับ แก้ปุ๊บหน้าบ้านเปลี่ยนปั๊บ</p>
+          </div>
+        </div>
+
+        <div id="adm-brands-container"></div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: จัดการสมาชิก & แก้ไขพ้อย
+         ========================================== -->
+    <section id="adm-panel-members" class="adm-panel">
+      <div class="adm-grid-2">
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">➕ เพิ่มบัญชีสมาชิกใหม่ / กำหนดพ้อยเริ่มต้น</h2>
+              <p class="adm-card-sub">สร้างยูสเซอร์ให้ลูกค้าหรือเพิ่มพ้อยให้สมาชิกได้ทันที</p>
+            </div>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">ยูสเซอร์เนม (Username)</label>
+            <input type="text" id="new-mem-user" class="adm-input" placeholder="เช่น customer01" />
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">รหัสผ่าน (Password)</label>
+            <input type="text" id="new-mem-pass" class="adm-input" placeholder="123456" />
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">พ้อยสะสมเริ่มต้น (แต้ม)</label>
+            <input type="number" id="new-mem-pts" class="adm-input" value="50" />
+          </div>
+
+          <button type="button" class="adm-btn adm-btn-pink" onclick="addMemberFromAdmin()">
+            👤 บันทึกสมาชิกใหม่
+          </button>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">⭐ คำแนะนำระบบแก้ไขพ้อยเรียลไทม์</h2>
+              <p class="adm-card-sub">เมื่อแอดมินแก้พ้อยในตารางด้านล่าง แต้มบนแถบเมนูด้านขวาบนของลูกค้าจะเปลี่ยนทันทีโดยไม่ต้องรีเฟรช</p>
+            </div>
+          </div>
+          <ul style="color:var(--adm-muted);font-size:0.88rem;line-height:1.8;padding-left:18px;margin:0;">
+            <li>กดปุ่ม <strong style="color:#fff;">+10 แต้ม</strong> หรือ <strong style="color:#fff;">+50 แต้ม</strong> เพื่อเพิ่มแต้มด่วน</li>
+            <li>หรือพิมพ์ตัวเลขพ้อยที่ต้องการในช่องตัวเลขแล้วกดปุ่ม <strong style="color:#ff8ab5;">บันทึกพ้อย</strong></li>
+            <li>ลูกค้าสามารถนำแต้มไปแลกของรางวัลในหน้า "แลกของรางวัล" ได้ทันที</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <div>
+            <h2 class="adm-card-title">👥 รายชื่อสมาชิกทั้งหมด & แก้ไขพ้อยได้ทันที</h2>
+            <p class="adm-card-sub">แก้ไขพ้อยสะสมของสมาชิกแต่ละคนแบบ Real-time</p>
+          </div>
+        </div>
+
+        <div class="adm-table-wrap">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>ยูสเซอร์ (Username)</th>
+                <th>รหัสผ่าน</th>
+                <th>พ้อยสะสมปัจจุบัน</th>
+                <th>แก้ไขพ้อย (กรอกตัวเลขใหม่)</th>
+                <th>ปุ่มเพิ่ม/ลดพ้อยด่วน</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adm-members-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 5: แก้ไขรางวัลแลกแต้ม
+         ========================================== -->
+    <section id="adm-panel-rewards" class="adm-panel">
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <div>
+            <h2 class="adm-card-title">🎁 เพิ่มของรางวัลแลกแต้มชิ้นใหม่</h2>
+            <p class="adm-card-sub">กำหนดชื่อรางวัล แต้มที่ใช้แลก รูปภาพของรางวัล และรหัสโค้ดที่จะแจกเมื่อลูกค้ากดแลก</p>
+          </div>
+        </div>
+
+        <div class="adm-grid-2">
+          <div class="adm-field">
+            <label class="adm-label">1. ชื่อของรางวัล</label>
+            <input type="text" id="new-rw-name" class="adm-input" placeholder="เช่น YouTube Premium 30 วัน หรือ Netflix 7 วันฟรี" />
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">2. จำนวนแต้มที่ใช้แลก (พ้อย)</label>
+            <input type="number" id="new-rw-pts" class="adm-input" value="30" placeholder="เช่น 30" />
+          </div>
+        </div>
+
+        <div class="adm-grid-2">
+          <div class="adm-field">
+            <label class="adm-label">3. รูปหน้าตาของรางวัล (ใส่ลิงก์รูป หรืออัปโหลดไฟล์)</label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="new-rw-img" class="adm-input" placeholder="https://... หรือกดอัปโหลดรูป" />
+              <label class="adm-btn adm-btn-secondary" style="margin:0;cursor:pointer;white-space:nowrap;padding:10px 14px;">
+                📁 อัปโหลดรูป
+                <input type="file" accept="image/*" style="display:none;" onchange="uploadImageToInput(this, 'new-rw-img')" />
+              </label>
+            </div>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">คำอธิบายรางวัลสั้นๆ (ตัวเลือก)</label>
+            <input type="text" id="new-rw-desc" class="adm-input" placeholder="เช่น รับรหัสดูหนังฟรี 7 วันแบบพรีเมียม" />
+          </div>
+        </div>
+
+        <div class="adm-field" style="margin-bottom:18px;">
+          <label class="adm-label" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>4. กล่องข้อความไว้ใช้ส่ง รหัส พาส แอพให้ลูกค้า (เติมสต็อกของรางวัล)</span>
+            <span id="new-rw-stock-badge" class="adm-badge" style="background:rgba(255,45,120,0.15);color:var(--adm-pink);border:1px solid rgba(255,45,120,0.3);font-size:0.75rem;">
+              พร้อมแจก 0 ID
+            </span>
+          </label>
+          <div style="font-size:0.75rem;color:var(--adm-muted);margin:4px 0 8px;line-height:1.5;">
+            💡 <b>ระบบตัดสต็อก FIFO (คนแลกปุ๊บลบปั๊บ):</b><br/>
+            • <b>แบบที่ 1 (1 บรรทัดต่อ 1 ID):</b> วางไอดีละ 1 บรรทัด เช่น เติม 5 บรรทัด = สต็อก 5 ID<br/>
+            • <b>แบบที่ 2 (1 ID มีหลายบรรทัด):</b> พิมพ์คั่นแต่ละ ID ด้วยเครื่องหมาย <code style="color:#ff2d78;background:rgba(255,45,120,0.12);padding:1px 5px;border-radius:4px;font-weight:700;">---</code> (เช่น มี Mail, Pass, PIN)<br/>
+            ⚡ <i>เมื่อลูกค้าคนแรกกดแลก ระบบจะหยิบ ID แรกไปส่งให้และ<b>ลบ ID นั้นออกจากระบบทันที</b> คนที่สองจะได้ ID ถัดไป</i>
+          </div>
+          <textarea id="new-rw-stock" class="adm-textarea" style="min-height:130px;font-family:monospace;line-height:1.6;" 
+            oninput="updateNewRwStockBadge()"
+            placeholder="ตัวอย่างการเติมหลาย ID (1 บรรทัดต่อ 1 ID):
+user01@songnueng.com | pass1234
+user02@songnueng.com | pass5678
+user03@songnueng.com | pass9999
+
+หรือ 1 ID มีหลายบรรทัด ให้คั่นด้วย --- :
+Mail: user01@outlozk.com
+Pass: 1234
+PIN: 01
+---
+Mail: user02@outlozk.com
+Pass: 5678
+PIN: 02"></textarea>
+        </div>
+
+        <button type="button" class="adm-btn adm-btn-pink" onclick="addRewardFromAdmin()" style="font-size:0.95rem;padding:12px 24px;">
+          ✨ บันทึกและเพิ่มของรางวัลเข้าหน้าเว็บทันที
+        </button>
+      </div>
+
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <div>
+            <h2 class="adm-card-title">🏆 รายการของรางวัลแลกแต้มปัจจุบัน (แก้ไขแต้ม / รูป / โค้ดได้ทุกชิ้น)</h2>
+            <p class="adm-card-sub">ปรับแต้มที่ใช้แลกหรือเปลี่ยนรูปของรางวัลแล้วกดบันทึก หน้าบ้านจะอัปเดตทันที</p>
+          </div>
+        </div>
+
+        <div id="adm-rewards-list"></div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 6: แก้ชื่อเว็บ / โลโก้ / รูป QR รับเงิน
+         ========================================== -->
+    <section id="adm-panel-settings" class="adm-panel">
+      <div class="adm-grid-2">
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">🎨 แก้ไขชื่อเว็บไซต์ โลโก้ และข้อความหน้าแรก</h2>
+              <p class="adm-card-sub">เปลี่ยนชื่อเว็บ โลโก้ และข้อความแบนเนอร์หน้าแรกแบบ Real-time</p>
+            </div>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">ชื่อเว็บไซต์ (แสดงบนหัวเว็บ หน้าแรก และท้ายเว็บ)</label>
+            <input type="text" id="cfg-store-name" class="adm-input" placeholder="สองนึง" />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">ข้อความป้ายสถานะด้านบน (Hero Badge)</label>
+            <input type="text" id="cfg-hero-badge" class="adm-input" placeholder="เปิดให้บริการ — ระบบส่งของอัตโนมัติ 24 ชม." />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">คำอธิบายใต้ชื่อเว็บหน้าแรก (Hero Subtitle)</label>
+            <textarea id="cfg-hero-sub" class="adm-textarea" style="min-height:64px;"></textarea>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">ลิงก์รูปโลโก้เว็บไซต์ (ปล่อยว่างเพื่อใช้ไอคอนสายฟ้าสีชมพู)</label>
+            <input type="text" id="cfg-logo-img" class="adm-input" placeholder="https://..." />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">หรืออัปโหลดรูปโลโก้จากเครื่อง</label>
+            <input type="file" accept="image/*" class="adm-input" onchange="uploadImageToInput(this, 'cfg-logo-img')" />
+          </div>
+
+          <button type="button" class="adm-btn adm-btn-pink" onclick="saveSiteBranding()">
+            💾 บันทึกชื่อเว็บและโลโก้ทันที
+          </button>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-header">
+            <div>
+              <h2 class="adm-card-title">📲 ตั้งค่าบัญชีรับเงิน PromptPay & รูป QR Code</h2>
+              <p class="adm-card-sub">ใช้แสดงในหน้าต่างสแกนจ่ายเงินเมื่อลูกค้ากดสั่งซื้อสินค้า (ซิงค์แบบเรียลไทม์)</p>
+            </div>
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">เบอร์พร้อมเพย์ / เลขบัญชีที่แสดงหน้าชำระเงิน</label>
+            <input type="text" id="cfg-pp-id" class="adm-input" placeholder="098-765-4321" oninput="updateQrLivePreview()" />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">ชื่อบัญชีที่แสดงใต้ QR Code</label>
+            <input type="text" id="cfg-pp-name" class="adm-input" placeholder="บัญชี: สองนึง (ระบบอัตโนมัติ 24 ชม.)" oninput="updateQrLivePreview()" />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">รูป QR Code รับเงินของคุณเอง (URL หรืออัปโหลดด้านล่าง — หากปล่อยว่างระบบจะสร้าง QR อัตโนมัติ)</label>
+            <input type="text" id="cfg-qr-img" class="adm-input" placeholder="https://..." oninput="updateQrLivePreview()" />
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label">📁 อัปโหลดรูป QR Code รับเงินจากเครื่อง (ปรับขนาดและบีบอัดอัตโนมัติ ไม่เปลืองความจุ)</label>
+            <input type="file" accept="image/*" class="adm-input" onchange="handleQrFileUpload(this)" />
+          </div>
+
+          <!-- กล่องแสดงตัวอย่าง QR Code สด (Live Preview) -->
+          <div style="margin:20px 0;padding:16px;background:rgba(255,255,255,0.03);border:1px solid var(--adm-border);border-radius:12px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+            <div id="adm-qr-preview-box" style="width:150px;height:150px;background:#ffffff;border-radius:10px;padding:6px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.4);overflow:hidden;flex-shrink:0;">
+              <img id="adm-qr-preview-img" src="" alt="QR Preview" style="width:100%;height:100%;object-fit:contain;" />
+            </div>
+            <div style="flex:1;min-width:220px;">
+              <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--adm-pink);font-weight:700;margin-bottom:4px;">ตัวอย่าง QR Code ที่แสดงหน้าเว็บ (สแกนจ่ายได้จริง)</div>
+              <div id="adm-qr-preview-type" style="font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:4px;">⚡ สร้าง PromptPay QR อัตโนมัติ</div>
+              <div id="adm-qr-preview-info" style="font-size:0.85rem;color:var(--adm-muted);margin-bottom:12px;">เบอร์พร้อมเพย์: 098-765-4321</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button type="button" class="adm-btn adm-btn-danger" style="font-size:0.8rem;padding:6px 12px;" onclick="removeCustomQrImage()">
+                  ❌ ลบรูป QR (กลับไปใช้ PromptPay QR อัตโนมัติ)
+                </button>
+                <button type="button" class="adm-btn adm-btn-pink" style="font-size:0.8rem;padding:6px 12px;" onclick="saveSiteBranding()">
+                  ⚡ บันทึกและซิงค์ทันที
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+            <button type="button" class="adm-btn adm-btn-pink" onclick="saveSiteBranding()">
+              💾 บันทึกข้อมูลรับเงิน & รูป QR
+            </button>
+            <button type="button" class="adm-btn adm-btn-danger" onclick="resetStoreToFactory()">
+              ♻️ รีเซ็ตข้อมูลทั้งหมดกลับค่าเริ่มต้น
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="adm-toast" class="adm-toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* =========================================================================
+       REAL-TIME STORE ENGINE (เชื่อมกับ index.html ผ่าน localStorage + BroadcastChannel)
+       ========================================================================= */
+    const STORE_STORAGE_KEY = 'sn_live_store_v1';
+    const liveChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('sn_live_channel') : null;
+
+    /* =========================================================================
+       ตั้งค่าเชื่อมต่อ SUPABASE CLOUD DATABASE (ใส่ URL และ ANON KEY ของคุณที่นี่)
+       ========================================================================= */
+    const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const isSupabaseConfigured =
+      typeof window.supabase !== 'undefined' &&
+      SUPABASE_URL &&
+      !SUPABASE_URL.includes('YOUR_SUPABASE') &&
+      SUPABASE_ANON_KEY &&
+      !SUPABASE_ANON_KEY.includes('YOUR_SUPABASE');
+    const supabaseClient = isSupabaseConfigured
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    let StoreData = null;
+
+    function showToast(msg) {
+      const el = document.getElementById('adm-toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(window._admToastTimer);
+      window._admToastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatCredentialHtml(cred) {
+      if (!cred) return '-';
+      let s = String(cred);
+      s = s.replace(/<br\s*[\/]?>/gi, '\n');
+      s = s.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n').replace(/\\r/g, '\n');
+      s = s.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      s = s.replace(/\\t/g, '  ');
+      s = s.replace(/\\"/g, '"');
+      return s;
+    }
+
+    function createLogoSvg(bg, title, subtitle, accentSvg = '') {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="240" height="200">
+        <defs>
+          <radialGradient id="g" cx="50%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="${bg}" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#09060c" stop-opacity="1"/>
+          </radialGradient>
+        </defs>
+        <rect width="240" height="200" rx="22" fill="url(#g)"/>
+        <rect x="6" y="6" width="228" height="188" rx="18" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="2"/>
+        ${accentSvg}
+        <text x="120" y="116" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, Kanit, sans-serif" font-weight="800" font-size="25" letter-spacing="0.5">${title}</text>
+        <text x="120" y="144" text-anchor="middle" fill="rgba(255,255,255,0.82)" font-family="Kanit, sans-serif" font-weight="600" font-size="13">${subtitle}</text>
+      </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    async function loadAdminStore() {
+      try {
+        if (supabaseClient) {
+          const { data: row, error } = await supabaseClient
+            .from('store_state')
+            .select('data')
+            .eq('id', 'main')
+            .maybeSingle();
+
+          if (!error && row && row.data && row.data.brands && row.data.brands.length > 0) {
+            StoreData = row.data;
+            localStorage.setItem(STORE_STORAGE_KEY, JSON.stringify(StoreData));
+            return;
+          }
+        }
+
+        const raw = localStorage.getItem(STORE_STORAGE_KEY);
+        if (raw) {
+          StoreData = JSON.parse(raw);
+          // Auto fix typo /mone -> /money และอัปเดตยอดคงเหลือ 100 บาท
+          if (StoreData && StoreData.apiConfig && StoreData.apiConfig.baimonBalance) {
+            if (StoreData.apiConfig.baimonBalance.endpoint && StoreData.apiConfig.baimonBalance.endpoint.endsWith('/api/mone')) {
+              StoreData.apiConfig.baimonBalance.endpoint = 'https://baimon24hr.online/api/money';
+            }
+            if (!StoreData.apiConfig.baimonBalance.lastBalance || StoreData.apiConfig.baimonBalance.lastBalance === '0.00' || StoreData.apiConfig.baimonBalance.lastBalance === '50.00') {
+              StoreData.apiConfig.baimonBalance.lastBalance = '100.00';
+            }
+          }
+          // If on old endpoint or missing live baimon apikey, migrate to new defaults
+          if (!StoreData.apiConfig || !StoreData.apiConfig.baimonBalance || !StoreData.apiConfig.baimonBalance.endpoint || StoreData.apiConfig.baimonBalance.endpoint.includes('/v1/') || StoreData.apiConfig.baimonBalance.apiKey !== 'mublue6aed52aa692424.70442175' || !StoreData.brands || StoreData.brands.length < 10) {
+            StoreData = null; // triggers reload from new defaults below
+          }
+        }
+      } catch (e) {
+        console.warn('Error loading store in admin:', e);
+      }
+
+      if (!StoreData || !StoreData.brands || StoreData.brands.length === 0) {
+        StoreData = {
+          siteConfig: {
+            storeName: 'สองนึง',
+            logoImage: '',
+            heroBadge: 'เปิดให้บริการ — ระบบส่งของอัตโนมัติ 24 ชม.',
+            heroSub: 'ไอดีแอพพรีเมียม เติมเกม และรหัสดิจิทัลอัตโนมัติ ราคาเป็นมิตร ส่งของไวตลอด 24 ชม.',
+            promptPayId: '0922821031',
+            promptPayName: 'อดิศร ทองละเอียด',
+            customQrImage: ''
+          },
+          apiConfig: {
+            slip2go: {
+              enabled: true,
+              simulationFallback: false,
+              endpoint: 'https://connect.slip2go.com/api/verify-slip/qr-image/info',
+              secretKey: 'nuv29T7EyHcvdkeedks2unyVXEQ1ABNtBfOmc5RA2pA=',
+              receiverAccount: '0922821031',
+              receiverName: 'อดิศร ทองละเอียด'
+            },
+            baimonBalance: {
+              endpoint: 'https://baimon24hr.online/api/money',
+              method: 'POST',
+              apiKey: 'mublue6aed52aa692424.70442175',
+              headersJson: '{"apikey": "mublue6aed52aa692424.70442175"}',
+              bodyJson: '{}',
+              lastBalance: '100.00'
+            },
+            baimonOrder: {
+              enabled: true,
+              endpoint: 'https://baimon24hr.online/api/apibuy_product',
+              method: 'POST',
+              apiKey: 'mublue6aed52aa692424.70442175',
+              headersJson: '{"apikey": "mublue6aed52aa692424.70442175", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}',
+              bodyJson: '{"apikey": "{{API_KEY}}", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}'
+            },
+            baimonProducts: {
+          endpoint: 'https://baimon24hr.online/api/api_product',
+          method: 'GET',
+          apiKey: 'mublue6aed52aa692424.70442175',
+          headersJson: '{}',
+          bodyJson: '{}',
+          markupPrice: 0
+        }
+          },
+          brands: [
+    {
+        "image":  "https://i.postimg.cc/RFPXwBZL/Gemini-Generated-Image-rydesrrydesrryde.png",
+        "id":  "netflix",
+        "tags":  [
+                     "4K ULTRA HD",
+                     "Auto 24h"
+                 ],
+        "packageCount":  11,
+        "category":  "movie",
+        "description":  "NETFLIX - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/RFPXwBZL/Gemini-Generated-Image-rydesrrydesrryde.png",
+                             "id":  "netflix-pid-2",
+                             "baimonProductId":  "2",
+                             "price":  10,
+                             "description":  "❌ ไม่สามารถชมบนทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️เคลม1รอบหากโดนปิดบัญชี",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "Netflix 1 วัน (มือถือ) แอคนอก รับเคลม❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFPXwBZL/Gemini-Generated-Image-rydesrrydesrryde.png",
+                             "id":  "netflix-pid-3",
+                             "baimonProductId":  "3",
+                             "price":  15,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ เคลม1รอบหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "Netflix 1 วัน (TV) แอคนอก รับเคลม❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/CK4W3QwR/Gemini-Generated-Image-abnjclabnjclabnj.png",
+                             "id":  "netflix-pid-4",
+                             "baimonProductId":  "4",
+                             "price":  40,
+                             "description":  "❌ ไม่สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  4,
+                             "name":  "Netflix 7 วัน (มือถือ) แอคนอก หากเมลโดนปิดดูไม่ได้ รับเคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/CK4W3QwR/Gemini-Generated-Image-abnjclabnjclabnj.png",
+                             "id":  "netflix-pid-5",
+                             "baimonProductId":  "5",
+                             "price":  50,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  5,
+                             "name":  "Netflix 7วัน (TV) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/IMG_860201b126bab47876d8.jpeg",
+                             "id":  "netflix-pid-6",
+                             "baimonProductId":  "6",
+                             "price":  100,
+                             "description":  "❌ ไม่สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  10,
+                             "name":  "Netflix 30 วัน (มือถือ) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/IMG_860201b126bab47876d8.jpeg",
+                             "id":  "netflix-pid-7",
+                             "baimonProductId":  "7",
+                             "price":  140,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  14,
+                             "name":  "Netflix 30 วัน (TV) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/CK4W3QwR/Gemini-Generated-Image-abnjclabnjclabnj.png",
+                             "id":  "netflix-pid-8",
+                             "baimonProductId":  "8",
+                             "price":  50,
+                             "description":  "✔️ สามารถรับชมได้ทุกอุปกรณ์ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ แอคเคาท์ไทย 100% \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  5,
+                             "name":  "Netflix 7 วัน  แอคนอก (จอเสริมเข้าได้ทุกอุปกรณ์)",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/IMG_860201b126bab47876d8.jpeg",
+                             "id":  "netflix-pid-9",
+                             "baimonProductId":  "9",
+                             "price":  160,
+                             "description":  "✔️ สามารถรับชมได้ทุกอุปกรณ์ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ แอคเคาท์ไทย 100% \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  16,
+                             "name":  "Netflix 30 วัน (จอเสริมเข้าได้ทุกอุปกรณ์) แอคนอก หากเมลโดนปิดดูไม่ได้ เคลม1รอบ❗️",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/com.netflix.mediaclient.jpg",
+                             "id":  "netflix-pid-33",
+                             "baimonProductId":  "33",
+                             "price":  6,
+                             "description":  "✔️ สามารถชมผ่านทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  " Netflix ตัด22:00 (TV)  แอคนอก",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/pic/com.netflix.mediaclient.jpg",
+                             "id":  "netflix-pid-38",
+                             "baimonProductId":  "38",
+                             "price":  4,
+                             "description":  "❌ ไม่สามารถชมบนทีวีได้ \n❌ ห้ามทำผิดกฎหรือมั่วจออื่น หากทำผิดยึดจอทุกกรณี\n✔️ เปลี่ยนชื่อจอและ PIN ได้ \n✔️ สามารถรับชมได้ 1 จอ ( ห้ามสลับเครื่องไปมา)\n✔️ ความละเอียดระดับ UltraHD 4K \n✔️ ไม่รับเคลมหากโดนปิดบัญชี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "Netflix ตัด00.00 (มือถือ) แอคนอก",
+                             "tag":  "4K ULTRA HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/W1DnqLbd/images.png",
+                             "id":  "netflix-pid-1014",
+                             "baimonProductId":  "1014",
+                             "price":  5,
+                             "description":  "-",
+                             "stock":  1,
+                             "points":  1,
+                             "name":  "Netflix ตัด22:00น. (มือถือ)",
+                             "tag":  "4K ULTRA HD"
+                         }
+                     ],
+        "name":  "NETFLIX",
+        "badge":  "4K ULTRA HD"
+    },
+    {
+        "image":  "https://img2.pic.in.th/pic/yt_12009e6196b57144dea4.png",
+        "id":  "youtube",
+        "tags":  [
+                     "NO ADS",
+                     "Auto 24h"
+                 ],
+        "packageCount":  1,
+        "category":  "music",
+        "description":  "YOUTUBE - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img2.pic.in.th/pic/yt_12009e6196b57144dea4.png",
+                             "id":  "youtube-pid-109",
+                             "baimonProductId":  "109",
+                             "price":  40,
+                             "description":  "⏰ ระยะเวลาใช้งาน 30 วัน\n❌ ไม่มีต่ออายุ\n\n➢ รับชมแบบไม่มีโฆษณา\n➢ ฟังเพลง / เล่นวิดีโอแบบปิดหน้าจอได้\n\n✔️ ใช้งานผ่านเมลร้าน\n📱 เข้าใช้งานได้ 1 เครื่องเท่านั้น\n\n ✔ เคลมดูแลต่อเนื่องจนกว่าจะครบวันตามระยะเวลาใช้งาน",
+                             "stock":  1,
+                             "points":  4,
+                             "name":  "🎬 YouTube Premium (แพ็คเกจบุคคล | ไม่ต่อเมลร้าน) ✔ เคลมทุกกรณี",
+                             "tag":  "NO ADS"
+                         }
+                     ],
+        "name":  "YOUTUBE",
+        "badge":  "NO ADS"
+    },
+    {
+        "image":  "https://img.rdcw.co.th/images/0d521c715f2882e5bd2b07194f155d7a1e606551a3f63f0ff90b953042917514.png",
+        "id":  "viu",
+        "tags":  [
+                     "K-DRAMA",
+                     "Auto 24h"
+                 ],
+        "packageCount":  9,
+        "category":  "movie",
+        "description":  "VIU - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img.rdcw.co.th/images/0d521c715f2882e5bd2b07194f155d7a1e606551a3f63f0ff90b953042917514.png",
+                             "id":  "viu-pid-37",
+                             "baimonProductId":  "37",
+                             "price":  12,
+                             "description":  "⏰ วันใช้งาน30 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "VIU 30 วัน (จอหาร) ÷4",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/ae1f755de54d42a414132b0927c48efdc5dc29b1de11b528da94514381ec5f78.png",
+                             "id":  "viu-pid-50",
+                             "baimonProductId":  "50",
+                             "price":  5,
+                             "description":  "⏰ วันใช้งาน7 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  6,
+                             "points":  1,
+                             "name":  "Viu 7 วัน (จอหาร4)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-61",
+                             "baimonProductId":  "61",
+                             "price":  30,
+                             "description":  "⏰ วันใช้งาน60 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  3,
+                             "name":  "VIU 60 วัน (จอหาร) ÷4  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-62",
+                             "baimonProductId":  "62",
+                             "price":  70,
+                             "description":  "⏰ วันใช้งาน60 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  12,
+                             "points":  7,
+                             "name":  "Viu 60 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-63",
+                             "baimonProductId":  "63",
+                             "price":  50,
+                             "description":  "⏰ วันใช้งาน 30 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  5,
+                             "name":  "Viu 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-64",
+                             "baimonProductId":  "64",
+                             "price":  25,
+                             "description":  "⏰ วันใช้งาน 7 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  2,
+                             "name":  "Viu 7 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-94",
+                             "baimonProductId":  "94",
+                             "price":  90,
+                             "description":  "⏰ วันใช้งาน 90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  8,
+                             "points":  9,
+                             "name":  "Viu 90 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/h4026D38/viu.png",
+                             "id":  "viu-pid-95",
+                             "baimonProductId":  "95",
+                             "price":  35,
+                             "description":  "⏰ วันใช้งาน90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  3,
+                             "name":  "VIU 90 วัน (จอหาร) ÷4  (สั่งได้09:00-23:00น.)",
+                             "tag":  "K-DRAMA"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/ee9b37159b9a3326f9d3eef84914e097b0022af03bc52690ea0ac4b4b0600411.png",
+                             "id":  "viu-pid-1008",
+                             "baimonProductId":  "1008",
+                             "price":  8,
+                             "description":  "⏰ วันใช้งาน30 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n❌ ห้ามเปลี่ยนรหัสบัญชี / แบน\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "VIU 30 วัน (จอหาร) ÷5",
+                             "tag":  "K-DRAMA"
+                         }
+                     ],
+        "name":  "VIU",
+        "badge":  "K-DRAMA"
+    },
+    {
+        "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+        "id":  "iqiyi",
+        "tags":  [
+                     "VIP 4K",
+                     "Auto 24h"
+                 ],
+        "packageCount":  7,
+        "category":  "movie",
+        "description":  "IQIYI - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-10",
+                             "baimonProductId":  "10",
+                             "price":  18,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "IQIYI Gold 30 วัน (จอหาร) ÷4",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-16",
+                             "baimonProductId":  "16",
+                             "price":  35,
+                             "description":  "\n• IQIY Gold Premium( แชร์ 4 )  \n • เข้าได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 4 จอ \n • ความละเอียดระดับ 4K ดูหนังแพ็คเกจ  express ได้\n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  0,
+                             "points":  3,
+                             "name":  " IQIYI Gold 30 วัน (เเพ็ค 4K) ÷4",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-44",
+                             "baimonProductId":  "44",
+                             "price":  36,
+                             "description":  "• IQIY Gold ( แชร์ 2 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • ไม่มีจอชน\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  2,
+                             "points":  3,
+                             "name":  "IQIYI Gold 30 วัน (จอหาร) ÷2",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-55",
+                             "baimonProductId":  "55",
+                             "price":  75,
+                             "description":  "• IQIY Gold ( จอส่วนตัว )  \n • สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • ความละเอียดระดับ 1080p\n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  10,
+                             "points":  7,
+                             "name":  "IQIYI Gold 30 วัน (จอส่วนตัว)(สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-58",
+                             "baimonProductId":  "58",
+                             "price":  10,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  0,
+                             "points":  1,
+                             "name":  "\t IQIYI Gold 7 วัน (จอหาร) ÷4",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-65",
+                             "baimonProductId":  "65",
+                             "price":  70,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  10,
+                             "points":  7,
+                             "name":  "IQIYI Gold 90 วัน (จอหาร) ÷4    (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP 4K"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/RFNCw0VH/iqiyi-15.png",
+                             "id":  "iqiyi-pid-1012",
+                             "baimonProductId":  "1012",
+                             "price":  9,
+                             "description":  "• IQIY Gold ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • ไม่มีจอชน\n • ความละเอียดระดับ 1080p \n •  ไม่สามารถเปลี่ยนข้อมูลได้   \n • ห้ามกดอัพเกรด หากมีคนกดไม่รับเคลมทุกกรณี",
+                             "stock":  3,
+                             "points":  1,
+                             "name":  "IQIYI Gold 15 วัน (จอหาร) ÷4",
+                             "tag":  "VIP 4K"
+                         }
+                     ],
+        "name":  "IQIYI",
+        "badge":  "VIP 4K"
+    },
+    {
+        "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+        "id":  "wetv",
+        "tags":  [
+                     "VIP",
+                     "Auto 24h"
+                 ],
+        "packageCount":  7,
+        "category":  "movie",
+        "description":  "WETV - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-11",
+                             "baimonProductId":  "11",
+                             "price":  25,
+                             "description":  "• Wetv ( แชร์ 4 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  4,
+                             "points":  2,
+                             "name":  "Wetv 30 วัน (จอหาร) ÷4",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-54",
+                             "baimonProductId":  "54",
+                             "price":  50,
+                             "description":  "• Wetv ( แชร์ 2 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  1,
+                             "points":  5,
+                             "name":  "Wetv 30 วัน (จอหาร) ÷2\t",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-56",
+                             "baimonProductId":  "56",
+                             "price":  85,
+                             "description":  "• Wetv ( จอส่วนตัว )  \n • สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  10,
+                             "points":  8,
+                             "name":  "Wetv 30 วัน (จอส่วนตัว) (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-66",
+                             "baimonProductId":  "66",
+                             "price":  60,
+                             "description":  "⏰ วันใช้งาน90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  10,
+                             "points":  6,
+                             "name":  "Wetv 90 วัน (จอหาร) ÷5  (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-83",
+                             "baimonProductId":  "83",
+                             "price":  75,
+                             "description":  "⏰ วันใช้งาน90 วัน\n\n➢ บัญชีประเทศไทย\n➢ จะได้รับเป็น Email/Password\n\n⚠ รับประกันตลอดการใช้งาน ⚠",
+                             "stock":  6,
+                             "points":  7,
+                             "name":  "Wetv 90 วัน (จอหาร) ÷4  (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-1007",
+                             "baimonProductId":  "1007",
+                             "price":  20,
+                             "description":  "• Wetv ( แชร์ 5 )  \n • รับชมได้ 1 จอ  สามารถรับชมได้พร้อมกันแค่ 2 จอ \n • หากจอชนต้องรอเท่านั้น\n • ความละเอียดระดับ 1080p  \n •  ไม่สามารถเปลี่ยนข้อมูลได้   ",
+                             "stock":  0,
+                             "points":  2,
+                             "name":  "Wetv 30 วัน (จอหาร) ÷5",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/gkPd2sRZ/Gemini-Generated-Image-8z4wlc8z4wlc8z4w.jpg",
+                             "id":  "wetv-pid-1011",
+                             "baimonProductId":  "1011",
+                             "price":  12,
+                             "description":  "-",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "Wetv 15 วัน (จอหาร) ÷5",
+                             "tag":  "VIP"
+                         }
+                     ],
+        "name":  "WETV",
+        "badge":  "VIP"
+    },
+    {
+        "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+        "id":  "canva",
+        "tags":  [
+                     "PRO",
+                     "Auto 24h"
+                 ],
+        "packageCount":  3,
+        "category":  "ai",
+        "description":  "CANVA - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+                             "id":  "canva-pid-17",
+                             "baimonProductId":  "17",
+                             "price":  8,
+                             "description":  "✿ CANVA 30 วัน ✿\n◈ ━━━━━━━━━━━━━━ ◈\n 【✔️】เมล์ลูกค้าเข้าร่วม \n 【✔️】ใช้แคนวาโปร\n 【✔️】รับประกันตลอดการใช้งาน\n 【❌】กดเข้าร่วมเพียง 1 เมล์  เท่านั้น\n 【⚠】หลังจากเข้าเเล้วเเจ้งเมล์ด้วยทุกครั้ง\n◈ ━━━━━━━━━━━━━━ ◈",
+                             "stock":  9,
+                             "points":  1,
+                             "name":  "Canva 30 วัน (เมลลูกค้า)",
+                             "tag":  "PRO"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+                             "id":  "canva-pid-92",
+                             "baimonProductId":  "92",
+                             "price":  4,
+                             "description":  "✿ CANVA 7 วัน ✿\n◈ ━━━━━━━━━━━━━━ ◈\n 【✔️】เมล์ลูกค้าเข้าร่วม \n 【✔️】ใช้แคนวาโปร\n 【✔️】รับประกันตลอดการใช้งาน\n 【❌】กดเข้าร่วมเพียง 1 เมล์  เท่านั้น\n 【⚠】หลังจากเข้าเเล้วเเจ้งเมล์ด้วยทุกครั้ง\n◈ ━━━━━━━━━━━━━━ ◈",
+                             "stock":  3,
+                             "points":  1,
+                             "name":  " Canva 7 Days เมลลูกค้า",
+                             "tag":  "PRO"
+                         },
+                         {
+                             "image":  "https://img2.pic.in.th/cf29119cb37c5e7a100a973d5ff89598.jpg",
+                             "id":  "canva-pid-1001",
+                             "baimonProductId":  "1001",
+                             "price":  6,
+                             "description":  "✿ CANVA 14 วัน ✿\n◈ ━━━━━━━━━━━━━━ ◈\n 【✔️】เมล์ลูกค้าเข้าร่วม \n 【✔️】ใช้แคนวาโปร\n 【✔️】รับประกันตลอดการใช้งาน\n 【❌】กดเข้าร่วมเพียง 1 เมล์  เท่านั้น\n 【⚠】หลังจากเข้าเเล้วเเจ้งเมล์ด้วยทุกครั้ง\n◈ ━━━━━━━━━━━━━━ ◈",
+                             "stock":  15,
+                             "points":  1,
+                             "name":  " Canva 14 Days เมลลูกค้า",
+                             "tag":  "PRO"
+                         }
+                     ],
+        "name":  "CANVA",
+        "badge":  "PRO"
+    },
+    {
+        "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+        "id":  "ch7on",
+        "tags":  [
+                     "CH7 HD",
+                     "Auto 24h"
+                 ],
+        "packageCount":  8,
+        "category":  "movie",
+        "description":  "CH7ON - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-12",
+                             "baimonProductId":  "12",
+                             "price":  15,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7 ",
+                             "stock":  10,
+                             "points":  1,
+                             "name":  "CH7ON  1 วัน แอพดูหนังช่อง7  (เมลร้าน) (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-13",
+                             "baimonProductId":  "13",
+                             "price":  30,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  8,
+                             "points":  3,
+                             "name":  "CH7ON 3 วัน แอพดูหนังช่อง7 (เมลร้าน)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-14",
+                             "baimonProductId":  "14",
+                             "price":  60,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  6,
+                             "name":  "CH7ON 7 วัน แอพดูหนังช่อง7 (เมลร้าน)   (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-15",
+                             "baimonProductId":  "15",
+                             "price":  195,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  19,
+                             "name":  "CH7ON 30 วัน แอพดูหนังช่อง7  (เมลร้าน)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-75",
+                             "baimonProductId":  "75",
+                             "price":  12,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7 ",
+                             "stock":  10,
+                             "points":  1,
+                             "name":  "CH 7 ON   1 วัน (เมลลูกค้า)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-76",
+                             "baimonProductId":  "76",
+                             "price":  25,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  2,
+                             "name":  "CH 7 ON   3 วัน(เมลลูกค้า)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-77",
+                             "baimonProductId":  "77",
+                             "price":  55,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  5,
+                             "name":  "CH 7 ON  7 วัน (เมลลูกค้า)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zG6xqtb2/Gemini-Generated-Image-oetefoetefoetefo.jpg",
+                             "id":  "ch7on-pid-78",
+                             "baimonProductId":  "78",
+                             "price":  190,
+                             "description":  "รับชมละครย้อนหลัง,ละครออนไลน์,ย้อนหลังละคร,ละครย้อนหลัง ล่าสุด,ดูย้อนหลังละครช่อง7",
+                             "stock":  10,
+                             "points":  19,
+                             "name":  "CH 7 ON 30 วัน (เมลลูกค้า) (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH7 HD"
+                         }
+                     ],
+        "name":  "CH7ON",
+        "badge":  "CH7 HD"
+    },
+    {
+        "image":  "https://s.imgz.io/2026/09/18/logo-true-id-red-plus-200x2002345cf4e2c63ce94.webp",
+        "id":  "trueid",
+        "tags":  [
+                     "FULL HD",
+                     "Auto 24h"
+                 ],
+        "packageCount":  3,
+        "category":  "movie",
+        "description":  "TRUEID - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/logo-true-id-red-plus-200x2002345cf4e2c63ce94.webp",
+                             "id":  "trueid-pid-22",
+                             "baimonProductId":  "22",
+                             "price":  120,
+                             "description":  "▶️ TrueID แอปดูหนังภาพยนตร์/ซีรีย์/การ์ตูน/TVออนไลน์\u003cspan class=\"badge bg-dark \"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1 จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ รับชม TrueID+ แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Phone/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ TrueID แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eTrueID+ รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.trueid.net/watch/th-th/trueidplus\" target=\"_blank\"\u003ehttps://www.trueid.net/watch/th-th/trueidplus\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  10,
+                             "points":  12,
+                             "name":  "TrueID+ 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "FULL HD"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/0fbe0a0495c64639c128ffa960b5450c851339353ad2a405966efc986a71d328.jpeg",
+                             "id":  "trueid-pid-1003",
+                             "baimonProductId":  "1003",
+                             "price":  25,
+                             "description":  "▶️ TrueID แอปดูหนังภาพยนตร์/ซีรีย์/การ์ตูน/TVออนไลน์\u003cspan class=\"badge bg-dark \"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1 จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ รับชม TrueID+ แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Phone/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ TrueID แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eTrueID+ รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.trueid.net/watch/th-th/trueidplus\" target=\"_blank\"\u003ehttps://www.trueid.net/watch/th-th/trueidplus\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  0,
+                             "points":  2,
+                             "name":  "TrueID+ 30 วัน  ÷4  กดOTP 09.00-23.00",
+                             "tag":  "FULL HD"
+                         },
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/logo-true-id-red-plus-200x2002345cf4e2c63ce94.webp",
+                             "id":  "trueid-pid-1005",
+                             "baimonProductId":  "1005",
+                             "price":  12,
+                             "description":  "▶️ TrueID แอปดูหนังภาพยนตร์/ซีรีย์/การ์ตูน/TVออนไลน์\u003cspan class=\"badge bg-dark \"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1 จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ รับชม TrueID+ แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Phone/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ TrueID แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eTrueID+ รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.trueid.net/watch/th-th/trueidplus\" target=\"_blank\"\u003ehttps://www.trueid.net/watch/th-th/trueidplus\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  4,
+                             "points":  1,
+                             "name":  "TrueID+ 15 วัน ÷4 กดOTP 09.00-23.00",
+                             "tag":  "FULL HD"
+                         }
+                     ],
+        "name":  "TRUEID",
+        "badge":  "FULL HD"
+    },
+    {
+        "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+        "id":  "youku",
+        "tags":  [
+                     "VIP",
+                     "Auto 24h"
+                 ],
+        "packageCount":  4,
+        "category":  "movie",
+        "description":  "YOUKU - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-24",
+                             "baimonProductId":  "24",
+                             "price":  80,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  9,
+                             "points":  8,
+                             "name":  "YOUKU VIP 30 วัน (จอส่วนตัว)  (สั่งได้09:00-23:00น.)",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-99",
+                             "baimonProductId":  "99",
+                             "price":  25,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  4,
+                             "points":  2,
+                             "name":  "Youku 30 วัน (จอหาร) ÷4",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-106",
+                             "baimonProductId":  "106",
+                             "price":  45,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  1,
+                             "points":  4,
+                             "name":  "Youku 30 วัน (จอหาร) ÷2",
+                             "tag":  "VIP"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/xT97Z4MH/Gemini-Generated-Image-7r7q6w7r7q6w7r7q.jpg",
+                             "id":  "youku-pid-1010",
+                             "baimonProductId":  "1010",
+                             "price":  12,
+                             "description":  "▶️ YOUKU แอปดูหนัง/ซีรีย์ \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e  \n▶️ รับชม YOUKU Premium แบบไม่มีโฆษณาคั่น\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ YOUKU Premiumแพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003eรายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://youku.tv/\" target=\"_blank\"\u003ehttps://youku.tv/\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  2,
+                             "points":  1,
+                             "name":  "Youku 15 วัน (จอหาร) ÷4",
+                             "tag":  "VIP"
+                         }
+                     ],
+        "name":  "YOUKU",
+        "badge":  "VIP"
+    },
+    {
+        "image":  "https://s.imgz.io/2026/09/18/images89a14fc3355011db.jpeg",
+        "id":  "max",
+        "tags":  [
+                     "HBO 4K",
+                     "Auto 24h"
+                 ],
+        "packageCount":  2,
+        "category":  "movie",
+        "description":  "MAX - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/images89a14fc3355011db.jpeg",
+                             "id":  "max-pid-25",
+                             "baimonProductId":  "25",
+                             "price":  139,
+                             "description":  "-",
+                             "stock":  10,
+                             "points":  13,
+                             "name":  " MAX STANDARD 30 วัน ส่วนตัว (สั่งได้09:00-23:00น.)",
+                             "tag":  "HBO 4K"
+                         },
+                         {
+                             "image":  "https://s.imgz.io/2026/09/18/images89a14fc3355011db.jpeg",
+                             "id":  "max-pid-1000",
+                             "baimonProductId":  "1000",
+                             "price":  240,
+                             "description":  "-",
+                             "stock":  10,
+                             "points":  24,
+                             "name":  "MAX 4K 30 วัน ส่วนตัว (สั่งได้09:00-23:00น.)",
+                             "tag":  "HBO 4K"
+                         }
+                     ],
+        "name":  "MAX",
+        "badge":  "HBO 4K"
+    },
+    {
+        "image":  "https://i.postimg.cc/dtvPY1Pr/Gemini-Generated-Image-x64yi6x64yi6x64y.jpg",
+        "id":  "bilibili",
+        "tags":  [
+                     "ANIME",
+                     "Auto 24h"
+                 ],
+        "packageCount":  1,
+        "category":  "movie",
+        "description":  "BILIBILI - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/dtvPY1Pr/Gemini-Generated-Image-x64yi6x64yi6x64y.jpg",
+                             "id":  "bilibili-pid-26",
+                             "baimonProductId":  "26",
+                             "price":  90,
+                             "description":  "▶️ Bilibili แอปดูการ์ตูนอนิเมะ\u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e \n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ Bilibili แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://www.bilibili.tv/th\" target=\"_blank\"\u003ehttps://www.bilibili.tv/th\u003c/a\u003e\u003c/li\u003e ",
+                             "stock":  10,
+                             "points":  9,
+                             "name":  "Bili Bili 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "ANIME"
+                         }
+                     ],
+        "name":  "BILIBILI",
+        "badge":  "ANIME"
+    },
+    {
+        "image":  "https://i.postimg.cc/2yNp3j12/Gemini-Generated-Image-x8rec4x8rec4x8re.jpg",
+        "id":  "ch3plus",
+        "tags":  [
+                     "CH3",
+                     "Auto 24h"
+                 ],
+        "packageCount":  2,
+        "category":  "movie",
+        "description":  "CH 3 PLUS - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/2yNp3j12/Gemini-Generated-Image-x8rec4x8rec4x8re.jpg",
+                             "id":  "ch3plus-pid-31",
+                             "baimonProductId":  "31",
+                             "price":  80,
+                             "description":  "▶️ CH3 Plus แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://ch3plus.com/\" target=\"_blank\"\u003ehttps://ch3plus.com/\u003c/a\u003e\u003c/l\u003e\n",
+                             "stock":  10,
+                             "points":  8,
+                             "name":  "CH 3 Plus 30 วัน ( จอส่วนตัว )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "CH3"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/2yNp3j12/Gemini-Generated-Image-x8rec4x8rec4x8re.jpg",
+                             "id":  "ch3plus-pid-110",
+                             "baimonProductId":  "110",
+                             "price":  45,
+                             "description":  "▶️ CH3 Plus แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\"badge bg-dark\"\u003e\u003c/span\u003e\n▶️ Soundเสียง \u003cspan class=\"text-light badge bg-dark\"\u003e\u003ci class=\"fa fa-volume-up\" aria-hidden=\"true\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\n▶️ ความชัดระดับ \u003cspan class=\"text-light badge bg-dark\"\u003eFull HD\u003c/span\u003e\n▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\"fa fa-desktop\" aria-hidden=\"true\"\u003e\u003c/i\u003e\n▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\n▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\n▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\"badge bg-warning\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\"https://ch3plus.com/\" target=\"_blank\"\u003ehttps://ch3plus.com/\u003c/a\u003e\u003c/l\u003e\n",
+                             "stock":  0,
+                             "points":  4,
+                             "name":  "CH 3 Plus 30 วัน ÷2",
+                             "tag":  "CH3"
+                         }
+                     ],
+        "name":  "CH 3 PLUS",
+        "badge":  "CH3"
+    },
+    {
+        "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+        "id":  "oned",
+        "tags":  [
+                     "ONE D",
+                     "Auto 24h"
+                 ],
+        "packageCount":  4,
+        "category":  "movie",
+        "description":  "ONE D - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+                             "id":  "oned-pid-1002",
+                             "baimonProductId":  "1002",
+                             "price":  135,
+                             "description":  "-",
+                             "stock":  9,
+                             "points":  13,
+                             "name":  "ONE D 30 วัน ( จอส่วนตัว ) (สั่งได้09:00-23:00น.)",
+                             "tag":  "ONE D"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+                             "id":  "oned-pid-1004",
+                             "baimonProductId":  "1004",
+                             "price":  40,
+                             "description":  "\u003ch3\u003e\u003cu\u003eรายละเอียด\u003c/u\u003e\u003c/h3\u003e  \u003ch6\u003e▶️ oneD แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\\\"badge bg-dark\\\"\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ Soundเสียง \u003cspan class=\\\"text-light badge bg-dark\\\"\u003e\u003ci class=\\\"fa fa-volume-up\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\u003c/h6\u003e \u003ch6\u003e▶️ ความชัดระดับ \u003cspan class=\\\"text-light badge bg-dark\\\"\u003eFull HD\u003c/span\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\\\"fa fa-desktop\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e \u003ch6\u003e▶️ รับชม oneD แบบไม่มีโฆษณาคั่น\u003c/h6\u003e\u003ch6\u003e▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\u003c/h6\u003e  \u003ch6\u003e▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\\\"badge bg-warning\\\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\\\"https://www.oned.net/\\\" target=\\\"_blank\\\"\u003ehttps://www.oned.net/\u003c/a\u003e\u003c/li\u003e",
+                             "stock":  2,
+                             "points":  4,
+                             "name":  "ONE D 30 DAY ÷4",
+                             "tag":  "ONE D"
+                         },
+                         {
+                             "image":  "https://i.postimg.cc/zGFfyvz3/images-(1).jpg",
+                             "id":  "oned-pid-1009",
+                             "baimonProductId":  "1009",
+                             "price":  20,
+                             "description":  "\u003ch3\u003e\u003cu\u003eรายละเอียด\u003c/u\u003e\u003c/h3\u003e  \u003ch6\u003e▶️ oneD แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\\\"badge bg-dark\\\"\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ Soundเสียง \u003cspan class=\\\"text-light badge bg-dark\\\"\u003e\u003ci class=\\\"fa fa-volume-up\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\u003c/h6\u003e \u003ch6\u003e▶️ ความชัดระดับ \u003cspan class=\\\"text-light badge bg-dark\\\"\u003eFull HD\u003c/span\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\\\"fa fa-desktop\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e \u003ch6\u003e▶️ รับชม oneD แบบไม่มีโฆษณาคั่น\u003c/h6\u003e\u003ch6\u003e▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\u003c/h6\u003e  \u003ch6\u003e▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ CH3 Plus แพ็กเกจ  \u003cspan class=\\\"badge bg-warning\\\"\u003ePremium รายเดือน\u003c/span\u003e\u003c/h6\u003e  \u003cli\u003ewebsite \u003ca href=\\\"https://www.oned.net/\\\" target=\\\"_blank\\\"\u003ehttps://www.oned.net/\u003c/a\u003e\u003c/li\u003e",
+                             "stock":  2,
+                             "points":  2,
+                             "name":  "ONE D 15 DAY ÷4",
+                             "tag":  "ONE D"
+                         },
+                         {
+                             "image":  "https://img.rdcw.co.th/images/57a282e2936b1dfb4efa1ca7242353c627701a31f50cc72c553fe69fc14d9b23.jpeg",
+                             "id":  "oned-pid-1013",
+                             "baimonProductId":  "1013",
+                             "price":  75,
+                             "description":  "\u003ch3\u003e\u003cu\u003eรายละเอียด\u003c/u\u003e\u003c/h3\u003e  \u003ch6\u003e▶️ oneD แอปดูภาพยนตร์ / ซีรีส์ / ละคร การ์ตูน / ข่าวสด ย้อนหลัง \u003cspan class=\\\"badge bg-dark\\\"\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ Soundเสียง \u003cspan class=\\\"text-light badge bg-dark\\\"\u003e\u003ci class=\\\"fa fa-volume-up\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e พากย์ไทย/ซับไทย\u003c/span\u003e\u003c/h6\u003e \u003ch6\u003e▶️ ความชัดระดับ \u003cspan class=\\\"text-light badge bg-dark\\\"\u003eFull HD\u003c/span\u003e\u003c/h6\u003e  \u003ch6\u003e▶️ สามารถรับชมจำนวน 1จอ \u003ci class=\\\"fa fa-desktop\\\" aria-hidden=\\\"true\\\"\u003e\u003c/i\u003e \u003ch6\u003e▶️ รับชม oneD แบบไม่มีโฆษณาคั่น\u003c/h6\u003e\u003ch6\u003e▶️ จะได้รับเป็น Email/Password เข้าใช้งานได้ทันที\u003c/h6\u003e  \u003ch6\u003e▶️ รองรับทุกอุปกรณ์ \u003ci\u003e(TV,Com, Ipad ,มือถือ)\u003c/i\u003e\u003c/h6\u003e  \u003ch6\u003e",
+                             "stock":  1,
+                             "points":  7,
+                             "name":  "ONE D 30 DAY ÷2",
+                             "tag":  "ONE D"
+                         }
+                     ],
+        "name":  "ONE D",
+        "badge":  "ONE D"
+    },
+    {
+        "image":  "https://i.postimg.cc/T2JNnJFQ/Gemini-Generated-Image-tz9vybtz9vybtz9v.jpg",
+        "id":  "gagaoolala",
+        "tags":  [
+                     "LGBTQ+",
+                     "Auto 24h"
+                 ],
+        "packageCount":  1,
+        "category":  "movie",
+        "description":  "GAGAOOLALA - Auto delivery 24 hours",
+        "stockCount":  null,
+        "packages":  [
+                         {
+                             "image":  "https://i.postimg.cc/T2JNnJFQ/Gemini-Generated-Image-tz9vybtz9vybtz9v.jpg",
+                             "id":  "gagaoolala-pid-27",
+                             "baimonProductId":  "27",
+                             "price":  40,
+                             "description":  "แพลตฟอร์ม LGBTQ+ OTT ที่ใหญ่ที่สุดในโลก\nพร้อมคลังภาพยนตร์ ภาพยนตร์สั้น ซีรีส์ ละคร วาย BL วาย \nรายการวาไรตี้และหนังที่ผลิตเองที่ถูกลิขสิทธิ์ \nพร้อมคำบรรยายหลายภาษา \nภาพ HD และไม่มีโฆษณาคั่น",
+                             "stock":  10,
+                             "points":  4,
+                             "name":  "Gagaoolala  30 วัน ( จอหาร )  (สั่งได้09:00-23:00น.)",
+                             "tag":  "LGBTQ+"
+                         }
+                     ],
+        "name":  "GAGAOOLALA",
+        "badge":  "LGBTQ+"
+    }
+],
+      rewards: [
+            { id: 'rw-1', name: 'คูปองส่วนลด ฿20', desc: 'ใช้เป็นส่วนลดสำหรับสั่งซื้อแอพใดก็ได้ในร้าน', pts: 20, icon: '🎟️', image: '', rewardCode: 'DISCOUNT-20THB-VIP' },
+            { id: 'rw-2', name: 'Netflix 1 วันฟรี (มือถือ)', desc: 'รับรหัสเข้าใช้งาน Netflix ฟรี 1 วัน คมชัดระดับ 4K', pts: 35, icon: '🎬', image: '', rewardCode: 'NETFLIX-FREE-1DAY' },
+            { id: 'rw-3', name: 'YouTube Premium 7 วัน', desc: 'ดู YouTube ไร้โฆษณาคั่น 7 วันเต็ม', pts: 50, icon: '🎵', image: '', rewardCode: 'YOUTUBE-FREE-7DAYS' }
+          ],
+          members: [{ username: 'inblackino123', password: '123', points: 0, joinedAt: '2026-11-07' }],
+          orders: []
+        };
+        localStorage.setItem(STORE_STORAGE_KEY, JSON.stringify(StoreData));
+        if (supabaseClient) {
+          await supabaseClient.from('store_state').upsert({
+            id: 'main',
+            data: StoreData,
+            updated_at: new Date().toISOString()
+          });
+        }
+      }
+    }
+
+    async function saveAdminStore(toastMessage) {
+      try {
+        // คำนวณจำนวนแพ็กเกจและสต็อกรวมของแต่ละแบรนด์ให้อัตโนมัติ
+        (StoreData.brands || []).forEach(b => {
+          b.packageCount = (b.packages || []).length;
+          b.stockCount = (b.packages || []).reduce((sum, p) => sum + (Number(p.stock) || 0), 0);
+        });
+
+        localStorage.setItem(STORE_STORAGE_KEY, JSON.stringify(StoreData));
+
+        // ซิงค์พ้อยของสมาชิกที่กำลังล็อกอินอยู่ในหน้าบ้านด้วย
+        const rawUser = localStorage.getItem('nova_user');
+        if (rawUser) {
+          const u = JSON.parse(rawUser);
+          const matched = (StoreData.members || []).find(m => m.username === u.username);
+          if (matched) {
+            u.points = matched.points;
+            localStorage.setItem('nova_user', JSON.stringify(u));
+          }
+        }
+
+        if (supabaseClient) {
+          await supabaseClient.from('store_state').upsert({
+            id: 'main',
+            data: StoreData,
+            updated_at: new Date().toISOString()
+          });
+        }
+
+        if (liveChannel) {
+          liveChannel.postMessage({ type: 'STORE_UPDATED', timestamp: Date.now() });
+        }
+
+        renderAllAdminSections();
+        if (toastMessage) showToast(toastMessage);
+      } catch (e) {
+        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล (รูปอาจมีขนาดใหญ่เกินไป): ' + e.message);
+      }
+    }
+
+    /* สลับแท็บเมนูหลังบ้าน */
+    function switchAdmTab(tabId, btnEl) {
+      document.querySelectorAll('.adm-panel').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(`adm-panel-${tabId}`);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.adm-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      if (tabId === 'settings') populateSiteSettingsForm();
+      else if (tabId === 'rewards') renderRewardsSection();
+      else if (tabId === 'api') populateApiForms();
+      else if (tabId === 'members') renderMembersTable();
+      else if (tabId === 'products') renderProductsSection();
+      else if (tabId === 'dashboard') renderDashboardKpi();
+    }
+
+    function quickEditStoreName() {
+      const btn = document.querySelectorAll('.adm-tab-btn')[5];
+      switchAdmTab('settings', btn);
+      const input = document.getElementById('cfg-store-name');
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    /* บีบอัดและปรับขนาดรูปภาพอัตโนมัติด้วย HTML5 Canvas ก่อนใส่ลงในช่อง Input เพื่อป้องกัน LocalStorage เกินโควต้า */
+    function compressAndSetImage(fileInput, targetInputId, callback) {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          // ควบคุมความละเอียดสูงสุดไม่เกิน 500x500px ให้คมชัดแต่ขนาดไฟล์เพียง 20-40KB
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 500;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // บีบอัดเป็น JPEG 0.85
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+          const target = document.getElementById(targetInputId);
+          if (target) {
+            target.value = compressedDataUrl;
+          }
+
+          if (typeof callback === 'function') {
+            callback(compressedDataUrl);
+          } else {
+            showToast('📸 อัปโหลดและปรับขนาดรูปภาพเรียบร้อย กดปุ่มบันทึกเพื่อใช้งาน');
+          }
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function uploadImageToInput(fileInput, targetInputId) {
+      compressAndSetImage(fileInput, targetInputId, (url) => {
+        if (targetInputId === 'cfg-qr-img') updateQrLivePreview();
+        showToast('📸 อัปโหลดและปรับขนาดรูปภาพเรียบร้อย กดปุ่มบันทึกเพื่อใช้งาน');
+      });
+    }
+
+    function handleQrFileUpload(fileInput) {
+      compressAndSetImage(fileInput, 'cfg-qr-img', function(dataUrl) {
+        if (!StoreData.siteConfig) StoreData.siteConfig = {};
+        StoreData.siteConfig.customQrImage = dataUrl;
+        updateQrLivePreview();
+        saveSiteBranding();
+        showToast('📲 อัปโหลดและบันทึกรูป QR Code ซิงค์เข้าหน้าเว็บเรียบร้อยแล้ว!');
+      });
+    }
+
+    function updateQrLivePreview() {
+      const qrInput = document.getElementById('cfg-qr-img');
+      const ppIdInput = document.getElementById('cfg-pp-id');
+      const ppNameInput = document.getElementById('cfg-pp-name');
+      const previewImg = document.getElementById('adm-qr-preview-img');
+      const previewType = document.getElementById('adm-qr-preview-type');
+      const previewInfo = document.getElementById('adm-qr-preview-info');
+
+      const customImg = (qrInput ? qrInput.value.trim() : '') || StoreData.siteConfig?.customQrImage || '';
+      const ppId = (ppIdInput ? ppIdInput.value.trim() : '') || StoreData.siteConfig?.promptPayId || '0922821031';
+      const ppName = (ppNameInput ? ppNameInput.value.trim() : '') || StoreData.siteConfig?.promptPayName || 'อดิศร ทองละเอียด';
+
+      if (previewImg) {
+        if (customImg) {
+          previewImg.src = customImg;
+          if (previewType) previewType.innerHTML = '🖼️ ใช้รูปภาพ QR Code ของคุณเอง';
+        } else {
+          const cleanPp = ppId.replace(/[^0-9]/g, '') || '0922821031';
+          previewImg.src = `https://promptpay.io/${cleanPp}/100.png`;
+          previewImg.onerror = function() {
+            this.onerror = null;
+            this.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(cleanPp)}`;
+          };
+          if (previewType) previewType.innerHTML = '⚡ สร้าง PromptPay QR อัตโนมัติตามเบอร์';
+        }
+      }
+
+      if (previewInfo) {
+        previewInfo.textContent = `เบอร์: ${ppId} | ${ppName}`;
+      }
+
+      // ซิงค์ไปยังฟิลด์ในแท็บ 2 Slip2Go
+      const tab2Qr = document.getElementById('api-s2g-qr');
+      if (tab2Qr && qrInput && tab2Qr.value !== qrInput.value) tab2Qr.value = qrInput.value;
+      const tab2Pp = document.getElementById('api-s2g-account');
+      if (tab2Pp && ppIdInput && tab2Pp.value !== ppIdInput.value) tab2Pp.value = ppIdInput.value;
+      const tab2Name = document.getElementById('api-s2g-name');
+      if (tab2Name && ppNameInput && tab2Name.value !== ppNameInput.value) tab2Name.value = ppNameInput.value;
+    }
+
+    function removeCustomQrImage() {
+      const qrInput = document.getElementById('cfg-qr-img');
+      if (qrInput) qrInput.value = '';
+      const s2gQr = document.getElementById('api-s2g-qr');
+      if (s2gQr) s2gQr.value = '';
+      if (!StoreData.siteConfig) StoreData.siteConfig = {};
+      StoreData.siteConfig.customQrImage = '';
+      updateQrLivePreview();
+      updateS2gQrPreview();
+      saveSiteBranding();
+      showToast('🗑️ ลบรูป QR ส่วนตัวเรียบร้อย ระบบกลับไปสร้าง PromptPay QR อัตโนมัติ');
+    }
+
+    function updateS2gQrPreview() {
+      const qrInput = document.getElementById('api-s2g-qr');
+      const ppIdInput = document.getElementById('api-s2g-account');
+      const ppNameInput = document.getElementById('api-s2g-name');
+      const previewImg = document.getElementById('api-s2g-qr-img');
+      const previewType = document.getElementById('api-s2g-qr-type');
+      const previewInfo = document.getElementById('api-s2g-qr-info');
+
+      const customImg = (qrInput ? qrInput.value.trim() : '') || StoreData.siteConfig?.customQrImage || '';
+      const ppId = (ppIdInput ? ppIdInput.value.trim() : '') || StoreData.siteConfig?.promptPayId || '0922821031';
+      const ppName = (ppNameInput ? ppNameInput.value.trim() : '') || StoreData.siteConfig?.promptPayName || 'อดิศร ทองละเอียด';
+
+      if (previewImg) {
+        if (customImg) {
+          previewImg.src = customImg;
+          if (previewType) previewType.innerHTML = '🖼️ ใช้รูปภาพ QR Code ของคุณเอง';
+        } else {
+          const cleanPp = ppId.replace(/[^0-9]/g, '') || '0922821031';
+          previewImg.src = `https://promptpay.io/${cleanPp}/100.png`;
+          previewImg.onerror = function() {
+            this.onerror = null;
+            this.src = `https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${encodeURIComponent(cleanPp)}`;
+          };
+          if (previewType) previewType.innerHTML = '⚡ สร้าง PromptPay QR อัตโนมัติตามเบอร์';
+        }
+      }
+
+      if (previewInfo) {
+        previewInfo.textContent = `เบอร์: ${ppId} | ${ppName}`;
+      }
+
+      // ซิงค์ไปยังฟิลด์ในแท็บ 6
+      const tab6Qr = document.getElementById('cfg-qr-img');
+      if (tab6Qr && qrInput && tab6Qr.value !== qrInput.value) tab6Qr.value = qrInput.value;
+      const tab6Pp = document.getElementById('cfg-pp-id');
+      if (tab6Pp && ppIdInput && tab6Pp.value !== ppIdInput.value) tab6Pp.value = ppIdInput.value;
+      const tab6Name = document.getElementById('cfg-pp-name');
+      if (tab6Name && ppNameInput && tab6Name.value !== ppNameInput.value) tab6Name.value = ppNameInput.value;
+    }
+
+    function handleS2gQrUpload(fileInput) {
+      compressAndSetImage(fileInput, 'api-s2g-qr', function(dataUrl) {
+        if (!StoreData.siteConfig) StoreData.siteConfig = {};
+        StoreData.siteConfig.customQrImage = dataUrl;
+        const tab6Qr = document.getElementById('cfg-qr-img');
+        if (tab6Qr) tab6Qr.value = dataUrl;
+        updateS2gQrPreview();
+        updateQrLivePreview();
+        saveAllApiConfig();
+        showToast('📲 อัปโหลดและบันทึกรูป QR Code ซิงค์เข้าหน้าเว็บเรียบร้อยแล้ว!');
+      });
+    }
+
+    function removeS2gQrImage() {
+      const qrInput = document.getElementById('api-s2g-qr');
+      if (qrInput) qrInput.value = '';
+      const tab6Qr = document.getElementById('cfg-qr-img');
+      if (tab6Qr) tab6Qr.value = '';
+      if (!StoreData.siteConfig) StoreData.siteConfig = {};
+      StoreData.siteConfig.customQrImage = '';
+      updateS2gQrPreview();
+      updateQrLivePreview();
+      saveAllApiConfig();
+      showToast('🗑️ ลบรูป QR เรียบร้อย ระบบกลับไปสร้าง PromptPay QR อัตโนมัติ');
+    }
+
+    /* =========================================================================
+       RENDER ALL SECTIONS
+       ========================================================================= */
+    function renderAllAdminSections() {
+      const cfg = StoreData.siteConfig || {};
+      const sName = cfg.storeName || 'สองนึง';
+      const topNameEl = document.getElementById('adm-top-storename');
+      if (topNameEl) topNameEl.textContent = sName;
+      const dashNameEl = document.getElementById('adm-dash-storename');
+      if (dashNameEl) dashNameEl.textContent = sName;
+      const logoBox = document.getElementById('adm-top-logo');
+      if (cfg.logoImage) {
+        logoBox.innerHTML = `<img src="${cfg.logoImage}" alt="logo" style="width:100%;height:100%;object-fit:cover;" />`;
+      } else {
+        logoBox.textContent = '⚡';
+      }
+
+      renderDashboardSection();
+      populateApiForms();
+      renderProductsSection();
+      renderMembersSection();
+      renderRewardsSection();
+      populateSiteSettingsForm();
+    }
+
+    /* 1. Render Dashboard & Orders */
+    function renderDashboardSection() {
+      const orders = StoreData.orders || [];
+      const totalRev = orders.reduce((s, o) => s + (Number(o.price) || 0), 0);
+      const totalStock = (StoreData.brands || []).reduce((s, b) => {
+        return s + (b.packages || []).reduce((ps, p) => ps + (Number(p.stock) || 0), 0);
+      }, 0);
+
+      document.getElementById('kpi-total-revenue').textContent = `฿${totalRev.toLocaleString()}`;
+      document.getElementById('kpi-total-orders').textContent = orders.length.toLocaleString();
+      document.getElementById('kpi-total-stock').textContent = totalStock.toLocaleString();
+      document.getElementById('kpi-brand-count').textContent = `${(StoreData.brands || []).length} หมวดหมู่แอพ`;
+
+      const bal = StoreData.apiConfig?.baimonBalance?.lastBalance || '0.00';
+      document.getElementById('kpi-baimon-balance').textContent = `฿${bal}`;
+
+      const tbody = document.getElementById('adm-orders-tbody');
+      if (!tbody) return;
+      if (orders.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align:center;padding:28px;color:var(--adm-muted);">
+              ยังไม่มีคำสั่งซื้อเข้ามา เมื่อลูกค้าชำระเงินหน้าเว็บ รายการจะเด้งขึ้นที่นี่แบบ Real-time ทันที
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td>
+            <div style="font-weight:700;color:#fff;">#${o.orderId || o.id}</div>
+            <div style="font-size:0.75rem;color:var(--adm-muted);">${o.date || ''}</div>
+          </td>
+          <td><span class="adm-badge">@${o.owner || o.user || 'guest'}</span></td>
+          <td style="font-weight:600;color:#fff;">${o.name}</td>
+          <td style="font-weight:700;color:#ff4d8d;">฿${o.price}</td>
+          <td>
+            <span style="color:#34d399;font-size:0.8rem;font-weight:600;">
+              ✔ ${o.slipRef || 'Slip2Go Verified'}
+            </span>
+          </td>
+          <td style="min-width:280px;max-width:440px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-size:0.72rem;color:var(--adm-muted);font-weight:600;">ข้อมูลรหัสสินค้า / ส่งมอบ:</span>
+              <button type="button" class="adm-btn adm-btn-secondary btn-copy-adm-cred" data-cred="${encodeURIComponent(formatCredentialHtml(o.credential))}" style="padding:2px 8px;font-size:0.7rem;cursor:pointer;">📋 คัดลอก</button>
+            </div>
+            <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);padding:10px 12px;border-radius:8px;font-size:0.8rem;color:#fde68a;white-space:pre-wrap;word-break:break-word;line-height:1.6;max-height:160px;overflow-y:auto;text-align:left;font-family:inherit;">${escapeHtml(formatCredentialHtml(o.credential))}</div>
+          </td>
+        </tr>
+      `).join('');
+
+      tbody.querySelectorAll('.btn-copy-adm-cred').forEach(btn => {
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(decodeURIComponent(btn.dataset.cred));
+          showToast('📋 คัดลอกข้อมูลรหัสสินค้าเรียบร้อย!');
+        });
+      });
+    }
+
+    function clearAllOrders() {
+      if (!confirm('ต้องการล้างประวัติคำสั่งซื้อทั้งหมดใช่หรือไม่?')) return;
+      StoreData.orders = [];
+      saveAdminStore('🗑️ ล้างประวัติคำสั่งซื้อเรียบร้อยแล้ว');
+    }
+
+    /* 2. Populate & Save API Configurations */
+    function populateApiForms() {
+      const api = StoreData.apiConfig || {};
+      const s2g = api.slip2go || {};
+      const bal = api.baimonBalance || {};
+      const buy = api.baimonOrder || {};
+      const prod = api.baimonProducts || {};
+
+      document.getElementById('api-s2g-endpoint').value = s2g.endpoint || 'https://connect.slip2go.com/api/verify-slip/qr-image/info';
+      document.getElementById('api-s2g-key').value = s2g.secretKey || 'nuv29T7EyHcvdkeedks2unyVXEQ1ABNtBfOmc5RA2pA=';
+      document.getElementById('api-s2g-account').value = s2g.receiverAccount || StoreData.siteConfig?.promptPayId || '0922821031';
+      document.getElementById('api-s2g-name').value = s2g.receiverName || StoreData.siteConfig?.promptPayName || 'อดิศร ทองละเอียด';
+      document.getElementById('api-s2g-sim').checked = s2g.simulationFallback === true;
+
+      const s2gQrInput = document.getElementById('api-s2g-qr');
+      if (s2gQrInput) s2gQrInput.value = StoreData.siteConfig?.customQrImage || '';
+      updateS2gQrPreview();
+
+      let balEndpoint = bal.endpoint || 'https://baimon24hr.online/api/money';
+      if (balEndpoint.endsWith('/api/mone')) balEndpoint = 'https://baimon24hr.online/api/money';
+      document.getElementById('api-bal-endpoint').value = balEndpoint;
+      document.getElementById('api-bal-method').value = bal.method || 'POST';
+      document.getElementById('api-bal-key').value = bal.apiKey || 'mublue6aed52aa692424.70442175';
+      document.getElementById('api-bal-headers').value = bal.headersJson || '{"apikey": "mublue6aed52aa692424.70442175"}';
+      document.getElementById('api-bal-body').value = bal.bodyJson || '{}';
+
+      document.getElementById('api-buy-endpoint').value = buy.endpoint || 'https://baimon24hr.online/api/apibuy_product';
+      document.getElementById('api-buy-method').value = buy.method || 'POST';
+      document.getElementById('api-buy-key').value = buy.apiKey || 'mublue6aed52aa692424.70442175';
+      document.getElementById('api-buy-headers').value = buy.headersJson || '{"apikey": "mublue6aed52aa692424.70442175", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}';
+      document.getElementById('api-buy-body').value = buy.bodyJson || '{"apikey": "{{API_KEY}}", "customer": "{{USERNAME}}", "pid": "{{PRODUCT_ID}}"}';
+
+      document.getElementById('api-prod-endpoint').value = prod.endpoint || 'https://baimon24hr.online/api/api_product';
+      document.getElementById('api-prod-method').value = prod.method || 'GET';
+      document.getElementById('api-prod-key').value = prod.apiKey || 'mublue6aed52aa692424.70442175';
+      document.getElementById('api-prod-markup').value = prod.markupPrice ?? 0;
+      document.getElementById('api-prod-headers').value = prod.headersJson || '{}';
+      document.getElementById('api-prod-body').value = prod.bodyJson || '{}';
+    }
+
+    function saveAllApiConfig() {
+      const prevBal = StoreData.apiConfig?.baimonBalance?.lastBalance || '50.00';
+      const s2gAcc = document.getElementById('api-s2g-account').value.trim() || '0922821031';
+      const s2gName = document.getElementById('api-s2g-name').value.trim() || 'อดิศร ทองละเอียด';
+      const s2gQrEl = document.getElementById('api-s2g-qr');
+      const s2gQr = s2gQrEl ? s2gQrEl.value.trim() : (StoreData.siteConfig?.customQrImage || '');
+
+      if (!StoreData.siteConfig) StoreData.siteConfig = {};
+      StoreData.siteConfig.promptPayId = s2gAcc;
+      StoreData.siteConfig.promptPayName = s2gName;
+      StoreData.siteConfig.customQrImage = s2gQr;
+
+      StoreData.apiConfig = {
+        slip2go: {
+          enabled: true,
+          endpoint: document.getElementById('api-s2g-endpoint').value.trim() || 'https://connect.slip2go.com/api/verify-slip/qr-image/info',
+          secretKey: document.getElementById('api-s2g-key').value.trim() || 'nuv29T7EyHcvdkeedks2unyVXEQ1ABNtBfOmc5RA2pA=',
+          receiverAccount: s2gAcc,
+          receiverName: s2gName,
+          simulationFallback: document.getElementById('api-s2g-sim').checked
+        },
+        baimonBalance: {
+          endpoint: (function() {
+            let u = document.getElementById('api-bal-endpoint').value.trim() || 'https://baimon24hr.online/api/money';
+            if (u.endsWith('/api/mone')) u = 'https://baimon24hr.online/api/money';
+            return u;
+          })(),
+          method: document.getElementById('api-bal-method').value,
+          apiKey: document.getElementById('api-bal-key').value.trim() || 'mublue6aed52aa692424.70442175',
+          headersJson: document.getElementById('api-bal-headers').value.trim(),
+          bodyJson: document.getElementById('api-bal-body').value.trim(),
+          lastBalance: prevBal
+        },
+        baimonOrder: {
+          enabled: true,
+          endpoint: document.getElementById('api-buy-endpoint').value.trim() || 'https://baimon24hr.online/api/apibuy_product',
+          method: document.getElementById('api-buy-method').value,
+          apiKey: document.getElementById('api-buy-key').value.trim() || 'mublue6aed52aa692424.70442175',
+          headersJson: document.getElementById('api-buy-headers').value.trim(),
+          bodyJson: document.getElementById('api-buy-body').value.trim()
+        },
+        baimonProducts: {
+          endpoint: document.getElementById('api-prod-endpoint').value.trim() || 'https://baimon24hr.online/api/api_product',
+          method: document.getElementById('api-prod-method').value,
+          apiKey: document.getElementById('api-prod-key').value.trim() || 'mublue6aed52aa692424.70442175',
+          markupPrice: Number(document.getElementById('api-prod-markup').value) || 0,
+          headersJson: document.getElementById('api-prod-headers').value.trim(),
+          bodyJson: document.getElementById('api-prod-body').value.trim()
+        }
+      };
+
+      saveAdminStore('🔌 บันทึกการตั้งค่า API, บัญชีรับเงิน และ QR Code ซิงค์เข้าหน้าบ้านเรียบร้อย!');
+      updateS2gQrPreview();
+      if (typeof updateQrLivePreview === 'function') updateQrLivePreview();
+    }
+
+    /* ฟังก์ชันช่วยยิง API ผ่าน Local Proxy หรือ Vercel Proxy หรือยิงตรง */
+    async function callExternalApi(endpoint, method, headersJson, bodyStr) {
+      let headers = { 'Accept': '*/*' };
+      try {
+        if (headersJson) {
+          headers = { ...headers, ...JSON.parse(headersJson) };
+        }
+      } catch (e) {}
+
+      let parsedBody = undefined;
+      if (method !== 'GET' && bodyStr) {
+        try {
+          parsedBody = JSON.parse(bodyStr);
+        } catch (e) {
+          parsedBody = bodyStr;
+        }
+      }
+
+      // ตรวจสอบความถูกต้องของ URL ป้องกันพิมพ์ตกหรือขาดตัวอักษรท้าย
+      if (endpoint) {
+        if (endpoint.endsWith('/api/mone')) endpoint = 'https://baimon24hr.online/api/money';
+        if (endpoint.endsWith('/api/apibuy_produc')) endpoint = 'https://baimon24hr.online/api/apibuy_product';
+        if (endpoint.endsWith('/api/api_produc')) endpoint = 'https://baimon24hr.online/api/api_product';
+      }
+
+      const payloadBody = JSON.stringify({ targetUrl: endpoint, method, headers, body: parsedBody });
+
+      // 1. ลองเรียกผ่าน Local Proxy (พอร์ต 3000) หรือ Vercel Proxy เพื่อเลี่ยง CORS
+      const proxyCandidates = ['/api/proxy', 'http://127.0.0.1:3000/api/proxy', 'http://localhost:3000/api/proxy'];
+      for (const pUrl of proxyCandidates) {
+        try {
+          const proxyRes = await fetch(pUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payloadBody
+          });
+          if (proxyRes.ok) {
+            const json = await proxyRes.json();
+            return json.data || json;
+          }
+        } catch (e) {}
+      }
+
+      // 2. Fallback ยิงตรงจากเบราว์เซอร์
+      const fetchOpts = {
+        method,
+        headers,
+        redirect: 'follow'
+      };
+      if (method !== 'GET' && parsedBody !== undefined) {
+        fetchOpts.body = typeof parsedBody === 'string' ? parsedBody : JSON.stringify(parsedBody);
+        if (!fetchOpts.headers['Content-Type']) fetchOpts.headers['Content-Type'] = 'application/json';
+      }
+
+      const directRes = await fetch(endpoint, fetchOpts);
+      return await directRes.json();
+    }
+
+    /* ยิง API เช็คยอดเงินคงเหลือของเราในแม่ข่าย (ตามรูปที่ 1 & 2) พร้อมระบบ Auto-Sync */
+    async function checkBaimonBalanceNow(isSilent = false) {
+      let epInput = document.getElementById('api-bal-endpoint');
+      let ep = epInput ? epInput.value.trim() : '';
+      if (!ep || ep.endsWith('/api/mone') || ep === 'https://baimon24hr.online/api/mone') {
+        ep = 'https://baimon24hr.online/api/money';
+        if (epInput) epInput.value = ep;
+      }
+      if (StoreData.apiConfig && StoreData.apiConfig.baimonBalance) {
+        StoreData.apiConfig.baimonBalance.endpoint = ep;
+      }
+
+      saveAllApiConfig();
+      const balCfg = StoreData.apiConfig.baimonBalance;
+      const out = document.getElementById('console-balance');
+      if (out && !isSilent) out.textContent = `⏳ กำลังเชื่อมต่อไปยัง ${balCfg.endpoint} ...`;
+
+      const apiKey = balCfg.apiKey || 'mublue6aed52aa692424.70442175';
+      let headers = { 'apikey': apiKey };
+      try {
+        if (balCfg.headersJson) {
+          headers = { ...headers, ...JSON.parse(balCfg.headersJson.replace(/\{\{API_KEY\}\}/g, apiKey)) };
+        }
+      } catch (e) {}
+
+      try {
+        const payload = await callExternalApi(balCfg.endpoint, balCfg.method, JSON.stringify(headers), balCfg.bodyJson || '{}');
+        const detectedBal =
+          payload?.money ??
+          payload?.balance ??
+          payload?.data?.balance ??
+          payload?.credit ??
+          '100.00 บาท';
+
+        const cleanNumber = String(detectedBal).replace(/[^0-9.]/g, '') || '100.00';
+        StoreData.apiConfig.baimonBalance.lastBalance = cleanNumber;
+        saveAdminStore();
+
+        const kpiBal = document.getElementById('kpi-baimon-balance');
+        if (kpiBal) kpiBal.textContent = `฿${cleanNumber}`;
+        if (out) out.textContent = JSON.stringify(payload, null, 2);
+        if (!isSilent) showToast(`✔ ซิงค์ยอดเงินแม่ข่ายสำเร็จ! ยอดคงเหลือ: ฿${cleanNumber}`);
+      } catch (err) {
+        if (out && !isSilent) out.textContent = `❌ ไม่สามารถเชื่อมต่อ API แม่ข่ายได้: ${err.message}\n(กรุณากดเปิดไฟล์ "เปิดระบบร้านค้า.bat" บนหน้าจอเพื่อให้ระบบเชื่อมต่อแบบไม่ติด CORS)`;
+        if (!isSilent) showToast('⚠️ เพื่อซิงค์กับแม่ข่ายอัตโนมัติ กรุณากดเปิดไฟล์ "เปิดระบบร้านค้า.bat"');
+      }
+    }
+
+    /* ทดสอบยิง API สั่งซื้อสินค้าแม่ข่าย (ตามรูปที่ 2 & 3) */
+    async function testBaimonBuyApi() {
+      saveAllApiConfig();
+      const buyCfg = StoreData.apiConfig.baimonOrder;
+      const out = document.getElementById('console-buy');
+      if (out) out.textContent = `⏳ กำลังทดสอบยิงคำสั่งซื้อไปยัง ${buyCfg.endpoint} ...`;
+
+      const apiKey = buyCfg.apiKey || 'mublue6aed52aa692424.70442175';
+      const testPid = '999'; // รหัสสินค้าสำหรับทดสอบของแม่ข่าย baimon24hr
+      const testCustomer = 'inblackino123';
+
+      let headers = {
+        'apikey': apiKey,
+        'customer': testCustomer,
+        'pid': testPid
+      };
+      try {
+        if (buyCfg.headersJson) {
+          const filledH = buyCfg.headersJson
+            .replace(/\{\{API_KEY\}\}/g, apiKey)
+            .replace(/\{\{USERNAME\}\}/g, testCustomer)
+            .replace(/\{\{PRODUCT_ID\}\}/g, testPid);
+          headers = { ...headers, ...JSON.parse(filledH) };
+        }
+      } catch (e) {}
+
+      const bodyObj = {
+        apikey: apiKey,
+        customer: testCustomer,
+        pid: testPid
+      };
+
+      try {
+        const payload = await callExternalApi(buyCfg.endpoint, buyCfg.method, JSON.stringify(headers), JSON.stringify(bodyObj));
+        if (out) out.textContent = JSON.stringify(payload, null, 2);
+        showToast('✅ ยิงทดสอบ API สั่งซื้อแม่ข่ายสำเร็จ!');
+      } catch (err) {
+        if (out) out.textContent = `❌ ทดสอบยิง API สั่งซื้อไม่สำเร็จ: ${err.message}`;
+      }
+    }
+
+    /* ยิง API ดึงรายการสินค้าและสต็อกจากแม่ข่าย (ตามรูปที่ 3 & 4) */
+    async function fetchAndSyncBaimonProducts() {
+      saveAllApiConfig();
+      const prodCfg = StoreData.apiConfig.baimonProducts;
+      const out = document.getElementById('console-products');
+      if (out) out.textContent = `⏳ กำลังดึงรายการสินค้าและสต็อกจาก ${prodCfg.endpoint} ...`;
+
+      const apiKey = prodCfg.apiKey || 'mublue6aed52aa692424.70442175';
+      let headers = { 'apikey': apiKey };
+      try {
+        if (prodCfg.headersJson) {
+          headers = { ...headers, ...JSON.parse(prodCfg.headersJson.replace(/\{\{API_KEY\}\}/g, apiKey)) };
+        }
+      } catch (e) {}
+
+      try {
+        const payload = await callExternalApi(prodCfg.endpoint, prodCfg.method, JSON.stringify(headers), '');
+        const remoteItems = Array.isArray(payload) ? payload : (payload.data || payload.products || payload.items || []);
+
+        let updatedCount = 0;
+        if (Array.isArray(remoteItems) && remoteItems.length > 0) {
+          const markup = Number(prodCfg.markupPrice) || 0;
+          remoteItems.forEach(r => {
+            const rId = String(r.id);
+            let foundPkg = null;
+            let foundBrand = null;
+            (StoreData.brands || []).forEach(b => {
+              (b.packages || []).forEach(p => {
+                if (String(p.baimonProductId) === rId || String(p.id).endsWith('-pid-' + rId)) {
+                  foundPkg = p;
+                  foundBrand = b;
+                }
+              });
+            });
+
+            if (foundPkg) {
+              foundPkg.price = (Number(r.price) || 0) + markup;
+              foundPkg.stock = Number(r.stock) || 0;
+              if (r.img && r.img !== '-') {
+                foundPkg.image = r.img;
+                if (foundBrand && (!foundBrand.image || foundBrand.image.includes('unsplash') || foundBrand.image.includes('data:image'))) {
+                  foundBrand.image = r.img;
+                }
+              }
+              if (r.name) foundPkg.name = r.name;
+              if (r.des) foundPkg.description = r.des;
+              updatedCount++;
+            }
+          });
+        }
+
+        saveAdminStore(`🔄 ซิงค์ข้อมูลสินค้า ราคา และรูปภาพตรงเป๊ะกับแม่ข่ายแล้ว ${updatedCount} รายการ!`);
+        if (out) out.textContent = JSON.stringify(payload, null, 2);
+      } catch (err) {
+        if (out) out.textContent = `❌ ดึงรายการสินค้าจากแม่ข่ายไม่สำเร็จ: ${err.message}`;
+        showToast('⚠️ ไม่สามารถดึงสินค้าจากแม่ข่ายได้ ดูรายละเอียดใน Console');
+      }
+    }
+
+    /* =========================================================================
+       3. PRODUCTS, STOCK & IMAGES MANAGEMENT
+       ========================================================================= */
+    function renderProductsSection() {
+      const container = document.getElementById('adm-brands-container');
+      if (!container) return;
+
+      const brands = StoreData.brands || [];
+      container.innerHTML = brands.map((b, bIdx) => `
+        <div class="adm-brand-item">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <img src="${b.image}" alt="${b.name}" class="adm-thumb" />
+              <div>
+                <div style="font-weight:800;font-size:1rem;color:#fff;">${b.name} <span class="adm-badge">${b.badge || ''}</span></div>
+                <div style="font-size:0.78rem;color:var(--adm-muted);">รหัสหมวด: ${b.id} • ${b.packages?.length || 0} แพ็กเกจ • สต็อกรวม ${b.stockCount || 0} ชิ้น</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" class="adm-btn adm-btn-soft adm-btn-sm" onclick="addPackageToBrand(${bIdx})">
+                ➕ เพิ่มแพ็กเกจใน ${b.name}
+              </button>
+              <button type="button" class="adm-btn adm-btn-danger adm-btn-sm" onclick="deleteBrand(${bIdx})">
+                🗑️ ลบหมวดนี้
+              </button>
+            </div>
+          </div>
+
+          <!-- แก้ไขชื่อแบรนด์ ป้ายกำกับ และรูปปกแบรนด์ -->
+          <div class="adm-grid-3" style="margin-bottom:10px;">
+            <div>
+              <label class="adm-label">ชื่อแอพ / แบรนด์</label>
+              <input type="text" class="adm-input" value="${b.name}" onchange="updateBrandField(${bIdx}, 'name', this.value)" />
+            </div>
+            <div>
+              <label class="adm-label">ป้ายกำกับมุมการ์ด (Badge)</label>
+              <input type="text" class="adm-input" value="${b.badge || ''}" onchange="updateBrandField(${bIdx}, 'badge', this.value)" />
+            </div>
+            <div>
+              <label class="adm-label">ลิงก์รูปปกแอพ / อัปโหลดรูปใหม่</label>
+              <div style="display:flex;gap:6px;">
+                <input type="text" id="brand-img-${bIdx}" class="adm-input" value="${b.image}" onchange="updateBrandField(${bIdx}, 'image', this.value)" />
+                <label class="adm-btn adm-btn-soft adm-btn-sm" style="cursor:pointer;white-space:nowrap;">
+                  📁 รูปเครื่อง
+                  <input type="file" accept="image/*" style="display:none;" onchange="uploadBrandImage(this, ${bIdx})" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- รายการแพ็กเกจย่อยในแบรนด์ -->
+          <div style="font-size:0.78rem;color:#ff8ab5;font-weight:600;margin-top:8px;">รายการแพ็กเกจย่อย (แก้ไขชื่อ / รหัสสินค้าแม่ข่าย / ราคา / สต็อก / พ้อย):</div>
+          ${(b.packages || []).map((p, pIdx) => `
+            <div class="adm-pkg-row">
+              <div>
+                <label class="adm-label" style="font-size:0.72rem;">ชื่อแพ็กเกจ</label>
+                <input type="text" class="adm-input" value="${p.name}" onchange="updatePkgField(${bIdx}, ${pIdx}, 'name', this.value)" />
+              </div>
+              <div>
+                <label class="adm-label" style="font-size:0.72rem;">รหัสแม่ข่าย (baimonProductId)</label>
+                <input type="text" class="adm-input" value="${p.baimonProductId || p.id}" onchange="updatePkgField(${bIdx}, ${pIdx}, 'baimonProductId', this.value)" />
+              </div>
+              <div>
+                <label class="adm-label" style="font-size:0.72rem;">ราคา (บาท)</label>
+                <input type="number" class="adm-input" value="${p.price}" onchange="updatePkgField(${bIdx}, ${pIdx}, 'price', Number(this.value))" />
+              </div>
+              <div>
+                <label class="adm-label" style="font-size:0.72rem;">สต็อกพร้อมส่ง</label>
+                <input type="number" class="adm-input" value="${p.stock}" onchange="updatePkgField(${bIdx}, ${pIdx}, 'stock', Number(this.value))" />
+              </div>
+              <div>
+                <label class="adm-label" style="font-size:0.72rem;">แต้มที่ได้รับ</label>
+                <input type="number" class="adm-input" value="${p.points || 1}" onchange="updatePkgField(${bIdx}, ${pIdx}, 'points', Number(this.value))" />
+              </div>
+              <div style="padding-top:18px;">
+                <button type="button" class="adm-btn adm-btn-danger adm-btn-sm" onclick="deletePkg(${bIdx}, ${pIdx})">ลบ</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+
+    function updateBrandField(bIdx, field, val) {
+      if (!StoreData.brands[bIdx]) return;
+      StoreData.brands[bIdx][field] = val;
+      saveAdminStore(`✅ อัปเดตข้อมูล ${StoreData.brands[bIdx].name} เรียบร้อย`);
+    }
+
+    function uploadBrandImage(fileInput, bIdx) {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        StoreData.brands[bIdx].image = evt.target.result;
+        // อัปเดตรูปแพ็กเกจย่อยในแบรนด์นั้นให้ด้วย
+        (StoreData.brands[bIdx].packages || []).forEach(p => {
+          p.image = evt.target.result;
+        });
+        saveAdminStore(`📸 เปลี่ยนรูปปก ${StoreData.brands[bIdx].name} หน้าบ้านเรียบร้อย!`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updatePkgField(bIdx, pIdx, field, val) {
+      const pkg = StoreData.brands?.[bIdx]?.packages?.[pIdx];
+      if (!pkg) return;
+      pkg[field] = val;
+      saveAdminStore(`💾 อัปเดตแพ็กเกจ "${pkg.name}" เรียบร้อย`);
+    }
+
+    function addPackageToBrand(bIdx) {
+      const b = StoreData.brands[bIdx];
+      if (!b) return;
+      const newId = `${b.id}-pkg-${Date.now().toString().slice(-4)}`;
+      b.packages = b.packages || [];
+      b.packages.push({
+        id: newId,
+        baimonProductId: newId.toUpperCase(),
+        name: `${b.name} แพ็กเกจใหม่ 30 วัน`,
+        price: 49,
+        stock: 10,
+        points: 5,
+        tag: b.badge || 'VIP',
+        image: b.image
+      });
+      saveAdminStore(`➕ เพิ่มแพ็กเกจใหม่ใน ${b.name} เรียบร้อย`);
+    }
+
+    function deletePkg(bIdx, pIdx) {
+      const b = StoreData.brands[bIdx];
+      if (!b || !b.packages) return;
+      b.packages.splice(pIdx, 1);
+      saveAdminStore('🗑️ ลบแพ็กเกจเรียบร้อย');
+    }
+
+    function deleteBrand(bIdx) {
+      const b = StoreData.brands[bIdx];
+      if (!b) return;
+      if (!confirm(`ต้องการลบหมวด "${b.name}" ออกจากหน้าเว็บใช่หรือไม่?`)) return;
+      StoreData.brands.splice(bIdx, 1);
+      saveAdminStore(`🗑️ ลบหมวด ${b.name} เรียบร้อย`);
+    }
+
+    function addNewBrand() {
+      const id = document.getElementById('new-brand-id').value.trim().toLowerCase() || ('app-' + Date.now().toString().slice(-4));
+      const name = document.getElementById('new-brand-name').value.trim();
+      const badge = document.getElementById('new-brand-badge').value.trim() || 'PREMIUM VIP';
+      const category = document.getElementById('new-brand-cat').value;
+      const image = document.getElementById('new-brand-img').value.trim() || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=500';
+
+      if (!name) {
+        alert('กรุณากรอกชื่อแบรนด์ที่ต้องการแสดงหน้าเว็บ');
+        return;
+      }
+
+      StoreData.brands.push({
+        id,
+        name,
+        category,
+        badge,
+        packageCount: 1,
+        stockCount: 10,
+        image,
+        description: `${name} แอพพรีเมียมแท้ ส่งรหัสอัตโนมัติ 24 ชม. มีประกันตลอดการใช้งาน`,
+        tags: [badge, 'ส่งอัตโนมัติ 24 ชม.'],
+        packages: [
+          {
+            id: `${id}-30d`,
+            baimonProductId: `BM-${id.toUpperCase()}-30D`,
+            name: `${name} 30 วัน (พร้อมส่ง)`,
+            price: 49,
+            stock: 10,
+            points: 5,
+            tag: badge,
+            image
+          }
+        ]
+      });
+
+      document.getElementById('new-brand-id').value = '';
+      document.getElementById('new-brand-name').value = '';
+      document.getElementById('new-brand-badge').value = '';
+      document.getElementById('new-brand-img').value = '';
+
+      saveAdminStore(`✨ เพิ่มแบรนด์ "${name}" เข้าหน้าบ้านเรียบร้อย!`);
+    }
+
+    /* =========================================================================
+       4. MEMBERS & POINTS MANAGEMENT (แก้ไขพ้อยได้)
+       ========================================================================= */
+    function renderMembersSection() {
+      const tbody = document.getElementById('adm-members-tbody');
+      if (!tbody) return;
+      const members = StoreData.members || [];
+
+      tbody.innerHTML = members.map((m, idx) => `
+        <tr>
+          <td style="font-weight:700;color:#fff;">@${m.username}</td>
+          <td style="color:var(--adm-muted);font-family:'JetBrains Mono',monospace;">${m.password || '123'}</td>
+          <td>
+            <span class="adm-badge" style="font-size:0.86rem;">⭐ ${m.points || 0} แต้ม</span>
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;align-items:center;max-width:190px;">
+              <input type="number" id="mem-pts-${idx}" class="adm-input" value="${m.points || 0}" style="padding:6px 10px;" />
+              <button type="button" class="adm-btn adm-btn-pink adm-btn-sm" onclick="setMemberExactPoints(${idx})">
+                บันทึกพ้อย
+              </button>
+            </div>
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button type="button" class="adm-btn adm-btn-soft adm-btn-sm" onclick="adjustMemberPoints(${idx}, 10)">+10 แต้ม</button>
+              <button type="button" class="adm-btn adm-btn-soft adm-btn-sm" onclick="adjustMemberPoints(${idx}, 50)">+50 แต้ม</button>
+              <button type="button" class="adm-btn adm-btn-ghost adm-btn-sm" onclick="adjustMemberPoints(${idx}, -10)">-10 แต้ม</button>
+            </div>
+          </td>
+          <td>
+            <button type="button" class="adm-btn adm-btn-danger adm-btn-sm" onclick="deleteMember(${idx})">ลบ</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function setMemberExactPoints(idx) {
+      const mem = StoreData.members[idx];
+      if (!mem) return;
+      const val = Number(document.getElementById(`mem-pts-${idx}`).value) || 0;
+      mem.points = Math.max(0, val);
+      saveAdminStore(`⭐ อัปเดตพ้อยของคุณ @${mem.username} เป็น ${mem.points} แต้มทันที!`);
+    }
+
+    function adjustMemberPoints(idx, delta) {
+      const mem = StoreData.members[idx];
+      if (!mem) return;
+      mem.points = Math.max(0, (Number(mem.points) || 0) + delta);
+      saveAdminStore(`⭐ ปรับพ้อยของคุณ @${mem.username} เป็น ${mem.points} แต้มเรียบร้อย!`);
+    }
+
+    function addMemberFromAdmin() {
+      const username = document.getElementById('new-mem-user').value.trim();
+      const password = document.getElementById('new-mem-pass').value.trim() || '123';
+      const points = Number(document.getElementById('new-mem-pts').value) || 0;
+
+      if (!username) {
+        alert('กรุณากรอก Username สมาชิก');
+        return;
+      }
+
+      const existing = (StoreData.members || []).find(m => m.username.toLowerCase() === username.toLowerCase());
+      if (existing) {
+        existing.points = points;
+        existing.password = password;
+        saveAdminStore(`✅ อัปเดตข้อมูลสมาชิก @${username} เรียบร้อย`);
+      } else {
+        StoreData.members.push({
+          username,
+          password,
+          points,
+          joinedAt: new Date().toISOString().slice(0, 10)
+        });
+        saveAdminStore(`👤 เพิ่มสมาชิก @${username} พร้อม ${points} แต้มเรียบร้อย!`);
+      }
+
+      document.getElementById('new-mem-user').value = '';
+    }
+
+    function deleteMember(idx) {
+      const mem = StoreData.members[idx];
+      if (!mem) return;
+      if (!confirm(`ต้องการลบสมาชิก @${mem.username} ใช่หรือไม่?`)) return;
+      StoreData.members.splice(idx, 1);
+      saveAdminStore(`🗑️ ลบสมาชิก @${mem.username} เรียบร้อย`);
+    }
+
+    /* =========================================================================
+       5. REWARDS MANAGEMENT (แก้ไขรางวัลโดยใช้แต้มแลกได้ & สต็อกตัดอัตโนมัติ FIFO)
+       ========================================================================= */
+    /* แยกสต็อกออกเป็นรายการ ID เดี่ยวๆ (รองรับ 1 บรรทัดต่อ 1 ID หรือคั่นด้วย ---) */
+    function parseRewardStockItems(stockStr) {
+      if (!stockStr || typeof stockStr !== 'string') return [];
+      const raw = stockStr.trim();
+      if (!raw) return [];
+
+      // 1. มีตัวคั่น --- หรือ === หรือ ___
+      if (/\n\s*[-=_]{3,}\s*\n/.test(raw)) {
+        return raw.split(/\n\s*[-=_]{3,}\s*\n/)
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+      }
+
+      // 2. เว้นบรรทัด 2 บรรทัดขึ้นไป (\n\n+)
+      if (/\n\s*\n/.test(raw)) {
+        return raw.split(/\n\s*\n+/)
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+      }
+
+      // 3. 1 บรรทัดต่อ 1 ID
+      return raw.split('\n')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+    }
+
+    function serializeRewardStockItems(items, originalRawStr = '') {
+      if (!items || items.length === 0) return '';
+      if (originalRawStr && /\n\s*[-=_]{3,}\s*\n/.test(originalRawStr)) {
+        return items.join('\n---\n');
+      }
+      if (originalRawStr && /\n\s*\n/.test(originalRawStr)) {
+        return items.join('\n\n');
+      }
+      return items.join('\n');
+    }
+
+    function updateNewRwStockBadge() {
+      const el = document.getElementById('new-rw-stock');
+      const badge = document.getElementById('new-rw-stock-badge');
+      if (!el || !badge) return;
+      const count = parseRewardStockItems(el.value).length;
+      badge.textContent = `พร้อมแจก ${count} ID`;
+      if (count > 0) {
+        badge.style.background = 'rgba(34,197,94,0.15)';
+        badge.style.color = '#22c55e';
+        badge.style.borderColor = 'rgba(34,197,94,0.3)';
+      } else {
+        badge.style.background = 'rgba(255,45,120,0.15)';
+        badge.style.color = 'var(--adm-pink)';
+        badge.style.borderColor = 'rgba(255,45,120,0.3)';
+      }
+    }
+
+    function renderRewardsSection() {
+      const list = document.getElementById('adm-rewards-list');
+      if (!list) return;
+      const rewards = StoreData.rewards || [];
+
+      if (rewards.length === 0) {
+        list.innerHTML = `
+          <div style="text-align:center;padding:30px;color:var(--adm-muted);">
+            ยังไม่มีของรางวัลแลกแต้มในระบบ กรุณากรอกแบบฟอร์มด้านบนเพื่อเพิ่มของรางวัล
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = rewards.map((r, idx) => {
+        const stockItems = parseRewardStockItems(r.rewardStock || r.rewardCode || '');
+        const stockCount = stockItems.length;
+
+        return `
+        <div class="adm-brand-item" style="border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;margin-bottom:14px;background:rgba(255,255,255,0.02);">
+          <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+            <div style="width:70px;height:70px;border-radius:10px;overflow:hidden;background:#1e1e24;border:1px solid rgba(255,255,255,0.15);flex-shrink:0;">
+              ${r.image ? `<img src="${r.image}" style="width:100%;height:100%;object-fit:cover;" />` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;">🎁</div>`}
+            </div>
+
+            <div style="flex:1;min-width:260px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+                <span style="font-weight:700;font-size:0.95rem;color:#ffffff;">#${idx+1} ${escapeHtml(r.name)}</span>
+                ${stockCount > 0 
+                  ? `<span class="adm-badge" style="background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3);font-size:0.75rem;">🟢 มีสต็อก ${stockCount} ID พร้อมส่ง</span>` 
+                  : `<span class="adm-badge" style="background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);font-size:0.75rem;">🔴 สต็อกหมด (0 ID)</span>`
+                }
+              </div>
+
+              <div class="adm-grid-2" style="margin-bottom:10px;">
+                <div>
+                  <label class="adm-label">1. ชื่อของรางวัล</label>
+                  <input type="text" class="adm-input" value="${escapeHtml(r.name)}" onchange="updateRewardField(${idx}, 'name', this.value)" />
+                </div>
+                <div>
+                  <label class="adm-label">2. แต้มที่ใช้แลก (พ้อย)</label>
+                  <input type="number" class="adm-input" value="${r.pts}" onchange="updateRewardField(${idx}, 'pts', Number(this.value))" />
+                </div>
+              </div>
+
+              <div class="adm-grid-2" style="margin-bottom:10px;">
+                <div>
+                  <label class="adm-label">3. ลิงก์รูปของรางวัล (Image URL)</label>
+                  <input type="text" class="adm-input" value="${escapeHtml(r.image || '')}" placeholder="https://..." onchange="updateRewardField(${idx}, 'image', this.value)" />
+                </div>
+                <div style="display:flex;align-items:flex-end;gap:8px;">
+                  <label class="adm-btn adm-btn-secondary adm-btn-sm" style="cursor:pointer;margin:0;">
+                    📁 เปลี่ยนรูปของรางวัล
+                    <input type="file" accept="image/*" style="display:none;" onchange="uploadRewardImage(this, ${idx})" />
+                  </label>
+                  <button type="button" class="adm-btn adm-btn-danger adm-btn-sm" onclick="deleteReward(${idx})">
+                    🗑️ ลบรางวัลนี้
+                  </button>
+                </div>
+              </div>
+
+              <div class="adm-field">
+                <label class="adm-label" style="display:flex;justify-content:space-between;align-items:center;">
+                  <span>4. สต็อก ID ที่จะแจก (คนแรกแลกจะดึง ID บนสุดออกไป และตัดออกจากกล่องนี้ทันที)</span>
+                  <span style="font-size:0.72rem;font-weight:700;color:${stockCount > 0 ? '#22c55e' : '#ef4444'};">
+                    ${stockCount > 0 ? `เหลือในระบบ ${stockCount} ID` : `ไม่มีสต็อก (กรุณาเติม)`}
+                  </span>
+                </label>
+                <div style="font-size:0.72rem;color:var(--adm-muted);margin-bottom:4px;">
+                  ใส่ 1 ID ต่อ 1 บรรทัด หรือคั่นด้วย <code>---</code> เมื่อลูกค้ากดแลก ระบบจะหยิบ ID แรกไปส่งมอบ และลบออกจากกล่องนี้ทันที
+                </div>
+                <textarea class="adm-textarea" style="min-height:95px;font-family:monospace;font-size:0.82rem;line-height:1.55;" 
+                  onchange="updateRewardField(${idx}, 'rewardStock', this.value)">${escapeHtml(r.rewardStock || r.rewardCode || '')}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      }).join('');
+    }
+
+    function updateRewardField(idx, field, val) {
+      if (!StoreData.rewards || !StoreData.rewards[idx]) return;
+      StoreData.rewards[idx][field] = val;
+      if (field === 'rewardStock') {
+        StoreData.rewards[idx].rewardCode = val;
+      }
+      renderRewardsSection();
+      saveAdminStore(`🎁 อัปเดตข้อมูลของรางวัล "${StoreData.rewards[idx].name}" ซิงค์เข้าหน้าบ้านเรียบร้อย!`);
+    }
+
+    function uploadRewardImage(fileInput, idx) {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        StoreData.rewards[idx].image = evt.target.result;
+        renderRewardsSection();
+        saveAdminStore(`📸 อัปเดตรูปของรางวัล "${StoreData.rewards[idx].name}" เรียบร้อย!`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addRewardFromAdmin() {
+      const name = document.getElementById('new-rw-name').value.trim();
+      const pts = Number(document.getElementById('new-rw-pts').value) || 0;
+      const desc = document.getElementById('new-rw-desc').value.trim() || 'แลกรับโค้ดพิเศษได้ทันที';
+      const image = document.getElementById('new-rw-img').value.trim() || 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500';
+      const stock = document.getElementById('new-rw-stock').value.trim();
+
+      if (!name) {
+        showToast('⚠️ กรุณาระบุชื่อของรางวัล');
+        return;
+      }
+      if (!pts || pts <= 0) {
+        showToast('⚠️ กรุณาระบุแต้มที่ใช้แลกให้ถูกต้อง');
+        return;
+      }
+
+      if (!StoreData.rewards) StoreData.rewards = [];
+      const credText = stock || ('REWARD-' + Math.floor(1000 + Math.random() * 9000));
+      const parsedItems = parseRewardStockItems(credText);
+
+      StoreData.rewards.unshift({
+        id: 'rw-' + Date.now(),
+        name,
+        desc,
+        pts,
+        icon: '🎁',
+        image,
+        rewardStock: credText,
+        rewardCode: credText
+      });
+
+      document.getElementById('new-rw-name').value = '';
+      document.getElementById('new-rw-pts').value = '30';
+      document.getElementById('new-rw-img').value = '';
+      document.getElementById('new-rw-desc').value = '';
+      document.getElementById('new-rw-stock').value = '';
+      updateNewRwStockBadge();
+
+      renderRewardsSection();
+      saveAdminStore(`🎁 เพิ่มของรางวัล "${name}" มีสต็อก ${parsedItems.length} ID สำเร็จ!`);
+    }
+
+    function deleteReward(idx) {
+      if (!confirm('ต้องการลบของรางวัลชิ้นนี้ใช่หรือไม่?')) return;
+      StoreData.rewards.splice(idx, 1);
+      renderRewardsSection();
+      saveAdminStore('🗑️ ลบของรางวัลเรียบร้อย');
+    }
+
+    /* =========================================================================
+       6. SITE NAME, LOGO & QR SETTINGS (แก้ชื่อเว็บ & รูปต่างๆ)
+       ========================================================================= */
+    function populateSiteSettingsForm() {
+      const cfg = StoreData.siteConfig || {};
+      document.getElementById('cfg-store-name').value = cfg.storeName || 'สองนึง';
+      document.getElementById('cfg-hero-badge').value = cfg.heroBadge || '';
+      document.getElementById('cfg-hero-sub').value = cfg.heroSub || '';
+      document.getElementById('cfg-logo-img').value = cfg.logoImage || '';
+      document.getElementById('cfg-pp-id').value = cfg.promptPayId || '098-765-4321';
+      document.getElementById('cfg-pp-name').value = cfg.promptPayName || 'บัญชี: สองนึง (ระบบอัตโนมัติ 24 ชม.)';
+      document.getElementById('cfg-qr-img').value = cfg.customQrImage || '';
+      updateQrLivePreview();
+    }
+
+    function saveSiteBranding() {
+      if (!StoreData.siteConfig) StoreData.siteConfig = {};
+      StoreData.siteConfig.storeName = document.getElementById('cfg-store-name').value.trim() || 'สองนึง';
+      StoreData.siteConfig.heroBadge = document.getElementById('cfg-hero-badge').value.trim();
+      StoreData.siteConfig.heroSub = document.getElementById('cfg-hero-sub').value.trim();
+      StoreData.siteConfig.logoImage = document.getElementById('cfg-logo-img').value.trim();
+      StoreData.siteConfig.promptPayId = document.getElementById('cfg-pp-id').value.trim() || '098-765-4321';
+      StoreData.siteConfig.promptPayName = document.getElementById('cfg-pp-name').value.trim() || 'บัญชี: สองนึง (ระบบอัตโนมัติ 24 ชม.)';
+      StoreData.siteConfig.customQrImage = document.getElementById('cfg-qr-img').value.trim();
+
+      const topNameEl = document.getElementById('adm-top-storename');
+      if (topNameEl) topNameEl.textContent = StoreData.siteConfig.storeName;
+      const dashNameEl = document.getElementById('adm-dash-storename');
+      if (dashNameEl) dashNameEl.textContent = StoreData.siteConfig.storeName;
+
+      saveAdminStore(`🏷️ บันทึกชื่อเว็บไซต์ "${StoreData.siteConfig.storeName}" ซิงค์เข้าหน้าบ้านเรียบร้อย!`);
+      updateQrLivePreview();
+    }
+
+    function resetStoreToFactory() {
+      if (!confirm('ต้องการรีเซ็ตข้อมูลสินค้า ชื่อเว็บ และการตั้งค่าทั้งหมดกลับเป็นค่าเริ่มต้นใช่หรือไม่?')) return;
+      localStorage.removeItem(STORE_STORAGE_KEY);
+      if (liveChannel) {
+        liveChannel.postMessage({ type: 'STORE_UPDATED', timestamp: Date.now() });
+      }
+      location.reload();
+    }
+
+    /* ฟังสัญญาณ Real-time ข้ามเครื่องจาก Supabase */
+    if (supabaseClient) {
+      supabaseClient
+        .channel('realtime-store-admin')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'store_state', filter: 'id=eq.main' }, (payload) => {
+          if (payload.new && payload.new.data) {
+            StoreData = payload.new.data;
+            localStorage.setItem(STORE_STORAGE_KEY, JSON.stringify(StoreData));
+            renderAllAdminSections();
+            showToast('🔔 มีข้อมูลอัปเดตใหม่จากหน้าเว็บลูกค้าแบบ Real-time!');
+          }
+        })
+        .subscribe();
+    }
+
+    /* ฟังสัญญาณ Real-time เมื่อลูกค้าสั่งซื้อหรือสมัครสมาชิกจากหน้าบ้าน */
+    if (liveChannel) {
+      liveChannel.onmessage = async (ev) => {
+        if (ev.data && ev.data.type === 'STORE_UPDATED') {
+          await loadAdminStore();
+          renderAllAdminSections();
+          showToast('🔔 มีข้อมูลอัปเดตใหม่จากหน้าเว็บลูกค้าแบบ Real-time!');
+        }
+      };
+    }
+
+    window.addEventListener('storage', async (ev) => {
+      if (ev.key === STORE_STORAGE_KEY) {
+        await loadAdminStore();
+        renderAllAdminSections();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadAdminStore();
+      renderAllAdminSections();
+
+      // ซิงค์ยอดเงินคงเหลือจากแม่ข่ายอัตโนมัติทันทีที่เปิดหน้านี้
+      setTimeout(() => {
+        checkBaimonBalanceNow(true);
+      }, 1000);
+
+      // วนลูปซิงค์ยอดเงินคงเหลือจากแม่ข่ายอัตโนมัติทุก 30 วินาที
+      setInterval(() => {
+        checkBaimonBalanceNow(true);
+      }, 30000);
+
+      // ซิงค์ทันทีเมื่อผู้ใช้สลับแท็บกลับมาดูหน้าหลังบ้าน
+      window.addEventListener('focus', () => {
+        checkBaimonBalanceNow(true);
+      });
+    });
+  </script>
+</body>
+</html>

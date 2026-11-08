@@ -1,0 +1,11 @@
+{
+  "name": "songnueng-store",
+  "version": "1.0.0",
+  "description": "สองนึง — ร้านค้าไอดีแอพพรีเมียม สบายตาทันสมัย พร้อมระบบ Auto Sync API แม่ข่าย และตรวจสลิปอัตโนมัติ",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000"
+  }
+}
